@@ -36,5 +36,5 @@ theme: next
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: https://github.com/Tr2e/Tr2e.github.io.git
+  repository: git@github.com:Tr2e/Tr2e.github.io.git
   branch: master
