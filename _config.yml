@@ -5,33 +5,10 @@
 # Site
 title: Tr2e's Blog
 subtitle:
-description:
+description: Principle & Order
 author: Tr2e
 language: zh-Hans
 timezone:
-
-# URL
-## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://tr2e.com.cn
-root: /
-permalink: :year/:month/:day/:title/
-permalink_defaults:
-
-# Writing
-new_post_name: :title.md # File name of new posts
-default_layout: post
-titlecase: false # Transform title into titlecase
-external_link: true # Open external links in new tab
-filename_case: 0
-render_drafts: false
-post_asset_folder: false
-relative_link: false
-future: true
-highlight:
-  enable: true
-  line_number: true
-  auto_detect: false
-  tab_replace:
 
 # Category & Tag
 default_category: home
@@ -58,6 +35,6 @@ theme: next
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type: git 
-  repo: https://github.com/Tr2e/Tr2e.github.io.git
+  type: git
+  repository: https://github.com/Tr2e/Tr2e.github.io.git
   branch: master
