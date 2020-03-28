@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言关于@property基础的一次总结学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS-认识@property">
+<meta property="og:url" content="http://yoursite.com/2017/11/16/iOS-property/index.html">
+<meta property="og:site_name" content="Tr2e&#39;s Blog">
+<meta property="og:description" content="前言关于@property基础的一次总结学习">
+<meta property="article:published_time" content="2017-11-16T04:20:29.000Z">
+<meta property="article:modified_time" content="2018-08-31T08:58:22.037Z">
+<meta property="article:author" content="Tr2e">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/16/iOS-property/"/>
+
+
+
+
+
+  <title>iOS-认识@property | Tr2e's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tr2e's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/16/iOS-property/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tr2e">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tr2e's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS-认识@property</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-16T12:20:29+08:00">
+                2017-11-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>关于<code>@property</code>基础的一次总结学习</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="属性与成员变量"><a href="#属性与成员变量" class="headerlink" title="属性与成员变量"></a>属性与成员变量</h3><p>当我们写下<code>@property NSObject *foo</code>时，编译器帮我们做了以下几件事(这个过程也被称为“自动合成(autoSynthesize)“)</p>
+<ul>
+<li>创建成员变量<code>_foo</code></li>
+<li>声明foo属性的<code>setter</code>、<code>getter</code>方法</li>
+<li>实现foo属性的<code>setter</code>、<code>getter</code>方法</li>
+</ul>
+<p>但是很久之前的GCC编译器时代，声明一个属性，需要分三步书写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.h</span><br><span class="line">&#123;</span><br><span class="line">	NSObject *foo;</span><br><span class="line">&#125;</span><br><span class="line">@property NSObject *foo</span><br><span class="line">.m</span><br><span class="line">@synthesize foo;</span><br></pre></td></tr></table></figure>
+<p>创建<code>foo</code>成员变量,<code>@property</code>负责声明<code>setter</code>/<code>getter</code>方法，而<code>@synthesize</code>则负责实现这两个方法</p>
+<p>后来苹果将编译器改为LLVM，我们就不必再为属性对应声明成员变量，编译器自动创建一个下划线开头的<code>_foo</code>成员变量，并且为我们实现<code>@synthesize foo = _foo</code>的属性与成员变量的对应，这就解释了为什么我们重写<code>setter</code>/<code>getter</code>方法时，都是操作的<code>_foo</code>成员变量，而不是<code>foo</code>。当然，如果你愿意，可以不使用系统自动生成的<code>_foo</code>的命名,自己用<code>@synthesize foo = differentFoo</code>去指定一下这个成员变量名字。</p>
+<p>与自动合成相对应的是<code>@dynamic</code>，作用是告诉编译器取消自动执行的上述三个步骤，对应操作与开发者自己实现。最为常见的是程序中实现对<code>NSUserDefault</code>读写的管理类，这个类的属性就不需要编译器帮我们自动合成</p>
+<hr>
+<h3 id="property中属性的作用"><a href="#property中属性的作用" class="headerlink" title="@property中属性的作用"></a>@property中属性的作用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 无数次不厌其烦的书写是因为烦也得写</span><br><span class="line">@property (nonatomic, assign) NSInteger testTag;</span><br><span class="line">@property (nonatomic, strong) UIButton *btn;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="原子性-atomic-amp-nonatomic"><a href="#原子性-atomic-amp-nonatomic" class="headerlink" title="原子性:atomic&amp;nonatomic"></a>原子性:atomic&amp;nonatomic</h4><ul>
+<li>atomic:原子性，这个属性是默认的，通过在<strong>setter</strong>中加<code>@synchronized(self)</code>保证数据数据的<strong>读写安全</strong>，需要注意的是，但它<strong>不是线程安全</strong>的</li>
+<li>nonatomic:非原子性，就是不加锁</li>
+</ul>
+<p>atomic和nonatomic的区别在于，系统自动生成的getter/setter方法不一样。如果自己写getter/setter，那atomic/nonatomic/retain/assign/copy这些关键字只起提示作用，写不写都一样</p>
+<p><strong>nonatomic</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;@property(nonatomic, retain) UITextField *userName;</span><br><span class="line">&#x2F;&#x2F;系统生成的代码如下：</span><br><span class="line"></span><br><span class="line">- (UITextField *) userName &#123;</span><br><span class="line">    return userName;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void) setUserName:(UITextField *)userName_ &#123;</span><br><span class="line">    [userName_ retain];</span><br><span class="line">    [userName release];</span><br><span class="line">    userName &#x3D; userName_;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>atomic</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;@property(retain) UITextField *userName;</span><br><span class="line">&#x2F;&#x2F;系统生成的代码如下：</span><br><span class="line"></span><br><span class="line">- (UITextField *) userName &#123;</span><br><span class="line">    UITextField *retval &#x3D; nil;</span><br><span class="line">    @synchronized(self) &#123;</span><br><span class="line">        retval &#x3D; [[userName retain] autorelease];</span><br><span class="line">    &#125;</span><br><span class="line">    return retval;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void) setUserName:(UITextField *)userName_ &#123;</span><br><span class="line">    @synchronized(self) &#123;</span><br><span class="line">      [userName release];</span><br><span class="line">      userName &#x3D; [userName_ retain];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>atomic通过<strong>加锁@synchronized(self)</strong>来保障读写安全，并且在getter中引用计数同样会 +1，来向调用者保证这个对象会一直存在。假如不这样做，如有另一个线程调setter可能会出现<a href="http://www.jianshu.com/p/358535119e9b" target="_blank" rel="noopener">线程竞态</a>，导致引用计数降到0，原来那个对象就释放掉了</p>
+<blockquote>
+<p><a href="http://www.jianshu.com/p/7288eacbb1a2" target="_blank" rel="noopener">参考文章：《爆栈热门iOS问题 atomic和nonatomic有什么区别？》</a></p>
+</blockquote>
+<hr>
+<h4 id="读写权限-readwrite-amp-readonly"><a href="#读写权限-readwrite-amp-readonly" class="headerlink" title="读写权限:readwrite&amp;readonly"></a>读写权限:readwrite&amp;readonly</h4><ul>
+<li>readwrite:可读写属性，默认属性，允许编译器<code>@synthesize</code>自动合成</li>
+<li>readonly:只读属性，不生成<code>setter</code></li>
+</ul>
+<hr>
+<h4 id="方法名定义-getter-setter"><a href="#方法名定义-getter-setter" class="headerlink" title="方法名定义:getter=/setter="></a>方法名定义:getter=/setter=</h4><p>看一下<code>UIButton</code>中的应用，一般都是在<code>Bool</code>类型的属性时使用，方便阅读</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@property(nonatomic,getter&#x3D;isEnabled) BOOL enabled;                                  &#x2F;&#x2F; default is YES. if NO, ignores touch events and subclasses may draw differently</span><br><span class="line">@property(nonatomic,getter&#x3D;isSelected) BOOL selected;                                &#x2F;&#x2F; default is NO may be used by some subclasses or by application</span><br><span class="line">@property(nonatomic,getter&#x3D;isHighlighted) BOOL highlighted;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h4><ul>
+<li>assign</li>
+<li>unsafe_unretained</li>
+<li>strong</li>
+<li>retain</li>
+<li>weak</li>
+<li>copy</li>
+</ul>
+<h5 id="assign"><a href="#assign" class="headerlink" title="assign"></a>assign</h5><p>assign用于值类型，如int、float、double和NSInteger，CGFloat等表示单纯的赋值，简单覆盖原值，没有多余的操作</p>
+<h5 id="unsafe-unretained"><a href="#unsafe-unretained" class="headerlink" title="unsafe_unretained"></a>unsafe_unretained</h5><p>同assign一样，但是对象销毁后，属性指针并不等于<code>nil</code>而是指向了一块野地址，形成野指针。如果访问，则会出现<code>BAD_ACCESS</code></p>
+<h5 id="strong-retain"><a href="#strong-retain" class="headerlink" title="strong/retain"></a>strong/retain</h5><p>id类型及对象类型的所有权修饰符。strong是在iOS引入ARC的时候引入的关键字，是retain的一个可选的替代。表示成员变量对传入的对象要有所有权关系，即强引用。strong跟retain的意思相同并产生相同的代码，但是语意上strong更能体现对象的关系。作用是在setter中，对新值retain，对旧值release，并返回新值</p>
+<h5 id="weak"><a href="#weak" class="headerlink" title="weak"></a>weak</h5><p>使用范围同strong。区别在于在setter方法中，对传入的对象不进行引用计数加1的操作，即对传入的对象没有所有权。属性所指的对象销毁时，属性也会清空（nil out）</p>
+<h5 id="copy"><a href="#copy" class="headerlink" title="copy"></a>copy</h5><p>会将修饰的结果copy一份，重新保存。所以通常用于修饰<strong>NSString/NSArray/NSDictionary</strong>的属性保护封装性。因为<strong>多态性</strong>，父类指针可以指向子类，如果给一个上述不可变属性赋值了他们的子类，那么在子类发生增删时，同样会影响了当前属性的值，违背了<strong>不可变的初衷</strong>，使程序变的不可控。而mutable类型copy操作后，就会保存当前的值储存，成为不可变的类型<strong>(immutable)</strong>。</p>
+<p>我们简单写个例子，检验一下<code>copy</code>对属性的影响：</p>
+<ol>
+<li>声明两个分别用<code>strong</code>及<code>copy</code>修饰类型为<strong>可变数组</strong>的属性</li>
+<li>声明两个分别用<code>strong</code>及<code>copy</code>修饰类型为<strong>不可变数组</strong>的属性</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, strong) NSMutableArray *smArr;</span><br><span class="line">@property (nonatomic, copy) NSMutableArray *cmArr;</span><br><span class="line">@property (nonatomic, strong) NSArray *strongImArr;</span><br><span class="line">@property (nonatomic, copy) NSArray *CopyImArr;</span><br></pre></td></tr></table></figure>
+
+<p>接下来分别给他们赋值一个<strong>可变数组</strong>的局部变量，并在改变这个局部变量前后打印几个属性的信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 初始化一个局部可变数组</span><br><span class="line">    NSArray *arr &#x3D; @[@&quot;1&quot;];</span><br><span class="line">    NSLog(@&quot;original arr address:%p class:%@&quot;,arr,[arr class]);</span><br><span class="line">    NSArray *carr &#x3D; [arr copy];</span><br><span class="line">    NSLog(@&quot;copy arr address:%p class:%@&quot;,carr,[carr class]);</span><br><span class="line">    NSMutableArray *marr &#x3D; [arr mutableCopy];</span><br><span class="line">    NSLog(@&quot;mutable arr address:%p class:%@&quot;,marr,[marr class]);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 将这个可变数组分别赋值给声明的属性并打印信息</span><br><span class="line">    self.cmArr &#x3D; marr;</span><br><span class="line">    NSLog(@&quot;copy mutable property address:%p class:%@ property:%@&quot;,self.cmArr,[self.cmArr class],self.cmArr);</span><br><span class="line">    self.smArr &#x3D; marr;</span><br><span class="line">    NSLog(@&quot;strong mutable property address:%p class:%@ property:%@&quot;,self.smArr,[self.smArr class],self.smArr);</span><br><span class="line">    </span><br><span class="line">    self.strongImArr &#x3D; marr;</span><br><span class="line">    NSLog(@&quot;strong immutable property address:%p class:%@ property:%@&quot;,self.strongImArr,[self.strongImArr class],self.strongImArr);</span><br><span class="line">    self.CopyImArr &#x3D; marr;</span><br><span class="line">    NSLog(@&quot;copy immutable property address:%p class:%@ property:%@&quot;,self.CopyImArr,[self.CopyImArr class],self.CopyImArr);</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; 改变可变数组并打印信息</span><br><span class="line">    [marr addObject:@&quot;2&quot;];</span><br><span class="line">    NSLog(@&quot;copy mutable property address:%p class:%@ property:%@&quot;,self.cmArr,[self.cmArr class],self.cmArr);</span><br><span class="line">    NSLog(@&quot;strong mutable property address:%p class:%@ property:%@&quot;,self.smArr,[self.smArr class],self.smArr);</span><br><span class="line">    NSLog(@&quot;strong immutable property address:%p class:%@ property:%@&quot;,self.strongImArr,[self.strongImArr class],self.strongImArr);</span><br><span class="line">    NSLog(@&quot;copy immutable property address:%p class:%@ property:%@&quot;,self.CopyImArr,[self.CopyImArr class],self.CopyImArr);</span><br></pre></td></tr></table></figure>
+
+<p>打印结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">original arr address:0x600000017f50 class:__NSSingleObjectArrayI</span><br><span class="line">copy arr address:0x600000017f50 class:__NSSingleObjectArrayI</span><br><span class="line">mutable arr address:0x60c000250680 class:__NSArrayM</span><br><span class="line"></span><br><span class="line">copy mutable property address:0x608000201de0 class:__NSSingleObjectArrayI property:(</span><br><span class="line">    1</span><br><span class="line">)</span><br><span class="line">strong mutable property address:0x60c000250680 class:__NSArrayM property:(</span><br><span class="line">    1</span><br><span class="line">)</span><br><span class="line">strong immutable property address:0x60c000250680 class:__NSArrayM property:(</span><br><span class="line">    1</span><br><span class="line">)</span><br><span class="line">copy immutable property address:0x608000201dd0 class:__NSSingleObjectArrayI property:(</span><br><span class="line">    1</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 改变局部变量后的打印结果</span><br><span class="line">copy mutable property address:0x608000201de0 class:__NSSingleObjectArrayI property:(</span><br><span class="line">    1</span><br><span class="line">)</span><br><span class="line">strong mutable property address:0x60c000250680 class:__NSArrayM property:(</span><br><span class="line">    1,</span><br><span class="line">    2</span><br><span class="line">)</span><br><span class="line">strong immutable property address:0x60c000250680 class:__NSArrayM property:(</span><br><span class="line">    1,</span><br><span class="line">    2</span><br><span class="line">)</span><br><span class="line">copy immutable property address:0x608000201dd0 class:__NSSingleObjectArrayI property:(</span><br><span class="line">    1</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，<code>copy</code>将原本是<strong>可变数组的</strong>的属性<code>self.cmArr</code>的类型变成了<strong>__NSSingleObjectArrayI</strong>不可变，同时对比内存地址可以发现，编译器开辟了一块新的内存空间用来存储copy的值。所以当我们如果写下类似<code>@property (nonatomic, copy) NSMutableArray *foo</code>时，需要考虑一下这样声明是否有意义。</p>
+<p>同样有趣的是，我们本来声明为<strong>不可变数组</strong>的<code>self.strongImArr</code>却因为<strong>多态</strong>(父类指针指向子类)，指向了一个<strong>可变数组</strong>，并在<code>marr</code>改变时，同样也发生了变化。这与开发者声明它为<strong>不可变</strong>时的用意可能会出现出入，对比最后一行打印的结果，可能<code>copy</code>会更贴近开发者的真正想法。所以这就是很多文章提倡用<code>copy</code>修饰<strong>NSString/NSArray/NSDictionary</strong>属性的用意所在。</p>
+<hr>
+<p>在认识<strong>@property</strong>后，接下来，我们会继续<a href="">iOS-探究@property</a>，学习更多<strong>@property</strong>的底层知识</p>
+<p>简书地址：<a href="http://www.jianshu.com/p/56cef77a55d8" target="_blank" rel="noopener">iOS-认识@property</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/21/iOS-Self-Sizing-WaterFlowLayout/" rel="next" title="iOS-Autolayout自动计算itemSize的UICollectionViewLayout瀑布流布局">
+                <i class="fa fa-chevron-left"></i> iOS-Autolayout自动计算itemSize的UICollectionViewLayout瀑布流布局
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/22/iOS-%E6%94%AF%E6%8C%81%E7%82%B9%E8%B5%9E%E6%95%B0%E5%AD%97%E5%8A%A8%E7%94%BB%E7%9A%84SPScrollNumLabel/" rel="prev" title="iOS-支持点赞数字动画的SPScrollNumLabel">
+                iOS-支持点赞数字动画的SPScrollNumLabel <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Tr2e</p>
+              <p class="site-description motion-element" itemprop="description">Principle & Order</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性与成员变量"><span class="nav-number">2.</span> <span class="nav-text">属性与成员变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#property中属性的作用"><span class="nav-number">3.</span> <span class="nav-text">@property中属性的作用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#原子性-atomic-amp-nonatomic"><span class="nav-number">3.1.</span> <span class="nav-text">原子性:atomic&amp;nonatomic</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#读写权限-readwrite-amp-readonly"><span class="nav-number">3.2.</span> <span class="nav-text">读写权限:readwrite&amp;readonly</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法名定义-getter-setter"><span class="nav-number">3.3.</span> <span class="nav-text">方法名定义:getter&#x3D;&#x2F;setter&#x3D;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存管理"><span class="nav-number">3.4.</span> <span class="nav-text">内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#assign"><span class="nav-number">3.4.1.</span> <span class="nav-text">assign</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#unsafe-unretained"><span class="nav-number">3.4.2.</span> <span class="nav-text">unsafe_unretained</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#strong-retain"><span class="nav-number">3.4.3.</span> <span class="nav-text">strong&#x2F;retain</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#weak"><span class="nav-number">3.4.4.</span> <span class="nav-text">weak</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#copy"><span class="nav-number">3.4.5.</span> <span class="nav-text">copy</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tr2e</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

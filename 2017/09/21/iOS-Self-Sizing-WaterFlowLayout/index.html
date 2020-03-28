@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言探究Custom Layout及应用实践">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS-Autolayout自动计算itemSize的UICollectionViewLayout瀑布流布局">
+<meta property="og:url" content="http://yoursite.com/2017/09/21/iOS-Self-Sizing-WaterFlowLayout/index.html">
+<meta property="og:site_name" content="Tr2e&#39;s Blog">
+<meta property="og:description" content="前言探究Custom Layout及应用实践">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-8c4c4a64292c2911.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-6944255e81212bf9.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-4181952cb01a5b2f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2017-09-21T03:51:27.000Z">
+<meta property="article:modified_time" content="2017-09-21T05:56:01.000Z">
+<meta property="article:author" content="Tr2e">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1742463-8c4c4a64292c2911.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/21/iOS-Self-Sizing-WaterFlowLayout/"/>
+
+
+
+
+
+  <title>iOS-Autolayout自动计算itemSize的UICollectionViewLayout瀑布流布局 | Tr2e's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tr2e's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/21/iOS-Self-Sizing-WaterFlowLayout/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tr2e">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tr2e's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS-Autolayout自动计算itemSize的UICollectionViewLayout瀑布流布局</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-21T11:51:27+08:00">
+                2017-09-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>探究<code>Custom Layout</code>及应用实践</p>
+<a id="more"></a>
+
+<h3 id="UICollectionViewLayout基础知识"><a href="#UICollectionViewLayout基础知识" class="headerlink" title="UICollectionViewLayout基础知识"></a>UICollectionViewLayout基础知识</h3><h4 id="Custom-Layout"><a href="#Custom-Layout" class="headerlink" title="Custom Layout"></a><strong>Custom Layout</strong></h4><blockquote>
+<p><strong>官方描述</strong><br>An abstract base class for generating layout information for a collection view<br>The job of a layout object is to determine the placement of cells, supplementary views, and decoration views inside the collection view’s bounds and to report that information to the collection view when asked</p>
+<p><a href="https://developer.apple.com/documentation/uikit/uicollectionviewlayout" target="_blank" rel="noopener">官方文档</a></p>
+</blockquote>
+<p><code>UICollectionViewLayout</code>的功能为向<code>UICollectionView</code>提供布局信息，不仅包括<code>cell</code>的<strong>布局信息</strong>，也包括<strong>追加视图</strong>和<strong>装饰视图</strong>的布局信息。实现一个自定义<strong><code>Custom Layout</code></strong>的常规做法是继承<code>UICollectionViewLayout</code>类</p>
+<h4 id="重载的方法"><a href="#重载的方法" class="headerlink" title="重载的方法"></a><strong>重载的方法</strong></h4><ul>
+<li><code>prepareLayout</code>:<strong>准备布局属性</strong></li>
+<li><code>layoutAttributesForElementsInRect:</code><strong>返回rect中的所有的元素的布局属性</strong><code>UICollectionViewLayoutAttributes</code>可以是<strong>cell</strong>，<strong>追加视图</strong>或<strong>装饰视图</strong>的信息，通过不同的<code>UICollectionViewLayoutAttributes</code>初始化方法可以得到不同类型的<code>UICollectionViewLayoutAttributes</code><blockquote>
+<ul>
+<li><code>layoutAttributesForCellWithIndexPath:</code></li>
+<li><code>layoutAttributesForSupplementaryViewOfKind:withIndexPath:</code></li>
+<li><code>layoutAttributesForDecorationViewOfKind:withIndexPath:</code></li>
+</ul>
+</blockquote>
+</li>
+<li><code>collectionViewContentSize</code><strong>返回contentSize</strong></li>
+</ul>
+<h4 id="执行顺序"><a href="#执行顺序" class="headerlink" title="执行顺序"></a>执行顺序</h4><ol>
+<li><code>-(void)prepareLayout</code>将被调用，默认下该方法什么没做，但是在自己的子类实现中，一般在该方法中<strong>设定一些必要的<code>layout的</code>结构和初始需要的参数等</strong></li>
+<li><code>-(CGSize) collectionViewContentSize</code>将被调用，以确定<code>collection</code>应该占据的尺寸。注意这里的尺寸不是指可视部分的尺寸，而应该是所有内容所占的尺寸。<strong><code>collectionView</code>的本质是一个<code>scrollView</code>，因此需要这个尺寸来配置滚动行为</strong></li>
+<li><code>-(NSArray *)layoutAttributesForElementsInRect:(CGRect)rect</code></li>
+</ol>
+<h3 id="引入AutoLayout自动计算的瀑布流"><a href="#引入AutoLayout自动计算的瀑布流" class="headerlink" title="引入AutoLayout自动计算的瀑布流"></a>引入AutoLayout自动计算的瀑布流</h3><h4 id="关于瀑布流"><a href="#关于瀑布流" class="headerlink" title="关于瀑布流"></a>关于瀑布流</h4><p>网上前辈们已经写烂了，这里只简述：</p>
+<ul>
+<li><code>-(void)prepareLayout</code>中:就是通过一个记录列高度的<strong>数组</strong>(或<strong>字典</strong>)，在创建<code>LayoutAttributes</code>的frame时确定当前最短列，根据外部传入的相关的<code>spacing</code>及<code>collectionView</code>的<code>inset</code>属性，确定<strong>宽度</strong>、<strong>frame</strong>等信息，存入<strong>Attributes</strong>的数组。</li>
+<li><code>-(CGSize) collectionViewContentSize</code>中：通过<strong>列高度数组</strong>很容易确定当前范围，<strong>contentSize不等于collectionview的bounds.size</strong>,计算时留意一下</li>
+<li><code>-(NSArray *)layoutAttributesForElementsInRect:(CGRect)rect</code>：返回第一步中计算获得的<strong>Attributes数组</strong>即可</li>
+</ul>
+<p>以上可以帮助我们实现一个瀑布流的效果，但是离实际应用还有一段差距。</p>
+<p><strong>分析：</strong><br>实际应用中，我们的网络请求是会有一个<strong>pageSize</strong>的，而且列表的赋值通常是直接进行数据源的赋值然后<code>reloadData</code>。所以数据源个数等于<strong>pageSize</strong>时，我们认为是刷新，大于时，则为分页加载。<br>根据这套逻辑，这里将<strong>pageSize</strong>及<strong>dataSource</strong>作为属性引入到<code>Custom Layout</code>中，同时维护一个记录计算结果的数组<strong>itemSizeArray</strong>，提高计算效率，具体代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (void)calculateAttributesWithItemWidth:(CGFloat)itemWidth&#123;</span><br><span class="line">    BOOL isRefresh &#x3D; self.datas.count &lt;&#x3D; self.pageSize;</span><br><span class="line">    if (isRefresh) &#123;</span><br><span class="line">        [self refreshLayoutCache];</span><br><span class="line">    &#125;</span><br><span class="line">    NSInteger cacheCount &#x3D; self.itemSizeArray.count;</span><br><span class="line">    for (NSInteger i &#x3D; cacheCount; i &lt; self.datas.count; i ++) &#123;</span><br><span class="line">        CGSize itemSize &#x3D; [self calculateItemSizeWithIndex:i];</span><br><span class="line">        UICollectionViewLayoutAttributes *layoutAttributes &#x3D; [self createLayoutAttributesWithItemSize:itemSize index:i];</span><br><span class="line">        [self.itemSizeArray addObject:[NSValue valueWithCGSize:itemSize]];</span><br><span class="line">        [self.layoutAttributesArray addObject:layoutAttributes];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (UICollectionViewLayoutAttributes *)createLayoutAttributesWithItemSize:(CGSize)itemSize index:(NSInteger)index&#123;</span><br><span class="line">    UICollectionViewLayoutAttributes *layoutAttributes &#x3D; [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:[NSIndexPath indexPathForItem:index inSection:0]];</span><br><span class="line">    struct SPColumnInfo shortestInfo &#x3D; [self shortestColumn:self.columnHeightArray];</span><br><span class="line">    &#x2F;&#x2F; x</span><br><span class="line">    CGFloat itemX &#x3D; (self.itemWidth + self.interitemSpacing) * shortestInfo.columnNumber;</span><br><span class="line">    &#x2F;&#x2F; y</span><br><span class="line">    CGFloat itemY &#x3D; self.columnHeightArray[shortestInfo.columnNumber].floatValue + self.lineSpacing;</span><br><span class="line">    &#x2F;&#x2F; size</span><br><span class="line">    layoutAttributes.frame &#x3D; (CGRect)&#123;CGPointMake(itemX, itemY),itemSize&#125;;</span><br><span class="line">    self.columnHeightArray[shortestInfo.columnNumber] &#x3D; @(CGRectGetMaxY(layoutAttributes.frame));</span><br><span class="line">    return layoutAttributes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (void)refreshLayoutCache&#123;</span><br><span class="line">    [self.layoutAttributesArray removeAllObjects];</span><br><span class="line">    [self.columnHeightArray removeAllObjects];</span><br><span class="line">    [self.itemSizeArray removeAllObjects];</span><br><span class="line">    for (NSInteger index &#x3D; 0; index &lt; self.columnNumber; index ++) &#123;</span><br><span class="line">        [self.columnHeightArray addObject:@(self.viewInset.top)];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码里可以看到，<code>itemSizeArray</code>的属性，用于记录自动计算的<code>itemSize</code>，通过这个属性可以帮助我们<strong>减少不必要的重复计算</strong></p>
+<h4 id="关于自动计算"><a href="#关于自动计算" class="headerlink" title="关于自动计算"></a>关于自动计算</h4><p><img src="http://upload-images.jianshu.io/upload_images/1742463-8c4c4a64292c2911.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p><strong>注意</strong>：</p>
+<ul>
+<li><strong>Self-size</strong>要求我们的约束自上而下设置，确保能够通过<strong>Constraint</strong>计算获得准确的高度。具体不再赘述</li>
+<li><strong>本Demo仅适用图片比例确定的瀑布流</strong>，如果需求是图片size自适应，需要服务器返回能够计算的必要参数</li>
+</ul>
+<p>自动计算的思路，<strong>类似<a href="https://github.com/forkingdog/UITableView-FDTemplateLayoutCell" target="_blank" rel="noopener">UITableView-FDTemplateLayoutCell</a></strong>，通过<strong>xibName</strong>或<strong>className</strong>初始化一个<strong>template cell</strong>，<strong>注入数据</strong>并添加<strong>横向约束</strong>后，利用<strong><code>systemLayoutSizeFittingSize</code></strong>方法获取系统计算的高度后，移除添加的<strong>横向约束</strong>（<strong><em>其中有个iOS10.2后的约束计算变化，需要我们手动对<code>cell.contentView</code>添加四周的约束，AutoLayout才能准确计算高度。请注意代码中对系统判断的一步</em></strong>）</p>
+<p>这里我们为<code>UICollectionViewCell</code>添加了一个<code>Category</code>，用于统一数据的传入方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">@interface UICollectionViewCell (FeedData)</span><br><span class="line">@property (nonatomic, strong) id feedData;</span><br><span class="line">@property (nonatomic, strong) id subfeedData;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; --------------------------------------</span><br><span class="line"></span><br><span class="line">#import &quot;UICollectionViewCell+FeedData.h&quot;</span><br><span class="line">#import &lt;objc&#x2F;runtime.h&gt;</span><br><span class="line"></span><br><span class="line">static NSString *AssociateKeyFeedData &#x3D; @&quot;AssociateKeyFeedData&quot;;</span><br><span class="line">static NSString *AssociateKeySubFeedData &#x3D; @&quot;AssociateKeySubFeedData&quot;;</span><br><span class="line">@implementation UICollectionViewCell (FeedData)</span><br><span class="line">@dynamic feedData;</span><br><span class="line">@dynamic subfeedData;</span><br><span class="line"></span><br><span class="line">- (void)setFeedData:(id)feedData&#123;</span><br><span class="line">    objc_setAssociatedObject(self, &amp;AssociateKeyFeedData, feedData, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)feedData&#123;</span><br><span class="line">    return objc_getAssociatedObject(self, &amp;AssociateKeyFeedData);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setSubfeedData:(id)subfeedData&#123;</span><br><span class="line">    objc_setAssociatedObject(self, &amp;AssociateKeySubFeedData, subfeedData, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)subfeedData&#123;</span><br><span class="line">    return objc_getAssociatedObject(self, &amp;AssociateKeySubFeedData);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>关键代码如下：</p>
+<ul>
+<li>itemSize<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (CGSize)calculateItemSizeWithIndex:(NSInteger)index&#123;</span><br><span class="line">    NSAssert(index &lt; self.datas.count, @&quot;index is incorrect&quot;);</span><br><span class="line">    UICollectionViewCell *tempCell &#x3D; [self templateCellWithReuseIdentifier:self.reuseIdentifier withIndex:index];</span><br><span class="line">    tempCell.feedData &#x3D; self.datas[index];</span><br><span class="line">    CGFloat cellHeight &#x3D; [self systemCalculateHeightForTemplateCell:tempCell];</span><br><span class="line">    return CGSizeMake(self.itemWidth, cellHeight);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>获取一个计算使用的<strong>Template Cell</strong>，保存避免重复提取<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (UICollectionViewCell *)templateCellwithIndex:(NSInteger)index&#123;</span><br><span class="line">    if (!self.templateCell) &#123;</span><br><span class="line">        if (self.className) &#123;</span><br><span class="line">            Class cellClass &#x3D; NSClassFromString(self.className);</span><br><span class="line">            UICollectionViewCell *templateCell &#x3D; [[cellClass alloc] init];</span><br><span class="line">            self.templateCell &#x3D; templateCell;</span><br><span class="line">        &#125;else if (self.xibName)&#123;</span><br><span class="line">            UICollectionViewCell *templateCell &#x3D; [[NSBundle mainBundle] loadNibNamed:self.xibName owner:nil options:nil].lastObject;</span><br><span class="line">            self.templateCell &#x3D; templateCell;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return self.templateCell;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>AutoLayout Self-sizing<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">- (CGFloat)systemCalculateHeightForTemplateCell:(UICollectionViewCell *)cell&#123;</span><br><span class="line">    CGFloat calculateHeight &#x3D; 0;</span><br><span class="line">    </span><br><span class="line">    NSLayoutConstraint *widthForceConstant &#x3D; [NSLayoutConstraint constraintWithItem:cell.contentView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.itemWidth];</span><br><span class="line"></span><br><span class="line">    static BOOL isSystemVersionEqualOrGreaterThen10_2 &#x3D; NO;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        isSystemVersionEqualOrGreaterThen10_2 &#x3D; [UIDevice.currentDevice.systemVersion compare:@&quot;10.2&quot; options:NSNumericSearch] !&#x3D; NSOrderedAscending;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    NSArray&lt;NSLayoutConstraint *&gt; *edgeConstraints;</span><br><span class="line">    if (isSystemVersionEqualOrGreaterThen10_2) &#123;</span><br><span class="line">        &#x2F;&#x2F; To avoid conflicts, make width constraint softer than required (1000)</span><br><span class="line">        widthForceConstant.priority &#x3D; UILayoutPriorityRequired - 1;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; Build edge constraints</span><br><span class="line">        NSLayoutConstraint *leftConstraint &#x3D; [NSLayoutConstraint constraintWithItem:cell.contentView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0];</span><br><span class="line">        NSLayoutConstraint *rightConstraint &#x3D; [NSLayoutConstraint constraintWithItem:cell.contentView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeRight multiplier:1.0 constant:0];</span><br><span class="line">        NSLayoutConstraint *topConstraint &#x3D; [NSLayoutConstraint constraintWithItem:cell.contentView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeTop multiplier:1.0 constant:0];</span><br><span class="line">        NSLayoutConstraint *bottomConstraint &#x3D; [NSLayoutConstraint constraintWithItem:cell.contentView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0];</span><br><span class="line">        edgeConstraints &#x3D; @[leftConstraint, rightConstraint, topConstraint, bottomConstraint];</span><br><span class="line">        [cell addConstraints:edgeConstraints];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; system calculate</span><br><span class="line">    [cell.contentView addConstraint:widthForceConstant];</span><br><span class="line">    calculateHeight &#x3D; [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;</span><br><span class="line">    &#x2F;&#x2F; clear constraint</span><br><span class="line">    [cell.contentView removeConstraint:widthForceConstant];</span><br><span class="line">    if (isSystemVersionEqualOrGreaterThen10_2) &#123;</span><br><span class="line">        [cell removeConstraints:edgeConstraints];</span><br><span class="line">    &#125;</span><br><span class="line">    return calculateHeight;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h4></li>
+<li>初始化时对所有必要属性进行赋值<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">SPWaterFlowLayout *flowlayout &#x3D; [[SPWaterFlowLayout alloc] init];</span><br><span class="line">flowlayout.columnNumber &#x3D; 2;</span><br><span class="line">flowlayout.interitemSpacing &#x3D; 10;</span><br><span class="line">flowlayout.lineSpacing &#x3D; 10;</span><br><span class="line">flowlayout.pageSize &#x3D; 54;</span><br><span class="line">flowlayout.xibName &#x3D; @&quot;TestView&quot;;</span><br><span class="line">UICollectionView *test &#x3D; [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:flowlayout];</span><br><span class="line">test.contentInset &#x3D; UIEdgeInsetsMake(10, 10, 5, 10);</span><br><span class="line">[self.view addSubview:test];</span><br><span class="line">test.delegate &#x3D; self;</span><br><span class="line">test.dataSource &#x3D; self;</span><br><span class="line">[test registerNib:[UINib nibWithNibName:@&quot;TestView&quot; bundle:nil] forCellWithReuseIdentifier:@&quot;Cell&quot;];</span><br><span class="line">test.backgroundColor &#x3D; [UIColor whiteColor];</span><br></pre></td></tr></table></figure></li>
+<li>Refresh及LoadMore中更新<code>dataSource</code></li>
+</ul>
+<p><strong>Refresh</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">test.refreshDataCallBack &#x3D; ^&#123;</span><br><span class="line">        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">            self.pageTag &#x3D; 0;</span><br><span class="line">            NSArray *datas &#x3D; [SPProductModel productWithIndex:0];</span><br><span class="line">            flowlayout.datas &#x3D; datas;</span><br><span class="line">            wtest.sp_datas &#x3D; [datas mutableCopy];</span><br><span class="line">            [wtest doneLoadDatas];</span><br><span class="line">            [wtest reloadData];</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>LoadMore</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">test.loadMoreDataCallBack &#x3D; ^&#123;</span><br><span class="line">       self.pageTag ++;</span><br><span class="line">       dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">           NSArray *datas &#x3D; [SPProductModel productWithIndex:self.pageTag];</span><br><span class="line">           NSArray *total &#x3D; [flowlayout.datas arrayByAddingObjectsFromArray:datas];</span><br><span class="line">           flowlayout.datas &#x3D; total;</span><br><span class="line">           wtest.sp_datas &#x3D; [total mutableCopy];</span><br><span class="line">           [wtest doneLoadDatas];</span><br><span class="line">           [wtest reloadData];</span><br><span class="line">       &#125;);</span><br><span class="line">   &#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h4><p>题外话：iPhone X让我们除了<strong>64</strong>，又记住了<strong>88和812</strong>，自己写<strong>Refresh</strong>的朋友，记得<strong>更新下机型判断</strong><br><img src="http://upload-images.jianshu.io/upload_images/1742463-6944255e81212bf9.gif?imageMogr2/auto-orient/strip" alt="waterflow.gif"></p>
+<h4 id="Demo地址"><a href="#Demo地址" class="headerlink" title="Demo地址"></a>Demo地址</h4><p><a href="https://github.com/Tr2e/SPWaterFlowLayout" target="_blank" rel="noopener">SPWaterFlowLayout</a><br><a href="http://www.jianshu.com/p/bd856b5e140a" target="_blank" rel="noopener">笔者简书地址</a><br><img src="http://upload-images.jianshu.io/upload_images/1742463-4181952cb01a5b2f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/12/iOS-Transform/" rel="next" title="iOS-从三维立方体到理解CATransform3D&CGAffineTransform&m34">
+                <i class="fa fa-chevron-left"></i> iOS-从三维立方体到理解CATransform3D&CGAffineTransform&m34
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/16/iOS-property/" rel="prev" title="iOS-认识@property">
+                iOS-认识@property <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Tr2e</p>
+              <p class="site-description motion-element" itemprop="description">Principle & Order</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UICollectionViewLayout基础知识"><span class="nav-number">2.</span> <span class="nav-text">UICollectionViewLayout基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Custom-Layout"><span class="nav-number">2.1.</span> <span class="nav-text">Custom Layout</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重载的方法"><span class="nav-number">2.2.</span> <span class="nav-text">重载的方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#执行顺序"><span class="nav-number">2.3.</span> <span class="nav-text">执行顺序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引入AutoLayout自动计算的瀑布流"><span class="nav-number">3.</span> <span class="nav-text">引入AutoLayout自动计算的瀑布流</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#关于瀑布流"><span class="nav-number">3.1.</span> <span class="nav-text">关于瀑布流</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关于自动计算"><span class="nav-number">3.2.</span> <span class="nav-text">关于自动计算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何使用"><span class="nav-number">3.3.</span> <span class="nav-text">如何使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#效果"><span class="nav-number">3.4.</span> <span class="nav-text">效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Demo地址"><span class="nav-number">3.5.</span> <span class="nav-text">Demo地址</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tr2e</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

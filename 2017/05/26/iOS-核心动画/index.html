@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="目录  显示层(UIView)动画 初级动画 关键帧动画 逐帧动画 Gif动画的处理   内容层(CALayer)动画 CoreAnimation结构 CABasicAnimation CAKeyFrameAnimation CAGroupAnimation CATransition CAEmitterLayer 粒子动画 CAGradientLayer 梯度动画 CAShapeLayer 绘制动">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS-动画知识梳理">
+<meta property="og:url" content="http://yoursite.com/2017/05/26/iOS-%E6%A0%B8%E5%BF%83%E5%8A%A8%E7%94%BB/index.html">
+<meta property="og:site_name" content="Tr2e&#39;s Blog">
+<meta property="og:description" content="目录  显示层(UIView)动画 初级动画 关键帧动画 逐帧动画 Gif动画的处理   内容层(CALayer)动画 CoreAnimation结构 CABasicAnimation CAKeyFrameAnimation CAGroupAnimation CATransition CAEmitterLayer 粒子动画 CAGradientLayer 梯度动画 CAShapeLayer 绘制动">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-924c29dd3f4592d8.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-b2c2b05771a0d56d.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-b417593bd8eb944a.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-3e76d6d2e01fdd1e.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-86d1e2671227847e.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-b56395bdd0e47221.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-49aac7b8a1d2de33.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-4da3cb30f5806967.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-97a2888f53b2d487.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-1d3d387555f5dafb.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-32af8dd886325470.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-0c5fe0a2a1fa176c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-de38b7b84e298976.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-bc7135e85ff7a8e1.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-f26f8204a7393e0c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-56e5012bb7f7aa70.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-5611d652713893ba.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-ef5d28bb2824fd23.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-4d5be5a8a1523973.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-8ca131f7e440ed4c.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-b91007a5ea466c16.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-e7324826fb0ac87a.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-49d7789488203514.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-51f884d0abf1113e.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-f552eca62888c104.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-39fee535fccbeebf.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-aa06437e91ca0384.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-b3559da6d3afc33b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-c63cbf6b8db4231e.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2017-05-26T06:13:48.000Z">
+<meta property="article:modified_time" content="2017-07-02T06:22:16.000Z">
+<meta property="article:author" content="Tr2e">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1742463-924c29dd3f4592d8.gif?imageMogr2/auto-orient/strip">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/26/iOS-核心动画/"/>
+
+
+
+
+
+  <title>iOS-动画知识梳理 | Tr2e's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tr2e's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/26/iOS-%E6%A0%B8%E5%BF%83%E5%8A%A8%E7%94%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tr2e">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tr2e's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS-动画知识梳理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-26T14:13:48+08:00">
+                2017-05-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>目录</strong></p>
+<ul>
+<li>显示层(UIView)动画<ul>
+<li>初级动画</li>
+<li>关键帧动画</li>
+<li>逐帧动画</li>
+<li><code>Gif</code>动画的处理</li>
+</ul>
+</li>
+<li>内容层(CALayer)动画<ul>
+<li><code>CoreAnimation</code>结构</li>
+<li><code>CABasicAnimation</code></li>
+<li><code>CAKeyFrameAnimation</code></li>
+<li><code>CAGroupAnimation</code></li>
+<li><code>CATransition</code></li>
+<li><code>CAEmitterLayer</code> 粒子动画</li>
+<li><code>CAGradientLayer</code> 梯度动画</li>
+<li><code>CAShapeLayer</code> 绘制动画</li>
+<li><code>CAReplicatorLayer</code> 复制动画</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+
+<h1 id="学习及实践笔记"><a href="#学习及实践笔记" class="headerlink" title="学习及实践笔记"></a>学习及实践笔记</h1><p>记录iOS动画的学习及实践</p>
+<h2 id="动画的分类"><a href="#动画的分类" class="headerlink" title="动画的分类"></a>动画的分类</h2><p>根据动画的实现“位置”，可以分为** 显示层(UIView)动画 ** 和 ** 内容层(CALayer)动画 **</p>
+<h3 id="显示层-UIView-动画"><a href="#显示层-UIView-动画" class="headerlink" title="显示层(UIView)动画"></a>显示层(UIView)动画</h3><h4 id="初级动画"><a href="#初级动画" class="headerlink" title="初级动画"></a>初级动画</h4><p>初级动画，是最为常见的一种动画。通过UIView属性的修改，配合UIView的两种动画api<code>block</code>、<code>方法形式</code>实现</p>
+<p>api使用示范</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 动画方法形式</span><br><span class="line">    [UIView beginAnimations:nil context:nil];</span><br><span class="line">    [UIView setAnimationDuration:0.35f];</span><br><span class="line">    [UIView setAnimationRepeatAutoreverses:NO];&#x2F;&#x2F; 自动翻转</span><br><span class="line">    [UIView setAnimationDelegate:self];&#x2F;&#x2F; 需设置代理</span><br><span class="line">    [UIView setAnimationDidStopSelector:@selector(testForAutoreverses)];</span><br><span class="line">    self.testButton.backgroundColor &#x3D; [UIColor lightGrayColor];</span><br><span class="line">    [UIView commitAnimations];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 动画block形式</span><br><span class="line">    [UIView animateWithDuration:2.0f animations:^&#123;</span><br><span class="line">        self.testButton.backgroundColor &#x3D; [UIColor whiteColor];</span><br><span class="line">    &#125;];</span><br></pre></td></tr></table></figure>
+
+<p>根据简单动画的效果，最常见的显示层(UIView)属性修改分为以下几类</p>
+<ul>
+<li><code>frame</code>属性相关的位置形状变化</li>
+<li><code>alpha</code>属性相关</li>
+<li><code>transform</code>属性相关</li>
+</ul>
+<p>如果希望使用弹跳效果，系统也同样提供了api供开发者使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ (void)animateWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay usingSpringWithDamping:(CGFloat)dampingRatio initialSpringVelocity:(CGFloat)velocity options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^ __nullable)(BOOL finished))completion</span><br></pre></td></tr></table></figure>
+<p>参数介绍：<br><code>dampingRatio</code>：速度衰减比例。取值范围0 ~ 1，值越低震动越强<br><code>velocity</code>：初始速度，越大速度越快</p>
+<h4 id="关键帧动画"><a href="#关键帧动画" class="headerlink" title="关键帧动画"></a>关键帧动画</h4><p>使我们具备控制一段连贯时间内，精确到某个时间点（关键帧）上的连续变化的能力</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 系统api</span><br><span class="line">+ (void)animateKeyframesWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay options:(UIViewKeyframeAnimationOptions)options animations:(void (^)(void))animations completion:(void (^ __nullable)(BOOL finished))completion NS_AVAILABLE_IOS(7_0);</span><br><span class="line">+ (void)addKeyframeWithRelativeStartTime:(double)frameStartTime relativeDuration:(double)frameDuration animations:(void (^)(void))animations NS_AVAILABLE_IOS(7_0); &#x2F;&#x2F; start time and duration are values between 0.0 and 1.0 specifying time and duration relative to the overall time of the keyframe animation</span><br></pre></td></tr></table></figure>
+
+<p>api中的<code>options</code>参数解释 <a href="https://developer.apple.com/reference/uikit/uiviewkeyframeanimationoptions#symbols" target="_blank" rel="noopener">官方文档</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">UIViewKeyframeAnimationOptionCalculationModeLinear     &#x3D; 0 &lt;&lt; 10, &#x2F;&#x2F; 线性运算模式.The option to use a simple linear calculation when interpolating between keyframe values.</span><br><span class="line">UIViewKeyframeAnimationOptionCalculationModeDiscrete   &#x3D; 1 &lt;&lt; 10, &#x2F;&#x2F; 离散运算模式，展示关键帧.The option to not interpolate between keyframe values, but rather to jump directly to each new keyframe value.</span><br><span class="line">UIViewKeyframeAnimationOptionCalculationModePaced      &#x3D; 2 &lt;&lt; 10, &#x2F;&#x2F; 均匀运算模式.The option to compute intermediate keyframe values using a simple pacing algorithm. This option results in an evenly paced animation.</span><br><span class="line">UIViewKeyframeAnimationOptionCalculationModeCubic      &#x3D; 3 &lt;&lt; 10, &#x2F;&#x2F; The option to compute intermediate frames using a default Catmull-Rom spline that passes through the keyframe values. You cannot adjust the parameters of this algorithm.</span><br><span class="line">UIViewKeyframeAnimationOptionCalculationModeCubicPaced &#x3D; 4 &lt;&lt; 10 &#x2F;&#x2F; The option to compute intermediate frames using the cubic scheme while ignoring the timing properties of the animation. Instead, timing parameters are calculated implicitly to give the animation a constant velocity.</span><br></pre></td></tr></table></figure>
+<p>最后两种<code>Cubic</code>运算模式，附上实验代码及效果图:(可达鸭眉头一皱，发现这两个参数并不简单)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    self.redCircle &#x3D; [[UIView alloc] init];</span><br><span class="line">    _redCircle.backgroundColor &#x3D; [UIColor redColor];</span><br><span class="line">    _redCircle.frame &#x3D; CGRectMake(0, 0, 50, 50);</span><br><span class="line">    _redCircle.layer.cornerRadius &#x3D; 5;</span><br><span class="line">    [_redCircle.layer masksToBounds];</span><br><span class="line">    </span><br><span class="line">    [self.view addSubview:_redCircle];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event&#123;</span><br><span class="line"></span><br><span class="line">    [self keyframeAnimation];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)keyframeAnimation&#123;</span><br><span class="line"></span><br><span class="line">    [UIView animateKeyframesWithDuration:10 delay:0 options:UIViewKeyframeAnimationOptionCalculationModeCubic animations:^&#123;</span><br><span class="line">        </span><br><span class="line">        [UIView addKeyframeWithRelativeStartTime:0.0 relativeDuration:1&#x2F;5.0 animations:^&#123;</span><br><span class="line">            self.redCircle.frame &#x3D; CGRectMake(50, 200, 50, 50);</span><br><span class="line">        &#125;];</span><br><span class="line">        [UIView addKeyframeWithRelativeStartTime:1&#x2F;5.0 relativeDuration:1&#x2F;5.0 animations:^&#123;</span><br><span class="line">            self.redCircle.frame &#x3D; CGRectMake(100, 250, 50, 50);</span><br><span class="line">        &#125;];</span><br><span class="line">        [UIView addKeyframeWithRelativeStartTime:2&#x2F;5.0 relativeDuration:1&#x2F;5.0 animations:^&#123;</span><br><span class="line">            self.redCircle.frame &#x3D; CGRectMake(150, 275, 50, 50);</span><br><span class="line">        &#125;];</span><br><span class="line">        [UIView addKeyframeWithRelativeStartTime:3&#x2F;5.0 relativeDuration:1&#x2F;5.0 animations:^&#123;</span><br><span class="line">            self.redCircle.frame &#x3D; CGRectMake(200, 350, 50, 50);</span><br><span class="line">        &#125;];</span><br><span class="line">        [UIView addKeyframeWithRelativeStartTime:4&#x2F;5.0 relativeDuration:1&#x2F;5.0 animations:^&#123;</span><br><span class="line">            self.redCircle.frame &#x3D; CGRectMake(250, 500, 50, 50);</span><br><span class="line">        &#125;];</span><br><span class="line">        </span><br><span class="line">    &#125; completion:^(BOOL finished) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>CalculationModeCubic</code>是一种特殊的贝塞尔曲线(关于贝塞尔曲线原理，文下文中有详细解释)，就像官方文档中指出的，通过<strong><code>default Catmull-Rom spline</code></strong>在关键帧值中插入两个运算点，让贝塞尔曲线能够穿过所有的点而实现运算得出的动画速度更加平滑，防止出现因动画时间过短造成的动画突变的情况 </li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-924c29dd3f4592d8.gif?imageMogr2/auto-orient/strip" alt="cubic-normal.gif"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-b2c2b05771a0d56d.gif?imageMogr2/auto-orient/strip" alt="cubic-reverse.gif"></p>
+<blockquote>
+<p>参考资料<br><a href="http://blog.csdn.net/chasingdreamscoder/article/details/53015694" target="_blank" rel="noopener">参考链接1</a><br><a href="http://www.cs.cmu.edu/~462/projects/assn2/assn2/catmullRom.pdf" target="_blank" rel="noopener">参考链接2</a></p>
+</blockquote>
+<ul>
+<li><code>CalculationModeCubicPaced</code>：暂且解释为均匀平滑模式，可能是因为忽略了时间属性？特殊情况下仍会出现突转的情况</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-b417593bd8eb944a.gif?imageMogr2/auto-orient/strip" alt="cubicPaced-normal"><br><img src="http://upload-images.jianshu.io/upload_images/1742463-3e76d6d2e01fdd1e.gif?imageMogr2/auto-orient/strip" alt="cubicPaced-reverse.gif"></p>
+<p>通过实例对比，不管是下落还是突转，<code>cubic</code>的效果都更加平滑</p>
+<h4 id="逐帧动画"><a href="#逐帧动画" class="headerlink" title="逐帧动画"></a>逐帧动画</h4><ul>
+<li>如果是图片序列的展示，系统提供了序列帧的接口<br>示例代码：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">self.view.backgroundColor &#x3D; [UIColor lightGrayColor];  </span><br><span class="line">self.animationView &#x3D; [[UIImageView alloc] init];</span><br><span class="line">self.animationView.image &#x3D; [UIImage imageNamed:@&quot;m2_10001&quot;];</span><br><span class="line">[self.animationView sizeToFit];</span><br><span class="line">self.animationView.center &#x3D; self.view.center;</span><br><span class="line">[self.view addSubview:self.animationView];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">NSMutableArray *imgArr &#x3D; [NSMutableArray new];</span><br><span class="line">for (int i &#x3D; 1; i &lt; 67; i ++) &#123;</span><br><span class="line">    UIImage *img &#x3D; [UIImage imageNamed:[NSString stringWithFormat:@&quot;m2_1%04d&quot;,i]];</span><br><span class="line">    [imgArr addObject:img];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">self.animationView.animationImages &#x3D; [imgArr copy];</span><br><span class="line">self.animationView.animationDuration &#x3D; 67&#x2F;30.0;</span><br><span class="line">[self.animationView startAnimating];</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-86d1e2671227847e.gif?imageMogr2/auto-orient/strip" alt="序列帧动画"></p>
+<ul>
+<li>如果用到了图形上下文的绘制，就需要<code>NSTimer</code>或者<code>CADisplayLink</code>实现帧速率的控制，设置好相应的<code>timeinterval</code>或者<code>frameinterval</code>即可。(* <code>CADisplayLink</code>固定刷新率60Hz，frameInterval属性的赋值n，实际间隔时间为n x 1/60`，频率固定，推荐使用 *)<br><img src="http://upload-images.jianshu.io/upload_images/1742463-b56395bdd0e47221.gif?imageMogr2/auto-orient/strip" alt="drawrect.gif"></li>
+</ul>
+<h4 id="Gif动画"><a href="#Gif动画" class="headerlink" title="Gif动画"></a>Gif动画</h4><p><img src="http://upload-images.jianshu.io/upload_images/1742463-49aac7b8a1d2de33.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Gif相关"></p>
+<h5 id="image-i-o"><a href="#image-i-o" class="headerlink" title="image i/o"></a>image i/o</h5><blockquote>
+</blockquote>
+<p>Image I/O框架提供了不透明数据类型来读取图像数据和写图像数据到一个目的地（CGImageSourceRef和CGImageDestinationRef）。它支持很多图像格式，包括标准web格式、搞动态范围图像，和原始相机数据。Image I/O还有许多其他特性：<br><strong><br>1.mac平台上的最快的图像解码和编码。<br>2.逐步加载图片的能力。<br>3.支持图像元数据。<br>4.缓存效果。<br></strong><br>你可以通过下面的对象来创建image source和image destination：<br><strong><br>1.URL：即CFURLRef对象。<br>2.Core Foundation对象：CFDataRef和CFmutableDataRef。<br>3.Quartz data consumer（CGDataConsumerRef）和data provider（CGDataProviderRef）对象。<br></strong><br>1.使用Image I/O框架：<code>#import &lt;ImageIO/ImageIO.h&gt;</code><br>2.使用UTType：<code>#import &lt;MobileCoreServices/MobileCoreServices.h&gt;</code><br>2、支持的图像格式：例如JPEG、JPEG2000、RAW、TIFF、BMP、PNG。在不同的平台不是所有的格式都支持。你可以调用下列函数来获得支持的格式：<br>1）CGImageSourceCopyTypeIdentifiers：返回同一类型修饰符的数组，表示支持的图像源<br>2）CGImageDestinationCopyTypeIdentifiers：返回支持的目的地的Uniform Type Identifiers（UTIs）</p>
+<p>** 相关知识链接 **<br><a href="http://supershll.blog.163.com/blog/static/37070436201298111139748/" target="_blank" rel="noopener">image i/o</a><br><a href="https://developer.apple.com/reference/mobilecoreservices/uttype" target="_blank" rel="noopener">UTType官方文档</a><br><a href="http://www.cnblogs.com/wfwenchao/articles/4861613.html?utm_source=tuicool&utm_medium=referral" target="_blank" rel="noopener">UTIs</a></p>
+<h5 id="Gif播放"><a href="#Gif播放" class="headerlink" title="Gif播放"></a>Gif播放</h5><p>iOS原生是不支持gif格式图片的，所以当我们想要使用一张gif图片时，需要将gif图片通过<code>image i/o</code>转换成相应的序列帧图片后，生成<code>UIImage</code>使用<br>具体步骤如下图</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-4da3cb30f5806967.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Gif使用流程"></p>
+<p>我们要使用的GIF图片</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-97a2888f53b2d487.gif?imageMogr2/auto-orient/strip" alt="gakki2.gif"></p>
+<p>下面请看我们转换的具体代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">NSString *path &#x3D; [[NSBundle mainBundle] pathForResource:@&quot;gakki2&quot; ofType:@&quot;gif&quot;];</span><br><span class="line">UIImage *animateImg &#x3D; [UIImage imageWithContentsOfFile:path];</span><br><span class="line">UIImageView *gifImageView &#x3D; [[UIImageView alloc] initWithImage:animateImg];</span><br><span class="line">[gifImageView sizeToFit];</span><br><span class="line">gifImageView.center &#x3D; self.view.center;</span><br><span class="line"></span><br><span class="line">[self.view addSubview:gifImageView];</span><br></pre></td></tr></table></figure>
+<p>看一下效果<br><img src="http://upload-images.jianshu.io/upload_images/1742463-1d3d387555f5dafb.gif?imageMogr2/auto-orient/strip" alt="gakkiUnmove.gif"><br>** 不出所料，果然直接使用是行不通的对吗？但是Gakki还是很好看有木有~ **</p>
+<p>我们按照正确的方式打开</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> *  GIF -&gt; NSData -&gt; ImageIO -&gt; UIImage</span><br><span class="line"> *&#x2F;</span><br><span class="line">- (void)testOfGif&#123;</span><br><span class="line"></span><br><span class="line">    NSString *path &#x3D; [[NSBundle mainBundle] pathForResource:@&quot;gakki2&quot; ofType:@&quot;gif&quot;];</span><br><span class="line">&#x2F;&#x2F;    UIImage *animateImg &#x3D; [UIImage imageWithContentsOfFile:path];</span><br><span class="line">    </span><br><span class="line">    NSData *gifData &#x3D; [NSData dataWithContentsOfFile:path];</span><br><span class="line">    </span><br><span class="line">    CGImageSourceRef gifdataSource &#x3D; CGImageSourceCreateWithData((__bridge CFDataRef)gifData, NULL);</span><br><span class="line">    size_t count &#x3D; CGImageSourceGetCount(gifdataSource);</span><br><span class="line">    </span><br><span class="line">    UIImage *animateImg &#x3D; nil;</span><br><span class="line">    if (count &lt;&#x3D; 1)</span><br><span class="line">    &#123;</span><br><span class="line">        animateImg &#x3D; [UIImage imageWithData:gifData];</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        NSMutableArray *imgArr &#x3D; [[NSMutableArray alloc] init];</span><br><span class="line">        CGFloat timeinterval &#x3D; 0.0f;</span><br><span class="line">        </span><br><span class="line">        for (size_t i &#x3D; 0; i &lt; count; i ++) &#123;</span><br><span class="line">            CGImageRef imgRf &#x3D; CGImageSourceCreateImageAtIndex(gifdataSource, i, NULL);</span><br><span class="line">            </span><br><span class="line">            if (!imgRf) &#123;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            timeinterval +&#x3D; [self getKeyFrameDurationWithIndex:i andSoureceRef:gifdataSource];</span><br><span class="line">            </span><br><span class="line">            UIImage *img &#x3D; [UIImage imageWithCGImage:imgRf scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];</span><br><span class="line">            [imgArr addObject:img];</span><br><span class="line">            CGImageRelease(imgRf);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        CFRelease(gifdataSource);</span><br><span class="line">        </span><br><span class="line">        animateImg &#x3D; [UIImage animatedImageWithImages:imgArr duration:timeinterval];</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    UIImageView *gifImageView &#x3D; [[UIImageView alloc] initWithImage:animateImg];</span><br><span class="line">    [gifImageView sizeToFit];</span><br><span class="line">    gifImageView.center &#x3D; self.view.center;</span><br><span class="line">    </span><br><span class="line">    [self.view addSubview:gifImageView];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (CGFloat)getKeyFrameDurationWithIndex:(size_t )index andSoureceRef:(CGImageSourceRef )soureRef&#123;</span><br><span class="line"></span><br><span class="line">    CGFloat frameDuration &#x3D; 0.1f;</span><br><span class="line">    </span><br><span class="line">    CFDictionaryRef cfFrameProperties &#x3D; CGImageSourceCopyPropertiesAtIndex(soureRef, index, NULL);</span><br><span class="line">    NSDictionary *frameProperties &#x3D; (__bridge NSDictionary *)cfFrameProperties;</span><br><span class="line">    </span><br><span class="line">    NSDictionary *gifProperties &#x3D; frameProperties[(NSString *)kCGImagePropertyGIFDictionary];</span><br><span class="line">    </span><br><span class="line">    NSNumber *duration &#x3D; gifProperties[(NSString *)kCGImagePropertyGIFUnclampedDelayTime];</span><br><span class="line">    </span><br><span class="line">    if (duration)</span><br><span class="line">    &#123;</span><br><span class="line">        frameDuration &#x3D; duration.floatValue;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        NSNumber *duration &#x3D; gifProperties[(NSString *)kCGImagePropertyGIFDelayTime];</span><br><span class="line">        if (duration) frameDuration &#x3D; duration.floatValue;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    if (frameDuration &lt; 0.011f) &#123;</span><br><span class="line">        frameDuration &#x3D; 0.1f;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    CFRelease(cfFrameProperties);</span><br><span class="line">    </span><br><span class="line">    return frameDuration;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>** 注意点： **</p>
+<ul>
+<li>因为<code>image i/o</code>属于<code>Core Foundation</code>，所以出现了大量的<code>__bridge</code>处理。书写的时候有点不习惯，不过看一下xcode的错误信息便能知道原因</li>
+<li>我们的第二步处理，是通过<code>CGImageSourceRef</code>读取单帧图片的时间信息。这里需要注意一下，因为我们在用序列帧图片数组合成<code>gif</code>文件时，需要对每一张图片的该信息赋值</li>
+<li>操作CF信息的时，最后都要进行<code>CFRelease</code>操作</li>
+<li>仔细看代码的同学也许会注意到下面对于当前帧时间的处理，我们按照<code>SDWebImage</code>中相关处理的备注做出解释：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if (frameDuration &lt; 0.011f) &#123;</span><br><span class="line">       frameDuration &#x3D; 0.1f;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>SDWebImage: UIImage + GIF.m<br>Many annoying ads specify a 0 duration to make an image flash as quickly as possible.<br>We follow Firefox’s behavior and use a duration of 100 ms for any frames that specify a duration of &lt;= 10 ms. See <a href="rdar://problem/7689300">rdar://problem/7689300</a> and <a href="http://webkit.org/b/36082" target="_blank" rel="noopener">http://webkit.org/b/36082</a> for more information. </p>
+</blockquote>
+</li>
+</ul>
+<p>看一下我们运行的效果:帧速率的效果跟原图保持一致<br><img src="http://upload-images.jianshu.io/upload_images/1742463-32af8dd886325470.gif?imageMogr2/auto-orient/strip" alt="gakkiAwake.gif"></p>
+<h5 id="序列帧生成Gif"><a href="#序列帧生成Gif" class="headerlink" title="序列帧生成Gif"></a>序列帧生成Gif</h5><p>它可以实际应用于视频转Gif的操作，因为视频我们可以按照时间去进行相应的截图，如果控制好时间间隔，循环截图，通过以下方法生成Gif应该可以实现。这里就暂时不实验了，感兴趣的同学可以试一下。<br>附视频截图方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 通过视频url截取封面</span><br><span class="line">+ (UIImage*) thumbnailImageForVideo:(NSURL *)videoURL &#123;</span><br><span class="line">    </span><br><span class="line">    AVURLAsset *asset &#x3D; [[AVURLAsset alloc] initWithURL:videoURL options:nil];</span><br><span class="line">    </span><br><span class="line">    AVAssetImageGenerator *gen &#x3D; [[AVAssetImageGenerator alloc] initWithAsset:asset];</span><br><span class="line">    </span><br><span class="line">    gen.appliesPreferredTrackTransform &#x3D; YES;</span><br><span class="line">    </span><br><span class="line">    CMTime time &#x3D; CMTimeMakeWithSeconds(1.0, 600);&#x2F;&#x2F; 设置时间</span><br><span class="line">    </span><br><span class="line">    NSError *error &#x3D; nil;</span><br><span class="line">    </span><br><span class="line">    CMTime actualTime;</span><br><span class="line">    </span><br><span class="line">    CGImageRef image &#x3D; [gen copyCGImageAtTime:time actualTime:&amp;actualTime error:&amp;error];</span><br><span class="line">    UIImage *thumbImg &#x3D; [[UIImage alloc] initWithCGImage:image];</span><br><span class="line">    if (image) &#123;</span><br><span class="line">        CFRelease(image);</span><br><span class="line">    &#125;</span><br><span class="line">    return thumbImg;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>言归正传，还记得我们前面讲逐帧动画时，用到的图片数组吗？我们利用它们，来合成一张gif被进行沙盒存储</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-0c5fe0a2a1fa176c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Gif合成流程"></p>
+<p>代码实现，此处再次提醒大家需要导入的头文件<br><strong>1.使用Image I/O框架：<code>#import &lt;ImageIO/ImageIO.h&gt;</code><br>2.使用UTType：<code>#import &lt;MobileCoreServices/MobileCoreServices.h&gt;</code></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> *  序列帧图片的读取 -&gt; 创建Gif文件，获取CGImageDestinationRef -&gt; 为单帧图片CGImageRef属性赋值 -&gt; 为Gif设置相关属性 -&gt; 通过CGImageDestinationRef合成gif</span><br><span class="line"> *&#x2F;</span><br><span class="line">- (void)createGifFile&#123;</span><br><span class="line"></span><br><span class="line">    NSMutableArray *imgArr &#x3D; [NSMutableArray new];</span><br><span class="line">    for (int i &#x3D; 1; i &lt; 67; i ++) &#123;</span><br><span class="line">        UIImage *img &#x3D; [UIImage imageNamed:[NSString stringWithFormat:@&quot;m2_1%04d&quot;,i]];</span><br><span class="line">        [imgArr addObject:img];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSString *path &#x3D; [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];</span><br><span class="line">    NSString *magicPath &#x3D; [path stringByAppendingString:@&quot;&#x2F;magic.gif&quot;];</span><br><span class="line">    </span><br><span class="line">    NSLog(@&quot;magicPath : %@&quot;,magicPath);</span><br><span class="line">    </span><br><span class="line">    CFURLRef URLRef &#x3D; CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (__bridge CFStringRef)magicPath, kCFURLPOSIXPathStyle, NO);</span><br><span class="line">    CGImageDestinationRef gifRef &#x3D; CGImageDestinationCreateWithURL(URLRef, kUTTypeGIF,imgArr.count, NULL);</span><br><span class="line">    </span><br><span class="line">    NSDictionary *keyFrameDict &#x3D; @&#123;(NSString *)kCGImagePropertyGIFDelayTime:@(1&#x2F;30.0)&#125;;&#x2F;&#x2F; 30fps</span><br><span class="line">    NSDictionary *gifKeyFrameDict &#x3D; @&#123;(NSString *)kCGImagePropertyGIFDictionary:keyFrameDict&#125;;</span><br><span class="line">    </span><br><span class="line">    for (UIImage *image in imgArr) &#123;&#x2F;&#x2F; 每帧图片进行设置</span><br><span class="line">        </span><br><span class="line">        CGImageRef imageRef &#x3D; [image CGImage];</span><br><span class="line">        CGImageDestinationAddImage(gifRef, imageRef, (__bridge CFDictionaryRef) gifKeyFrameDict);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSDictionary *gifSettingDict &#x3D; @&#123;</span><br><span class="line">                                     </span><br><span class="line">                                     &#x2F;&#x2F; 色彩空间格式</span><br><span class="line">                                     (NSString *)kCGImagePropertyColorModel:(NSString *)kCGImagePropertyColorModelGray,</span><br><span class="line">                                     &#x2F;&#x2F; 色彩深度</span><br><span class="line">                                     (NSString *)kCGImagePropertyDepth:@(8),</span><br><span class="line">                                     &#x2F;&#x2F; gif执行次数</span><br><span class="line">                                     (NSString *)kCGImagePropertyGIFLoopCount:@(1)</span><br><span class="line">                                     </span><br><span class="line">                                     &#125;;</span><br><span class="line">    </span><br><span class="line">    NSDictionary *gifDict &#x3D; @&#123;</span><br><span class="line">                              </span><br><span class="line">                              (NSString *)kCGImagePropertyGIFDictionary : gifSettingDict</span><br><span class="line">                              </span><br><span class="line">                              &#125;;</span><br><span class="line">    </span><br><span class="line">    CGImageDestinationSetProperties(gifRef, (__bridge CFDictionaryRef) gifDict);</span><br><span class="line">    </span><br><span class="line">    CGImageDestinationFinalize(gifRef);</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在设置gif图片的属性时，我们用到了<strong> 色彩空间格式 </strong> 、 <strong> 色彩深度 </strong> 两个参数，色彩格式我们采用最为常见的<code>RGB</code>格式，色彩深度我们设置为<code>@(8)</code>。需要大家根据自己的实际需要去设置。</p>
+<table>
+<thead>
+<tr>
+<th>图像类型</th>
+<th>色阶位数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>黑白图像</td>
+<td>1</td>
+</tr>
+<tr>
+<td>灰度图像</td>
+<td>8</td>
+</tr>
+<tr>
+<td>彩色图像</td>
+<td>16 或 32</td>
+</tr>
+</tbody></table>
+<p>我们看一下沙盒中我们生成的Gif :finder <code>shift + command + g</code></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-de38b7b84e298976.gif?imageMogr2/auto-orient/strip" alt="magicgif.gif"></p>
+<hr>
+<h3 id="内容层-CALayer-动画"><a href="#内容层-CALayer-动画" class="headerlink" title="内容层(CALayer)动画"></a>内容层(CALayer)动画</h3><p>内容层动画，是指在一定时间内，对<code>layer</code>的<code>Animatable Property</code>进行修改所产生的动画。所以，熟悉<code>CALayer</code>的常见属性，会对我们后边用<code>CoreAnimation</code>实现** 内容层动画 **大有帮助。</p>
+<ul>
+<li>下边我们列举一些常见的属性并做了必要备注<ul>
+<li>positon </li>
+<li>cornerRadius</li>
+<li>translation.x/y/z</li>
+<li>transform.scale/rotation</li>
+<li>borderWidth/borderColor</li>
+<li>opacity ( like UIView’s alpha )</li>
+<li>shadowOpacity</li>
+<li>shadowRadius ( default is 3.0f )</li>
+<li>shadowOffset ( default is (.0f,-3.0f) )</li>
+<li>backgroundColor<br>( when we want to change color,we need to use UIColor like this :(__bridge id _Nullable)([UIColor greenColor].CGColor) )</li>
+</ul>
+</li>
+</ul>
+<p>这里需要注意的是，如果一个<code>layer</code>对象存在对应着的View,则称这个<code>layer</code>是一个<strong><code>Root Layer</code></strong>,<strong> 非 </strong>Root Layer 一般都是通过<code>CALayer</code>或其<code>子类</code>直接创建的。<br><strong>所有的非Root Layer在设置Animatable Properties的时候都存在着隐式动画,默认的duration是0.25秒.</strong><br>我们看一个简单<code>CAShapeLayer</code>隐式动画的例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (void)testForCALayer&#123;</span><br><span class="line"></span><br><span class="line">    self.testLayer &#x3D; [[CAShapeLayer alloc] init];</span><br><span class="line">    _testLayer.strokeEnd &#x3D; 0;</span><br><span class="line">    _testLayer.strokeColor &#x3D; [UIColor redColor].CGColor;</span><br><span class="line">    _testLayer.fillColor &#x3D; [UIColor clearColor].CGColor;</span><br><span class="line">    _testLayer.lineWidth &#x3D; 3;</span><br><span class="line">    _testLayer.path &#x3D; [UIBezierPath bezierPathWithArcCenter:self.view.center radius:100 startAngle:-M_PI_2 endAngle:3&#x2F;2.0*M_PI clockwise:YES].CGPath;</span><br><span class="line">    [self.view.layer addSublayer:_testLayer];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)animationForLayer&#123;</span><br><span class="line"></span><br><span class="line">    self.testLayer.strokeEnd &#x3D; 1;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在<code>touchesBegan</code>方法中调用<code>animationForLayer</code>的方法，可以发现，我们并没有设置任何动画相关的语句 效果如下</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-bc7135e85ff7a8e1.gif?imageMogr2/auto-orient/strip" alt="Layer的隐式动画.gif"></p>
+<h4 id="CoreAnimation结构"><a href="#CoreAnimation结构" class="headerlink" title="CoreAnimation结构"></a>CoreAnimation结构</h4><p><img src="http://upload-images.jianshu.io/upload_images/1742463-f26f8204a7393e0c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="CA structure"></p>
+<h4 id="CABasicAnimation"><a href="#CABasicAnimation" class="headerlink" title="CABasicAnimation"></a>CABasicAnimation</h4><p>CABasicAnimation</p>
+<p><code>CABasicAnimation</code>必要属性的设置：</p>
+<ul>
+<li><code>keyPath</code>传入layer的属性字符串</li>
+<li><code>duration</code>设置基本动画时长</li>
+<li><code>- (void)setRomovedOnCompletion</code> 默认为<code>YES</code>，会在动画结束时，将动画从<code>render tree</code>中一次性移除，恢复初始状态。通常我们设置为<code>NO</code>，保留动画结束时的效果</li>
+<li><code>fillModel</code>属性决定当前对象过了非active时间段的行为,通常我们选择<code>kCAFillModeForwards</code><ul>
+<li><code>kCAFillModeRemoved</code> 这个是默认值,也就是说当动画开始前和动画结束后,动画对layer都没有影响,动画结束后,layer会恢复到之前的状态</li>
+<li><code>kCAFillModeForwards</code> 当动画结束后,layer会一直保持着动画最后的状态 </li>
+<li><code>kCAFillModeBackwards</code> 同 <code>kCAFillModeForwards</code>是相对的,就是在动画开始前,你只要将动画加入了一个layer,layer便立即进入动画的初始状态并等待动画开始.你可以这样设定测试代码,将一个动画加入一个layer的时候延迟5秒执行.然后就会发现在动画没有开始的时候,只要动画被加入了layer,layer便处于动画初始状态</li>
+<li><code>kCAFillModeBoth</code> 理解了上面两个,这个就很好理解了,这个其实就是上面两个的合成.动画加入后开始之前,layer便处于动画初始状态,动画结束后layer保持动画最后的状态.</li>
+</ul>
+</li>
+</ul>
+<p>以下三个属性，参照官方描述，很容易理解</p>
+<ul>
+<li><code>fromValue</code></li>
+<li><code>toValue</code></li>
+<li><code>byValue</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* Father&#39;s Love</span><br><span class="line"> * The objects defining the property values being interpolated between.</span><br><span class="line"> * All are optional, and no more than two should be non-nil. The object</span><br><span class="line"> * type should match the type of the property being animated (using the</span><br><span class="line"> * standard rules described in CALayer.h). The supported modes of</span><br><span class="line"> * animation are:</span><br><span class="line"> *</span><br><span class="line"> * - both &#96;fromValue&#39; and &#96;toValue&#39; non-nil. Interpolates between</span><br><span class="line"> * &#96;fromValue&#39; and &#96;toValue&#39;.</span><br><span class="line"> *</span><br><span class="line"> * - &#96;fromValue&#39; and &#96;byValue&#39; non-nil. Interpolates between</span><br><span class="line"> * &#96;fromValue&#39; and &#96;fromValue&#39; plus &#96;byValue&#39;.</span><br><span class="line"> *</span><br><span class="line"> * - &#96;byValue&#39; and &#96;toValue&#39; non-nil. Interpolates between &#96;toValue&#39;</span><br><span class="line"> * minus &#96;byValue&#39; and &#96;toValue&#39;.</span><br><span class="line"> *</span><br><span class="line"> * - &#96;fromValue&#39; non-nil. Interpolates between &#96;fromValue&#39; and the</span><br><span class="line"> * current presentation value of the property.</span><br><span class="line"> *</span><br><span class="line"> * - &#96;toValue&#39; non-nil. Interpolates between the layer&#39;s current value</span><br><span class="line"> * of the property in the render tree and &#96;toValue&#39;.</span><br><span class="line"> *</span><br><span class="line"> * - &#96;byValue&#39; non-nil. Interpolates between the layer&#39;s current value</span><br><span class="line"> * of the property in the render tree and that plus &#96;byValue&#39;. *&#x2F;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>如果希望加入<strong>显示层动画</strong>中的<code>spring</code>效果，Father Apple贴心的为我们准备了<code>CABasicAnimation</code>的子类<code>CASpringAnimation</code>,推荐使用。控制弹性动画的属性</p>
+<ul>
+<li><code>damping</code></li>
+<li><code>initialVelocity</code></li>
+<li><code>mass</code></li>
+<li><code>stiffness</code></li>
+</ul>
+<p><strong>简单demo演示</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-56e5012bb7f7aa70.gif?imageMogr2/auto-orient/strip" alt="BasicAnimation.gif"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">- (void)testForCABasicAnimation&#123;</span><br><span class="line"></span><br><span class="line">    UIButton *button &#x3D; [UIButton buttonWithType:UIButtonTypeCustom];</span><br><span class="line">    [button setTitle:@&quot;Animation&quot; forState:UIControlStateNormal];</span><br><span class="line">    [button setBackgroundColor:[UIColor lightGrayColor]];</span><br><span class="line">    [button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal];</span><br><span class="line">    [button sizeToFit];</span><br><span class="line">    button.center &#x3D; self.view.center;</span><br><span class="line">    button.layer.borderColor &#x3D; [UIColor redColor].CGColor;</span><br><span class="line">    [self.view addSubview:button];</span><br><span class="line">    self.testButton &#x3D; button;</span><br><span class="line">    </span><br><span class="line">    self.testButton.layer.shadowColor &#x3D; [UIColor blackColor].CGColor;</span><br><span class="line">    self.testButton.layer.shadowOpacity &#x3D; 0.5;</span><br><span class="line">    </span><br><span class="line">    NSLog(@&quot;\nshadowOffset:%f,%f&quot;,self.testButton.layer.shadowOffset.width,self.testButton.layer.shadowOffset.height);</span><br><span class="line">    NSLog(@&quot;\nshadowRadius:%f&quot;,self.testButton.layer.shadowRadius);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)callBasicAnimation&#123;</span><br><span class="line"></span><br><span class="line">    CASpringAnimation *basic &#x3D; [[CASpringAnimation alloc] init];</span><br><span class="line">    basic.keyPath &#x3D; @&quot;cornerRadius&quot;;</span><br><span class="line">    basic.toValue &#x3D;  @15;</span><br><span class="line">    basic.duration &#x3D; 2.0f;</span><br><span class="line">    basic.fillMode &#x3D; kCAFillModeForwards;</span><br><span class="line">    [basic setRemovedOnCompletion:NO];</span><br><span class="line">    basic.damping &#x3D; 6;</span><br><span class="line">    basic.initialVelocity &#x3D; 5;</span><br><span class="line">    basic.mass &#x3D; 0.5;</span><br><span class="line">    </span><br><span class="line">    [self.testButton.layer addAnimation:basic forKey:nil];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="CAKeyFrameAnimation"><a href="#CAKeyFrameAnimation" class="headerlink" title="CAKeyFrameAnimation"></a>CAKeyFrameAnimation</h4><p>同<code>显示层动画</code>中的<code>关键帧动画</code>类似，提供更加精确的动画控制能力</p>
+<p>常用属性</p>
+<ul>
+<li><code>values</code> 数组类型，描述每个关键帧的相关属性</li>
+<li><code>keyTimes</code> <code>NSNumber</code>泛型数组类型，描述关键帧时间信息，范围<br><strong>[0,1]，时间点：keytime * duration</strong> 同<code>addKeyframeWithRelativeStartTime</code>中的时间描述类似，不再赘述</li>
+<li><code>path</code> 属性，更加精确的控制动画的路径</li>
+</ul>
+<p><strong>简单demo演示</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-5611d652713893ba.gif?imageMogr2/auto-orient/strip" alt="CAKeyframeAnimation.gif"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">- (void)callKeyframeAnimation&#123;&#x2F;&#x2F; CAKeyframeAnimation</span><br><span class="line">    </span><br><span class="line">    CAKeyframeAnimation *keyframe &#x3D; [[CAKeyframeAnimation alloc] init];</span><br><span class="line">    keyframe.keyPath &#x3D; @&quot;position&quot;;</span><br><span class="line">    keyframe.duration &#x3D; 5.0f;</span><br><span class="line">&#x2F;&#x2F;    keyframe.repeatCount &#x3D; MAXFLOAT;</span><br><span class="line">    keyframe.fillMode &#x3D; kCAFillModeForwards;</span><br><span class="line">    keyframe.calculationMode &#x3D; kCAAnimationCubic;</span><br><span class="line">    [keyframe setRemovedOnCompletion:NO];</span><br><span class="line">&#x2F;&#x2F;    keyframe.values &#x3D; @[</span><br><span class="line">&#x2F;&#x2F;                        (__bridge id _Nullable)[UIColor redColor].CGColor,</span><br><span class="line">&#x2F;&#x2F;                        (__bridge id _Nullable)[UIColor yellowColor].CGColor,</span><br><span class="line">&#x2F;&#x2F;                        (__bridge id _Nullable)[UIColor greenColor].CGColor,</span><br><span class="line">&#x2F;&#x2F;                        (__bridge id _Nullable)[UIColor blueColor].CGColor,</span><br><span class="line">&#x2F;&#x2F;                        (__bridge id _Nullable)[UIColor purpleColor].CGColor</span><br><span class="line">&#x2F;&#x2F;                        ];</span><br><span class="line">    </span><br><span class="line">    keyframe.path &#x3D; [self keyframePath];</span><br><span class="line">    </span><br><span class="line">    [self.testButton.layer addAnimation:keyframe forKey:nil];</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (CGMutablePathRef )keyframePath&#123;</span><br><span class="line"></span><br><span class="line">    CGMutablePathRef path &#x3D; CGPathCreateMutable();</span><br><span class="line">    CGPathMoveToPoint(path, NULL, 100, 100);</span><br><span class="line">    CGPathAddLineToPoint(path, NULL, 100, 200);</span><br><span class="line">    CGPathAddLineToPoint(path, NULL, 200, 350);</span><br><span class="line"></span><br><span class="line">    CGPathAddArc(path, NULL, 200, 350, 100, 0, M_PI, NO);</span><br><span class="line">    </span><br><span class="line">    return path;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="CAGroupAnimation"><a href="#CAGroupAnimation" class="headerlink" title="CAGroupAnimation"></a>CAGroupAnimation</h4><p>提供了<code>animations</code>数组接口，提供多个动画进行组合的能力</p>
+<p><strong>简单demo演示</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-ef5d28bb2824fd23.gif?imageMogr2/auto-orient/strip" alt="CAAnimationGroup.gif"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">- (void)callAnimationGroup&#123;</span><br><span class="line"></span><br><span class="line">    CAKeyframeAnimation *keyframe &#x3D; [[CAKeyframeAnimation alloc] init];</span><br><span class="line">    keyframe.keyPath &#x3D; @&quot;position&quot;;</span><br><span class="line">    keyframe.path &#x3D; [self keyframePath];</span><br><span class="line">    </span><br><span class="line">    CAKeyframeAnimation *colors &#x3D; [[CAKeyframeAnimation alloc] init];</span><br><span class="line">    colors.keyPath &#x3D; @&quot;backgroundColor&quot;;</span><br><span class="line">    colors.values &#x3D; @[</span><br><span class="line">                        (__bridge id _Nullable)[UIColor redColor].CGColor,</span><br><span class="line">                        (__bridge id _Nullable)[UIColor yellowColor].CGColor,</span><br><span class="line">                        (__bridge id _Nullable)[UIColor greenColor].CGColor,</span><br><span class="line">                        (__bridge id _Nullable)[UIColor blueColor].CGColor,</span><br><span class="line">                        (__bridge id _Nullable)[UIColor purpleColor].CGColor</span><br><span class="line">                        ];</span><br><span class="line">    </span><br><span class="line">    CAAnimationGroup *group &#x3D; [[CAAnimationGroup alloc] init];</span><br><span class="line">    group.animations &#x3D; @[keyframe,colors];</span><br><span class="line">    group.duration &#x3D; 5.0f;</span><br><span class="line">    group.fillMode &#x3D; kCAFillModeForwards;</span><br><span class="line">    [group setRemovedOnCompletion:NO];</span><br><span class="line">    </span><br><span class="line">    [self.testButton.layer addAnimation:group forKey:nil];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="CATransition"><a href="#CATransition" class="headerlink" title="CATransition"></a>CATransition</h4><p>用于不同视图场景之间的切换<br>使用过程相对简单</p>
+<ol>
+<li>实例化<code>CATransition</code>，设置相应的转场动画key</li>
+<li>设置合适的转场动画属性，比如<code>duration</code>,<code>type,subtype</code>等</li>
+<li>将动画效果添加到相应视图的<code>layer</code>中</li>
+</ol>
+<p>系统提供的相关Api（已做必要注释）</p>
+<ul>
+<li><p>公有type Api</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 淡入淡出效果</span><br><span class="line">CA_EXTERN NSString * const kCATransitionFade</span><br><span class="line">    CA_AVAILABLE_STARTING (10.5, 2.0, 9.0, 2.0);</span><br><span class="line">&#x2F;&#x2F; 移动效果</span><br><span class="line">CA_EXTERN NSString * const kCATransitionMoveIn</span><br><span class="line">    CA_AVAILABLE_STARTING (10.5, 2.0, 9.0, 2.0);</span><br><span class="line">&#x2F;&#x2F; 推送效果</span><br><span class="line">CA_EXTERN NSString * const kCATransitionPush</span><br><span class="line">    CA_AVAILABLE_STARTING (10.5, 2.0, 9.0, 2.0);</span><br><span class="line">&#x2F;&#x2F; 揭开效果</span><br><span class="line">CA_EXTERN NSString * const kCATransitionReveal</span><br><span class="line">    CA_AVAILABLE_STARTING (10.5, 2.0, 9.0, 2.0);</span><br></pre></td></tr></table></figure></li>
+<li><p>私有type Api（只能使用字符串表示 <strong>使用有风险，上传需谨慎</strong>）</p>
+<ul>
+<li>pageCurl 向上翻页</li>
+<li>pageUnCurl 向下翻页</li>
+<li>cube 立方体翻转</li>
+<li>oglFlip 翻转效果</li>
+<li>stuckEffect 收缩效果</li>
+<li>rippleEffect 水滴波纹效果</li>
+<li>cameraIrisHollowOpen 相机打开效果</li>
+<li>cameraIrisHollowClose 相机关闭效果</li>
+</ul>
+</li>
+<li><p>subtypes 转场方向</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CA_EXTERN NSString * const kCATransitionFromRight</span><br><span class="line">  CA_AVAILABLE_STARTING (10.5, 2.0, 9.0, 2.0);</span><br><span class="line">CA_EXTERN NSString * const kCATransitionFromLeft</span><br><span class="line">  CA_AVAILABLE_STARTING (10.5, 2.0, 9.0, 2.0);</span><br><span class="line">CA_EXTERN NSString * const kCATransitionFromTop</span><br><span class="line">  CA_AVAILABLE_STARTING (10.5, 2.0, 9.0, 2.0);</span><br><span class="line">CA_EXTERN NSString * const kCATransitionFromBottom</span><br><span class="line">  CA_AVAILABLE_STARTING (10.5, 2.0, 9.0, 2.0);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><strong>简单demo演示</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-4d5be5a8a1523973.gif?imageMogr2/auto-orient/strip" alt="CATransition.gif"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">- (void)setImgViewForCATransiton&#123;</span><br><span class="line"></span><br><span class="line">    UIImageView *imageView &#x3D; [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 200, 200)];</span><br><span class="line">    imageView.center &#x3D; self.view.center;</span><br><span class="line">    imageView.image &#x3D; [UIImage imageNamed:@&quot;pic_1&quot;];</span><br><span class="line">    imageView.contentMode &#x3D; UIViewContentModeScaleAspectFill;</span><br><span class="line">    imageView.layer.cornerRadius &#x3D; 5;</span><br><span class="line">    imageView.layer.masksToBounds &#x3D; YES;</span><br><span class="line">    </span><br><span class="line">    self.testImgView &#x3D; imageView;</span><br><span class="line">    [self.view addSubview:imageView];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; CATransition</span><br><span class="line">- (void)testForCATransition&#123;</span><br><span class="line"></span><br><span class="line">    self.testImgView.image &#x3D; [UIImage imageNamed:@&quot;pic_2&quot;];</span><br><span class="line">    </span><br><span class="line">    CATransition *transition &#x3D; [[CATransition alloc] init];</span><br><span class="line">    transition.type &#x3D; kCATransitionReveal;</span><br><span class="line">    transition.subtype &#x3D; kCATransitionFromTop;</span><br><span class="line">    transition.duration &#x3D; 2;</span><br><span class="line"></span><br><span class="line">    [self.testImgView.layer addAnimation:transition forKey:nil];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>题外话</strong></p>
+<ul>
+<li>笔者在之前的文章中，介绍过<code>CATransition</code>同<code>NSTimer</code>结合使用，实现登录界面fade效果的轮播，有兴趣的同学可以看一下<a href="http://www.jianshu.com/p/20d1451c750a" target="_blank" rel="noopener">《iOS-几行代码实现登录页Fade效果的图片轮播》</a></li>
+<li>这里谈到了<code>Transition</code>，那么就不得不提一下iOS中的<strong>转场动画</strong>，之前笔者在这篇文章中，也有所介绍<a href="http://www.jianshu.com/p/26779c7143ec" target="_blank" rel="noopener">《iOS-自定义转场》</a></li>
+</ul>
+<h4 id="特殊的CALayer动画"><a href="#特殊的CALayer动画" class="headerlink" title="特殊的CALayer动画"></a>特殊的CALayer动画</h4><h5 id="CAEmitterLayer-粒子动画"><a href="#CAEmitterLayer-粒子动画" class="headerlink" title="CAEmitterLayer 粒子动画"></a>CAEmitterLayer 粒子动画</h5><p>粒子系统，由<strong><code>CAEmitterLayer</code>粒子发射器图层</strong>及<strong><code>CAEmitterCell</code>粒子发射单元</strong>组成</p>
+<ul>
+<li>CAEmitterLayer</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">@interface CAEmitterLayer : CALayer</span><br><span class="line">&#x2F;&#x2F; 粒子单元数组</span><br><span class="line">@property(nullable, copy) NSArray&lt;CAEmitterCell *&gt; *emitterCells;</span><br><span class="line">&#x2F;&#x2F; 粒子的创建速率，默认值为1s Animatable</span><br><span class="line">@property float birthRate;</span><br><span class="line">&#x2F;&#x2F; 粒子的存活时间系数，默认值为1s Animatable</span><br><span class="line">@property float lifetime;</span><br><span class="line">&#x2F;&#x2F; 发射器在xy平面的位置 Animatable</span><br><span class="line">@property CGPoint emitterPosition;</span><br><span class="line">&#x2F;&#x2F; 发射器在z平面的位置 Animatable</span><br><span class="line">@property CGFloat emitterZPosition;</span><br><span class="line">&#x2F;&#x2F; 发射器的尺寸大小</span><br><span class="line">@property CGSize emitterSize;</span><br><span class="line">&#x2F;&#x2F; 发射器的深度</span><br><span class="line">@property CGFloat emitterDepth;</span><br><span class="line">&#x2F;&#x2F; 发射器形状 包括&#39;point&#39; (the default)点, &#39;line&#39;线, &#39;rectangle&#39;矩形,&#39;circle&#39;圆形, &#39;cuboid&#39;立方体 and &#39;sphere&#39;球形</span><br><span class="line">@property(copy) NSString *emitterShape;</span><br><span class="line">&#x2F;&#x2F; 发射器的发射模式 包括&#39;points&#39;发射器内部发出, &#39;outline&#39;发射器边缘发出, &#39;surface&#39;发射器表面发出 and &#39;volume&#39; (the default)发射器中点发出</span><br><span class="line">@property(copy) NSString *emitterMode;</span><br><span class="line">&#x2F;&#x2F; 发射器渲染模式 &#39;unordered&#39; (the default)粒子无序, &#39;oldestFirst&#39;越早声明的粒子渲染层级越高,&#39;oldestLast&#39;越晚声明的粒子渲染层级越高, &#39;backToFront&#39; (i.e. sorted into Z order) 按照z轴的顺序渲染and &#39;additive&#39;粒子混合. The first four use source-over compositing, the last uses additive compositing.</span><br><span class="line">@property(copy) NSString *renderMode;</span><br><span class="line">&#x2F;&#x2F; 开启深度显示（三维空间效果）</span><br><span class="line">@property BOOL preservesDepth;</span><br><span class="line">&#x2F;&#x2F; 粒子速度系数 * cell速度 默认1 Animatable</span><br><span class="line">@property float velocity;</span><br><span class="line">&#x2F;&#x2F; 粒子缩放系数 * cellscale 默认1 Animatable</span><br><span class="line">@property float scale;</span><br><span class="line">&#x2F;&#x2F; 粒子旋转位置系数 *cellspin 默认1 Animatable</span><br><span class="line">@property float spin;</span><br><span class="line">&#x2F;&#x2F; 初始化随机的粒子种子 默认0</span><br><span class="line">@property unsigned int seed;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>CAEmitterCell</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 构建方法</span><br><span class="line">+ (instancetype)emitterCell;</span><br><span class="line">&#x2F;&#x2F; 发射单元名称，用来构建 keyPath</span><br><span class="line">@property(nullable, copy) NSString *name;</span><br><span class="line">&#x2F;&#x2F; 是否允许被渲染</span><br><span class="line">@property(getter&#x3D;isEnabled) BOOL enabled;</span><br><span class="line">&#x2F;&#x2F; 每秒创建的粒子数，默认值0 Animatable</span><br><span class="line">@property float birthRate;</span><br><span class="line">&#x2F;&#x2F; 粒子平均存活时间及存活时间容差</span><br><span class="line">@property float lifetime;</span><br><span class="line">@property float lifetimeRange;</span><br><span class="line">&#x2F;&#x2F; 发射纬度：z轴方向的发射角度 发射经度：x-y平面中，相对x轴的发射角度 Animatable</span><br><span class="line">@property CGFloat emissionLatitude;</span><br><span class="line">@property CGFloat emissionLongitude;</span><br><span class="line">&#x2F;&#x2F; 发射角度的容差 Animatable</span><br><span class="line">@property CGFloat emissionRange</span><br><span class="line">&#x2F;&#x2F; 粒子平均速度及容差 默认值0 Animatable</span><br><span class="line">@property CGFloat velocity;</span><br><span class="line">@property CGFloat velocityRange;</span><br><span class="line">&#x2F;&#x2F;  粒子在各个方向的加速度 Animatable</span><br><span class="line">@property CGFloat xAcceleration;</span><br><span class="line">@property CGFloat yAcceleration;</span><br><span class="line">@property CGFloat zAcceleration;</span><br><span class="line">&#x2F;&#x2F; 粒子平均缩放相关属性 Animatable</span><br><span class="line">@property CGFloat scale;</span><br><span class="line">@property CGFloat scaleRange;</span><br><span class="line">@property CGFloat scaleSpeed;</span><br><span class="line">&#x2F;&#x2F; 粒子平均旋转相关属性 Animatable</span><br><span class="line">@property CGFloat spin;</span><br><span class="line">@property CGFloat spinRange;</span><br><span class="line">&#x2F;&#x2F; 粒子的主颜色 及 R&#x2F;G&#x2F;B&#x2F;Alpha 的容差 Animatable</span><br><span class="line">@property(nullable) CGColorRef color;</span><br><span class="line">@property float redRange;&#x2F;&#x2F; 默认 0</span><br><span class="line">@property float greenRange;&#x2F;&#x2F; 默认 0</span><br><span class="line">@property float blueRange;&#x2F;&#x2F; 默认 0</span><br><span class="line">@property float alphaRange;&#x2F;&#x2F; 默认 0</span><br><span class="line">&#x2F;&#x2F; 粒子的主颜色基础上 R&#x2F;G&#x2F;B&#x2F;Alpha变化速度 Defaults to (0, 0, 0, 0) Animatable</span><br><span class="line">@property float redSpeed;</span><br><span class="line">@property float greenSpeed;</span><br><span class="line">@property float blueSpeed;</span><br><span class="line">@property float alphaSpeed;</span><br><span class="line">&#x2F;&#x2F; 渲染粒子，可以设置为一个CGImage的对象</span><br><span class="line">@property(nullable, strong) id contents;</span><br><span class="line">&#x2F;&#x2F; 渲染范围</span><br><span class="line">@property CGRect contentsRect;</span><br><span class="line">&#x2F;&#x2F; image的像素尺寸同视图大小的比例，默认为1.0</span><br><span class="line">@property CGFloat contentsScale;</span><br></pre></td></tr></table></figure>
+<p><strong>项目中，粒子动画的应用场景，大多是配合弹框提示出现的</strong></p>
+<p><strong>简单demo演示</strong><br>实现彩带喷撒动画的效果</p>
+<ul>
+<li>初始化粒子系统，实现基本效果（需要注意的是，Acceleration属性的设置，我们给y方向设置为<strong>9.8</strong>，热爱物理的童鞋有木有想起什么来呢~~）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">- (void)testForCAEmitterLayer&#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 初始化发射器图层</span><br><span class="line">    CAEmitterLayer *emitterLayer &#x3D; [CAEmitterLayer layer];</span><br><span class="line">    emitterLayer.birthRate &#x3D; 1;</span><br><span class="line">    emitterLayer.lifetime &#x3D; 10;</span><br><span class="line">    emitterLayer.emitterPosition &#x3D; self.view.center;</span><br><span class="line">    emitterLayer.emitterSize &#x3D; self.waveButton.frame.size;</span><br><span class="line">    emitterLayer.emitterShape &#x3D; kCAEmitterLayerRectangle;</span><br><span class="line">    emitterLayer.emitterMode &#x3D; kCAEmitterLayerOutline;</span><br><span class="line">    emitterLayer.renderMode &#x3D; kCAEmitterLayerOldestFirst;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 初始化发射单元并标记name，方便通过keypath修改相关属性</span><br><span class="line">    CGSize particleSize &#x3D; CGSizeMake(15, 25);</span><br><span class="line">    CAEmitterCell *blueCell &#x3D; [self demo_CAEmitterCellWithImage:[self createImageWithColor:[UIColor blueColor] andSize:particleSize]];</span><br><span class="line">    blueCell.name &#x3D; @&quot;blue&quot;;</span><br><span class="line">    CAEmitterCell *yellowCell &#x3D; [self demo_CAEmitterCellWithImage:[self createImageWithColor:[UIColor yellowColor] andSize:particleSize]];</span><br><span class="line">    yellowCell.name &#x3D; @&quot;yellow&quot;;</span><br><span class="line">    CAEmitterCell *redCell &#x3D; [self demo_CAEmitterCellWithImage:[self createImageWithColor:[UIColor redColor] andSize:particleSize]];</span><br><span class="line">    redCell.name &#x3D; @&quot;red&quot;;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 将发射单元添加至发射器</span><br><span class="line">    emitterLayer.emitterCells &#x3D; @[blueCell,yellowCell,redCell];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 在目标位置添加发射器</span><br><span class="line">    [self.view.layer addSublayer:emitterLayer];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (CAEmitterCell *)demo_CAEmitterCellWithImage:(UIImage *)image&#123;</span><br><span class="line"></span><br><span class="line">    CAEmitterCell *emitterCell &#x3D; [CAEmitterCell emitterCell];</span><br><span class="line">    &#x2F;&#x2F; contents</span><br><span class="line">    emitterCell.contents &#x3D; (__bridge id _Nullable)(image.CGImage);</span><br><span class="line">    &#x2F;&#x2F; birthRate</span><br><span class="line">    emitterCell.birthRate &#x3D; 10;</span><br><span class="line">    &#x2F;&#x2F; lifetime</span><br><span class="line">    emitterCell.lifetime &#x3D; 40;</span><br><span class="line">    emitterCell.lifetimeRange &#x3D; 20;</span><br><span class="line">    &#x2F;&#x2F; emission</span><br><span class="line">    &#x2F;&#x2F; emitterCell.emissionLongitude</span><br><span class="line">    &#x2F;&#x2F; emitterCell.emissionLatitude</span><br><span class="line">    emitterCell.emissionRange &#x3D; M_PI_2;</span><br><span class="line">    &#x2F;&#x2F; volocity</span><br><span class="line">    emitterCell.velocity &#x3D; 200;</span><br><span class="line">    emitterCell.velocityRange &#x3D; 20;</span><br><span class="line">    &#x2F;&#x2F; Acceleration</span><br><span class="line">    emitterCell.xAcceleration &#x3D; 0;</span><br><span class="line">    emitterCell.yAcceleration &#x3D; 9.8;</span><br><span class="line">    &#x2F;&#x2F; scale</span><br><span class="line">    emitterCell.scale &#x3D; 0.6;</span><br><span class="line">    emitterCell.scaleRange &#x3D; 0.6;</span><br><span class="line">    &#x2F;&#x2F; spin</span><br><span class="line">    emitterCell.spin &#x3D; M_PI * 2;</span><br><span class="line">    emitterCell.spinRange &#x3D; M_PI * 2;</span><br><span class="line">    &#x2F;&#x2F; color</span><br><span class="line">    &#x2F;&#x2F; emitterCell.redRange &#x3D; 0.1f;</span><br><span class="line">    &#x2F;&#x2F; emitterCell.greenRange &#x3D; 0.1f;</span><br><span class="line">    &#x2F;&#x2F; emitterCell.blueRange &#x3D; 0.1f;</span><br><span class="line">    &#x2F;&#x2F; emitterCell.alphaRange &#x3D; 1;</span><br><span class="line">    &#x2F;&#x2F; color speed</span><br><span class="line">    &#x2F;&#x2F; emitterCell.alphaSpeed &#x3D; 10;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    return emitterCell;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIImage *)createImageWithColor:(UIColor *)color andSize:(CGSize)size&#123;</span><br><span class="line"></span><br><span class="line">    UIGraphicsBeginImageContext(size);</span><br><span class="line">    CGContextRef context &#x3D; UIGraphicsGetCurrentContext();</span><br><span class="line">    CGContextSetFillColorWithColor(context, color.CGColor);</span><br><span class="line">    CGContextFillRect(context, CGRectMake(0, 0, size.width, size.height));</span><br><span class="line">    </span><br><span class="line">    UIImage *image &#x3D; UIGraphicsGetImageFromCurrentImageContext();</span><br><span class="line">    UIGraphicsEndImageContext();</span><br><span class="line">    </span><br><span class="line">    return image;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下<br><img src="http://upload-images.jianshu.io/upload_images/1742463-8ca131f7e440ed4c.gif?imageMogr2/auto-orient/strip" alt="CAEmitterLayer_1.gif"></p>
+<ul>
+<li>添加内容层动画，优化效果（因为<code>EmitterLayer</code>继承自<code>CALayer</code>，所以显示层的<code>CoreAnimation</code>对它同样适用。同时，这里就用到了我们设置的<code>EmitterCell</code>的<code>name</code>属性值）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">CAAnimationGroup *demo_ParticleAnimation()&#123;</span><br><span class="line"></span><br><span class="line">    CABasicAnimation *blue &#x3D; [CABasicAnimation animation];</span><br><span class="line">    blue.keyPath &#x3D; @&quot;emitterCells.blue.birthRate&quot;;</span><br><span class="line">    blue.fromValue &#x3D; @30;</span><br><span class="line">    blue.toValue &#x3D; @0;</span><br><span class="line">    </span><br><span class="line">    CABasicAnimation *red &#x3D; [CABasicAnimation animation];</span><br><span class="line">    red.keyPath &#x3D; @&quot;emitterCells.red.birthRate&quot;;</span><br><span class="line">    red.fromValue &#x3D; @30;</span><br><span class="line">    red.toValue &#x3D; @0;</span><br><span class="line">    </span><br><span class="line">    CABasicAnimation *yellow &#x3D; [CABasicAnimation animation];</span><br><span class="line">    yellow.keyPath &#x3D; @&quot;emitterCells.yellow.birthRate&quot;;</span><br><span class="line">    yellow.fromValue &#x3D; @30;</span><br><span class="line">    yellow.toValue &#x3D; @0;</span><br><span class="line">    </span><br><span class="line">    CAAnimationGroup *group &#x3D; [[CAAnimationGroup alloc] init];</span><br><span class="line">    group.animations &#x3D; @[blue,red,yellow];</span><br><span class="line">    group.duration &#x3D; 1.0f;</span><br><span class="line">    group.fillMode &#x3D; kCAFillModeForwards;</span><br><span class="line">    [group setRemovedOnCompletion:NO];</span><br><span class="line">    </span><br><span class="line">    return group;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>合适位置给发射器添加动画</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 添加发射动画</span><br><span class="line">[emitterLayer addAnimation:demo_ParticleAnimation() forKey:nil];</span><br></pre></td></tr></table></figure>
+<p>效果如下</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-b91007a5ea466c16.gif?imageMogr2/auto-orient/strip" alt="CAEmitterLayer_2.gif"></p>
+<h5 id="CAGradientLayer-梯度动画"><a href="#CAGradientLayer-梯度动画" class="headerlink" title="CAGradientLayer 梯度动画"></a>CAGradientLayer 梯度动画</h5><p><code>CAGradientLayer</code>是系统提供的颜色梯度变化能力的类，使用相对比较简单</p>
+<p>下面看一下头文件中的几个简单接口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; CGColorRef颜色数组</span><br><span class="line">@property(nullable, copy) NSArray *colors;</span><br><span class="line">&#x2F;&#x2F; 控制颜色范围的数组[0,1] 类比&#96;KeyFrameAnimation&#96;中的&#96;keyTimes&#96;理解</span><br><span class="line">@property(nullable, copy) NSArray&lt;NSNumber *&gt; *locations;</span><br><span class="line">&#x2F;&#x2F; 类似&#96;anchorPoint&#96;，是相对于视图本身映射关系的相对位置，要来绝对梯度变化的方向</span><br><span class="line">@property CGPoint startPoint;</span><br><span class="line">@property CGPoint endPoint;</span><br></pre></td></tr></table></figure>
+<p>项目中似乎用到的地方不多，也许在音频的应用中做些跑马灯（此处手动滑稽）或者正常点的二维码扫描动画中用到。其他的应用场景暂时想不出，如果这篇文章真的有读者的话，欢迎补充交流</p>
+<p><strong>简单demo演示</strong><br>接下来，我们像经典致敬，山寨一个活动解锁效果<br>直接上代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; GradientLayer</span><br><span class="line">- (void)testForGradientLayer&#123;</span><br><span class="line"></span><br><span class="line">    CAGradientLayer *gradientLayer &#x3D; [[CAGradientLayer alloc] init];</span><br><span class="line">    gradientLayer.frame &#x3D; self.label.bounds;</span><br><span class="line">    gradientLayer.startPoint &#x3D; CGPointMake(0, 0);&#x2F;&#x2F; 类似anchor point的映射关系</span><br><span class="line">    gradientLayer.endPoint &#x3D; CGPointMake(1, 0);</span><br><span class="line">    gradientLayer.colors &#x3D; @[(__bridge id _Nullable)[UIColor clearColor].CGColor,(__bridge id _Nullable)[UIColor whiteColor].CGColor,(__bridge id _Nullable)[UIColor clearColor].CGColor];</span><br><span class="line">    gradientLayer.locations &#x3D; @[@0,@0,@0.3];&#x2F;&#x2F; [0,1]</span><br><span class="line">    </span><br><span class="line">    CABasicAnimation *basic &#x3D; [CABasicAnimation animation];</span><br><span class="line">    basic.keyPath &#x3D; @&quot;locations&quot;;</span><br><span class="line">    basic.toValue &#x3D; @[@0.7,@1,@1];</span><br><span class="line">    basic.duration &#x3D; 3.0;</span><br><span class="line">    basic.fillMode &#x3D; kCAFillModeForwards;</span><br><span class="line"></span><br><span class="line">    [basic setRemovedOnCompletion:NO];</span><br><span class="line">    basic.repeatCount &#x3D; MAXFLOAT;</span><br><span class="line">    </span><br><span class="line">    [gradientLayer addAnimation:basic forKey:nil];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 设置蒙板</span><br><span class="line">    self.label.layer.mask &#x3D; gradientLayer;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setupUI4GradientLayer&#123;</span><br><span class="line"></span><br><span class="line">    self.label &#x3D; [[UILabel alloc] init];</span><br><span class="line">    _label.text &#x3D; @&quot;Slide To Unlock&quot;;</span><br><span class="line">    _label.textColor &#x3D; [UIColor whiteColor];</span><br><span class="line">    _label.textAlignment &#x3D; NSTextAlignmentCenter;</span><br><span class="line">    _label.font &#x3D; [UIFont systemFontOfSize:18 weight:UIFontWeightMedium];</span><br><span class="line">    _label.frame &#x3D; CGRectMake(30, CGRectGetHeight(self.view.bounds) -  100, CGRectGetWidth(self.view.bounds) - 60, 60);</span><br><span class="line">    </span><br><span class="line">    [self.view addSubview:_label];</span><br><span class="line">    self.view.backgroundColor &#x3D; [UIColor blackColor];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下（似乎还蛮不错的-。-）</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-e7324826fb0ac87a.gif?imageMogr2/auto-orient/strip" alt="CAGradientLayer.gif"></p>
+<h5 id="CAShapeLayer-绘制动画"><a href="#CAShapeLayer-绘制动画" class="headerlink" title="CAShapeLayer 绘制动画"></a>CAShapeLayer 绘制动画</h5><p><code>CAShapeLayer</code>配合<code>CGPathRef</code>或者<code>UIBezierPath</code>路径，堪称绘图利器。上文中演示<code>隐式动画</code>时已经提到，下面再通过例子，演示几种常见的用法</p>
+<ul>
+<li>UIBezierPath（不了解贝塞尔曲线原理的同学，请移步本文第二章<strong>贝塞尔曲线</strong>）</li>
+<li>CGPath</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-49d7789488203514.gif?imageMogr2/auto-orient/strip" alt="CAShapeLayer.gif"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event&#123;</span><br><span class="line"></span><br><span class="line">    self.testLayer.strokeEnd &#x3D; 1;</span><br><span class="line">    self.testLayer2.strokeEnd &#x3D; 1;</span><br><span class="line">    self.testLayer3.strokeEnd &#x3D; 1;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; CAshapeLayer</span><br><span class="line">- (void)testForCAShapeLayer&#123;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; bezierPath</span><br><span class="line">    CGRect screenBounds &#x3D; [UIScreen mainScreen].bounds;</span><br><span class="line">    UIBezierPath *path &#x3D; [UIBezierPath bezierPath];</span><br><span class="line">    [path moveToPoint:CGPointMake(20, 200)];</span><br><span class="line">    [path addCurveToPoint:CGPointMake(screenBounds.size.width - 20, 200) controlPoint1:CGPointMake(screenBounds.size.width&#x2F;2, 50) controlPoint2:CGPointMake(screenBounds.size.width&#x2F;2, 350)];</span><br><span class="line"></span><br><span class="line">    CAShapeLayer *shapeLayer &#x3D; [[CAShapeLayer alloc] init];</span><br><span class="line">    shapeLayer.strokeEnd &#x3D; 0;</span><br><span class="line">    shapeLayer.strokeColor &#x3D; [UIColor redColor].CGColor;</span><br><span class="line">    shapeLayer.fillColor &#x3D; [UIColor clearColor].CGColor;</span><br><span class="line">    shapeLayer.lineWidth &#x3D; 3;</span><br><span class="line">    shapeLayer.path &#x3D; path.CGPath;</span><br><span class="line">    </span><br><span class="line">    self.testLayer &#x3D; shapeLayer;</span><br><span class="line">    [self.view.layer addSublayer:shapeLayer];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; CGPath</span><br><span class="line">    CGMutablePathRef mutablePath &#x3D; CGPathCreateMutable();</span><br><span class="line">    CGPathMoveToPoint(mutablePath, NULL, 20, 200);</span><br><span class="line">    CGPathAddLineToPoint(mutablePath, NULL, screenBounds.size.width&#x2F;2, 50);</span><br><span class="line">    CGPathAddLineToPoint(mutablePath, NULL, screenBounds.size.width&#x2F;2, 350);</span><br><span class="line">    CGPathAddLineToPoint(mutablePath, NULL, screenBounds.size.width - 20, 200);</span><br><span class="line">    </span><br><span class="line">    CAShapeLayer *shapeLayer2 &#x3D; [[CAShapeLayer alloc] init];</span><br><span class="line">    shapeLayer2.strokeEnd &#x3D; 0;</span><br><span class="line">    shapeLayer2.strokeColor &#x3D; [UIColor lightGrayColor].CGColor;</span><br><span class="line">&#x2F;&#x2F;    shapeLayer2.fillColor &#x3D; [[UIColor blueColor] colorWithAlphaComponent:0.1].CGColor;</span><br><span class="line">    shapeLayer2.fillColor &#x3D; [UIColor clearColor].CGColor;</span><br><span class="line">    shapeLayer2.lineWidth &#x3D; 5;</span><br><span class="line">    shapeLayer2.lineCap &#x3D; kCALineCapRound;</span><br><span class="line">    shapeLayer2.lineJoin &#x3D; kCALineJoinBevel;</span><br><span class="line">    shapeLayer2.path &#x3D; mutablePath;</span><br><span class="line">    </span><br><span class="line">    self.testLayer2 &#x3D; shapeLayer2;</span><br><span class="line">    [self.view.layer addSublayer:shapeLayer2];</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    CGMutablePathRef mutablePath2 &#x3D; CGPathCreateMutable();</span><br><span class="line">    CGPathMoveToPoint(mutablePath2, NULL, screenBounds.size.width&#x2F;2, screenBounds.size.height - 50);</span><br><span class="line">    CGPathAddLineToPoint(mutablePath2, NULL, screenBounds.size.width&#x2F;2, 380);</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    CAShapeLayer *shapeLayer3 &#x3D; [CAShapeLayer layer];</span><br><span class="line">    shapeLayer3.strokeColor &#x3D; [UIColor purpleColor].CGColor;</span><br><span class="line">    shapeLayer3.lineWidth &#x3D; 20;</span><br><span class="line">    shapeLayer3.path &#x3D; mutablePath2;</span><br><span class="line">    shapeLayer3.strokeEnd &#x3D; 0;</span><br><span class="line">    </span><br><span class="line">    self.testLayer3 &#x3D; shapeLayer3;</span><br><span class="line">    [self.view.layer addSublayer:shapeLayer3];</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; slider</span><br><span class="line">    UISlider *slider &#x3D; [[UISlider alloc] initWithFrame:CGRectMake(20, screenBounds.size.height - 50, screenBounds.size.width - 40, 50)];</span><br><span class="line">    slider.minimumValue &#x3D; 0;</span><br><span class="line">    slider.maximumValue &#x3D; 1;</span><br><span class="line">    slider.value &#x3D; 1;</span><br><span class="line">    [slider addTarget:self action:@selector(valueChanged:) forControlEvents:UIControlEventValueChanged];</span><br><span class="line">    [self.view addSubview:slider];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)valueChanged:(UISlider *)slider&#123;</span><br><span class="line"></span><br><span class="line">    self.testLayer.strokeEnd &#x3D; slider.value;</span><br><span class="line">    self.testLayer2.strokeEnd &#x3D; slider.value;</span><br><span class="line">    self.testLayer3.strokeEnd &#x3D; slider.value;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="CAReplicatorLayer-复制动画"><a href="#CAReplicatorLayer-复制动画" class="headerlink" title="CAReplicatorLayer 复制动画"></a>CAReplicatorLayer 复制动画</h5><p>顾名思义，这个<code>Layer</code>是让我们具备了复制能力。通过复制一些带动画的<code>layer</code>，实现有层次感的动画，因为接口较少，且容易理解，特别注意下<code>instanceTransform</code>属性即可。有兴趣的同学直接进代码</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-51f884d0abf1113e.gif?imageMogr2/auto-orient/strip" alt=""><br><img src="http://upload-images.jianshu.io/upload_images/1742463-f552eca62888c104.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; sound wave</span><br><span class="line">    CAShapeLayer *circle &#x3D; [CAShapeLayer layer];</span><br><span class="line">    circle.bounds &#x3D; CGRectMake(0, 0, 100, 100);</span><br><span class="line">    circle.position &#x3D; self.view.center;</span><br><span class="line">    circle.opacity &#x3D; 1;</span><br><span class="line">    </span><br><span class="line">    UIBezierPath *circlepath  &#x3D; [UIBezierPath bezierPathWithArcCenter:CGPointMake(50, 50) radius:15 startAngle:0 endAngle:2 * M_PI  clockwise:YES];</span><br><span class="line">    circle.fillColor &#x3D; ThemeColor.CGColor;</span><br><span class="line">    circle.path &#x3D; circlepath.CGPath;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    CABasicAnimation *opacity &#x3D; [CABasicAnimation animation];</span><br><span class="line">    opacity.keyPath &#x3D; @&quot;opacity&quot;;</span><br><span class="line">    opacity.fromValue &#x3D; @1;</span><br><span class="line">    opacity.toValue &#x3D; @0;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    CABasicAnimation *scale &#x3D; [CABasicAnimation animation];</span><br><span class="line">    scale.keyPath &#x3D; @&quot;transform.scale&quot;;</span><br><span class="line">    scale.fromValue &#x3D; @1;</span><br><span class="line">    scale.toValue &#x3D; @(0.3);</span><br><span class="line">    </span><br><span class="line">    CAAnimationGroup *group &#x3D; [CAAnimationGroup animation];</span><br><span class="line">    group.duration &#x3D; 0.8;</span><br><span class="line">    group.fillMode &#x3D; kCAFillModeForwards;</span><br><span class="line">    [group setRemovedOnCompletion:YES];</span><br><span class="line">    group.animations &#x3D; @[scale];</span><br><span class="line">    group.autoreverses &#x3D; YES;</span><br><span class="line">    group.repeatCount &#x3D; MAXFLOAT;</span><br><span class="line">    [circle addAnimation:group forKey:nil];</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    CAReplicatorLayer *gradientLayer &#x3D; [CAReplicatorLayer layer];</span><br><span class="line">    [gradientLayer addSublayer:circle];</span><br><span class="line">    gradientLayer.instanceCount &#x3D; 3;</span><br><span class="line">    gradientLayer.instanceDelay &#x3D; 0.3;</span><br><span class="line">    </span><br><span class="line">&#x2F;&#x2F;    [self.view.layer addSublayer:gradientLayer];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; loading ball</span><br><span class="line">    CAReplicatorLayer *instanceGradient &#x3D; [CAReplicatorLayer layer];</span><br><span class="line">    [instanceGradient addSublayer:circle];</span><br><span class="line">    instanceGradient.instanceCount &#x3D; 3;</span><br><span class="line">    instanceGradient.instanceDelay &#x3D; 0.2;</span><br><span class="line">    instanceGradient.instanceTransform &#x3D; CATransform3DMakeTranslation(50, 0, 0);</span><br><span class="line">    </span><br><span class="line">    [self.view.layer addSublayer:instanceGradient];</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结实践"><a href="#总结实践" class="headerlink" title="总结实践"></a>总结实践</h3><p>带点击水纹及加载提示的button动画</p>
+<ul>
+<li>关键点：<ul>
+<li>水波：<code>NSTimer</code>逐帧动画</li>
+<li>位置：显示层动画，修改<code>frame</code>及<code>center</code></li>
+<li>形状：内容层动画，使用<code>AnimationGroup</code>组合<code>cornerRadius</code>及<code>opacity</code>的修改</li>
+<li>旋转：<code>CADisplayLink</code>逐帧动画</li>
+<li>对号：修改<code>CAShapeLayer</code>的<code>strokeEnd</code>属性实现的<code>CABasicAnimation</code>动画</li>
+</ul>
+</li>
+</ul>
+<p>效果如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-39fee535fccbeebf.gif?imageMogr2/auto-orient/strip" alt="demo.gif"></p>
+<p>（demo地址在文章最后）</p>
+<hr>
+<h2 id="贝塞尔曲线"><a href="#贝塞尔曲线" class="headerlink" title="贝塞尔曲线"></a>贝塞尔曲线</h2><p><strong> 原理描述：给定n+1个数据点，p0(x0,y0)…pn(xn,yn)，生成一条曲线，使得该曲线与这些点所连接的折线相近</strong> </p>
+<blockquote>
+<p>相关资料<br><a href="http://baike.baidu.com/link?url=KTcSDeN1oCO_ueR0dROME0q9BettnGzt-eiYlZ-x4u2W4ZuQfm0sjJEbiSQXpVs57eY39VRScOPfN5b3F0Uwda2HAdH2OV1_v50VmOGmg97KCTMbtzyOS9X_P3ji48leuCupywjMZczZANFXCWnjpq" target="_blank" rel="noopener">百度百科：贝塞尔曲线</a><br><a href="http://blog.csdn.net/cdnight/article/details/48468653" target="_blank" rel="noopener">原理解析：贝塞尔曲线</a><br><img src="http://upload-images.jianshu.io/upload_images/1742463-aa06437e91ca0384.gif?imageMogr2/auto-orient/strip" alt="Bezier.gif"></p>
+</blockquote>
+<p>可以看到，上图中折线的中间点，即为我们所说的控制点，他的位置变化，直接影响了曲线的走向</p>
+<h3 id="常见案例"><a href="#常见案例" class="headerlink" title="常见案例"></a>常见案例</h3><h4 id="可手动移除的动态Badgeview"><a href="#可手动移除的动态Badgeview" class="headerlink" title="可手动移除的动态Badgeview"></a>可手动移除的动态Badgeview</h4><p>手机QQ中最早出现（强迫症福音有木有），可以根据手势滑动的距离动态改变badge的形状</p>
+<p>我们可以大致根据下图中绘制的样例，理解贝塞尔曲线在这个例子中的作用<br><img src="http://upload-images.jianshu.io/upload_images/1742463-b3559da6d3afc33b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="
+"></p>
+<p><strong>这个Badgeview由以下几部分组成：</p>
+<ul>
+<li>上方跟随手势的小球</li>
+<li>下方固定位置的小球</li>
+<li>中间需要填充红色的绘制区域 </strong>(<em>注：确定上半部分曲线的三个点为 <code>C/P/B</code>，确定下半部分曲线的三个点为<code>D/O/A</code>，这几个点的位置确定，用到了最基础的<code>正弦函数</code> <code>余弦函数</code> 以及三角形求变长的简单计算</em>)</li>
+</ul>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>所有的复杂动画，都是由基本<code>显示层动画</code>、<code>内容层动画</code>组合而成。尝试做过一些练习后，笔者这只鶸，发现动画真的是一件<strong>有意思</strong>的事情呢！</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-c63cbf6b8db4231e.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>笔者简书地址：<a href="http://www.jianshu.com/p/1a02bbcb1e24" target="_blank" rel="noopener">iOS-动画知识梳理</a><br>传送门:<a href="https://github.com/Tr2e/AnimationDemos_iOS" target="_blank" rel="noopener">Demo</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/23/iOS-%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/" rel="next" title="iOS-转场动画">
+                <i class="fa fa-chevron-left"></i> iOS-转场动画
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/30/iOS-UICollectionView%E5%BF%AB%E9%80%9F%E6%9E%84%E9%80%A0-%E6%8B%96%E6%8B%BD%E9%87%8D%E6%8E%92-%E8%BD%AE%E6%92%AD%E5%AE%9E%E7%8E%B0%E4%BB%8B%E7%BB%8D/" rel="prev" title="iOS-UICollectionView快速构造/拖拽重排/轮播实现介绍">
+                iOS-UICollectionView快速构造/拖拽重排/轮播实现介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Tr2e</p>
+              <p class="site-description motion-element" itemprop="description">Principle & Order</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#学习及实践笔记"><span class="nav-number">1.</span> <span class="nav-text">学习及实践笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#动画的分类"><span class="nav-number">1.1.</span> <span class="nav-text">动画的分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#显示层-UIView-动画"><span class="nav-number">1.1.1.</span> <span class="nav-text">显示层(UIView)动画</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#初级动画"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">初级动画</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关键帧动画"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">关键帧动画</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#逐帧动画"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">逐帧动画</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Gif动画"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">Gif动画</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#image-i-o"><span class="nav-number">1.1.1.4.1.</span> <span class="nav-text">image i&#x2F;o</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Gif播放"><span class="nav-number">1.1.1.4.2.</span> <span class="nav-text">Gif播放</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#序列帧生成Gif"><span class="nav-number">1.1.1.4.3.</span> <span class="nav-text">序列帧生成Gif</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内容层-CALayer-动画"><span class="nav-number">1.1.2.</span> <span class="nav-text">内容层(CALayer)动画</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CoreAnimation结构"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">CoreAnimation结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CABasicAnimation"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">CABasicAnimation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CAKeyFrameAnimation"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">CAKeyFrameAnimation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CAGroupAnimation"><span class="nav-number">1.1.2.4.</span> <span class="nav-text">CAGroupAnimation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CATransition"><span class="nav-number">1.1.2.5.</span> <span class="nav-text">CATransition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特殊的CALayer动画"><span class="nav-number">1.1.2.6.</span> <span class="nav-text">特殊的CALayer动画</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CAEmitterLayer-粒子动画"><span class="nav-number">1.1.2.6.1.</span> <span class="nav-text">CAEmitterLayer 粒子动画</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CAGradientLayer-梯度动画"><span class="nav-number">1.1.2.6.2.</span> <span class="nav-text">CAGradientLayer 梯度动画</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CAShapeLayer-绘制动画"><span class="nav-number">1.1.2.6.3.</span> <span class="nav-text">CAShapeLayer 绘制动画</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CAReplicatorLayer-复制动画"><span class="nav-number">1.1.2.6.4.</span> <span class="nav-text">CAReplicatorLayer 复制动画</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结实践"><span class="nav-number">1.1.3.</span> <span class="nav-text">总结实践</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#贝塞尔曲线"><span class="nav-number">1.2.</span> <span class="nav-text">贝塞尔曲线</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常见案例"><span class="nav-number">1.2.1.</span> <span class="nav-text">常见案例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#可手动移除的动态Badgeview"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">可手动移除的动态Badgeview</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tr2e</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

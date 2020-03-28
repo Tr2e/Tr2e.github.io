@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="实际项目场景：去除图片的纯白色背景图，获得一张透明底图片用于拼图功能 介绍两种途径的三种处理方式(不知道为啥想起了孔乙己)，具体性能鶸并未对比，如果有大佬能告知，不胜感激。  Core Image Core Graphics&#x2F;Quarz 2D">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS-去除图片中指定范围内颜色的三种方式">
+<meta property="og:url" content="http://yoursite.com/2017/12/20/iOS-%E5%8E%BB%E9%99%A4%E5%9B%BE%E7%89%87%E4%B8%AD%E6%8C%87%E5%AE%9A%E8%8C%83%E5%9B%B4%E5%86%85%E9%A2%9C%E8%89%B2%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Tr2e&#39;s Blog">
+<meta property="og:description" content="实际项目场景：去除图片的纯白色背景图，获得一张透明底图片用于拼图功能 介绍两种途径的三种处理方式(不知道为啥想起了孔乙己)，具体性能鶸并未对比，如果有大佬能告知，不胜感激。  Core Image Core Graphics&#x2F;Quarz 2D">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1742463-9a7f44ff8c2bb971.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1742463-102b639c4903fc34.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/533/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1742463-6f5f22936b3f476d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/584/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1742463-234e9fe782d87822.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/500/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1742463-b3ec1da17d86370c.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/480/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1742463-d2ae24ffc0bbd821.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1742463-5ef64c988f44a14c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1742463-2d5b440542eb2e1e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1742463-b885efb39fed068b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp">
+<meta property="article:published_time" content="2017-12-20T07:19:18.000Z">
+<meta property="article:modified_time" content="2019-07-05T13:48:22.487Z">
+<meta property="article:author" content="Tr2e">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1742463-9a7f44ff8c2bb971.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/20/iOS-去除图片中指定范围内颜色的三种方式/"/>
+
+
+
+
+
+  <title>iOS-去除图片中指定范围内颜色的三种方式 | Tr2e's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tr2e's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/20/iOS-%E5%8E%BB%E9%99%A4%E5%9B%BE%E7%89%87%E4%B8%AD%E6%8C%87%E5%AE%9A%E8%8C%83%E5%9B%B4%E5%86%85%E9%A2%9C%E8%89%B2%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tr2e">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tr2e's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS-去除图片中指定范围内颜色的三种方式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-20T15:19:18+08:00">
+                2017-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>实际项目场景：去除图片的纯白色背景图，获得一张透明底图片用于拼图功能</strong></p>
+<p>介绍两种途径的三种处理方式(不知道为啥想起了孔乙己)，具体性能鶸并未对比，如果有大佬能告知，不胜感激。</p>
+<ul>
+<li>Core Image</li>
+<li>Core Graphics/Quarz 2D</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="Core-Image"><a href="#Core-Image" class="headerlink" title="Core Image"></a>Core Image</h2><blockquote>
+<p><strong>Core Image</strong>是一个很强大的框架。它可以让你简单地应用各种滤镜来处理图像，比如修改鲜艳程度,色泽,或者曝光。 它利用GPU（或者CPU）来非常快速、甚至实时地处理图像数据和视频的帧。并且隐藏了底层图形处理的所有细节，通过提供的API就能简单的使用了，无须关心OpenGL或者OpenGL ES是如何充分利用GPU的能力的，也不需要你知道GCD在其中发挥了怎样的作用，Core Image处理了全部的细节。 </p>
+</blockquote>
+<p><img src="https://upload-images.jianshu.io/upload_images/1742463-9a7f44ff8c2bb971.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp" alt="Chroma Key Filter"></p>
+<p>在苹果官方文档<a href="https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/CoreImaging/ci_intro/ci_intro.html#//apple_ref/doc/uid/TP30001185-CH1-TPXREF101" target="_blank" rel="noopener">Core Image Programming Guide</a>中，提到了<a href="https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/CoreImaging/ci_filer_recipes/ci_filter_recipes.html#//apple_ref/doc/uid/TP30001185-CH4-SW2" target="_blank" rel="noopener">Chroma Key Filter Recipe</a>对于处理背景的范例</p>
+<p>其中使用了<a href="https://baike.baidu.com/item/HSV/547122?fr=aladdin" target="_blank" rel="noopener">HSV</a>颜色模型，因为HSV模型，对于颜色范围的表示，相比RGB更加友好。</p>
+<p><strong>大致过程处理过程：</strong></p>
+<ol>
+<li>创建一个映射希望移除颜色值范围的立方体贴图cubeMap，将目标颜色的<code>Alpha</code>置为<code>0.0f</code></li>
+<li>使用<code>CIColorCube</code>滤镜和cubeMap对源图像进行颜色处理</li>
+<li>获取到经过<code>CIColorCube</code>处理的<code>Core Image</code>对象<code>CIImage</code>,转换为<code>Core Graphics</code>中的<code>CGImageRef</code>对象，通过<code>imageWithCGImage:</code>获取结果图片</li>
+</ol>
+<p><strong>注意</strong>：第三步中，不可以直接使用<code>imageWithCIImage:</code>,因为得到的并不是一个标准的<code>UIImage</code>，如果直接拿来用，会出现不显示的情况。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)removeColorWithMinHueAngle:(float)minHueAngle maxHueAngle:(float)maxHueAngle image:(UIImage *)originalImage&#123;</span><br><span class="line">    CIImage *image &#x3D; [CIImage imageWithCGImage:originalImage.CGImage];</span><br><span class="line">    CIContext *context &#x3D; [CIContext contextWithOptions:nil];&#x2F;&#x2F; kCIContextUseSoftwareRenderer : CPURender</span><br><span class="line">    &#x2F;** 注意</span><br><span class="line">     *  UIImage 通过CIimage初始化，得到的并不是一个通过类似CGImage的标准UIImage</span><br><span class="line">     *  所以如果不用context进行渲染处理，是没办法正常显示的</span><br><span class="line">     *&#x2F;</span><br><span class="line">    CIImage *renderBgImage &#x3D; [self outputImageWithOriginalCIImage:image minHueAngle:minHueAngle maxHueAngle:maxHueAngle];</span><br><span class="line">    CGImageRef renderImg &#x3D; [context createCGImage:renderBgImage fromRect:image.extent];</span><br><span class="line">    UIImage *renderImage &#x3D; [UIImage imageWithCGImage:renderImg];</span><br><span class="line">    return renderImage;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">struct CubeMap &#123;</span><br><span class="line">    int length;</span><br><span class="line">    float dimension;</span><br><span class="line">    float *data;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">- (CIImage *)outputImageWithOriginalCIImage:(CIImage *)originalImage minHueAngle:(float)minHueAngle maxHueAngle:(float)maxHueAngle&#123;</span><br><span class="line">    </span><br><span class="line">    struct CubeMap map &#x3D; createCubeMap(minHueAngle, maxHueAngle);</span><br><span class="line">    const unsigned int size &#x3D; 64;</span><br><span class="line">    &#x2F;&#x2F; Create memory with the cube data</span><br><span class="line">    NSData *data &#x3D; [NSData dataWithBytesNoCopy:map.data</span><br><span class="line">                                        length:map.length</span><br><span class="line">                                  freeWhenDone:YES];</span><br><span class="line">    CIFilter *colorCube &#x3D; [CIFilter filterWithName:@&quot;CIColorCube&quot;];</span><br><span class="line">    [colorCube setValue:@(size) forKey:@&quot;inputCubeDimension&quot;];</span><br><span class="line">    &#x2F;&#x2F; Set data for cube</span><br><span class="line">    [colorCube setValue:data forKey:@&quot;inputCubeData&quot;];</span><br><span class="line">    </span><br><span class="line">    [colorCube setValue:originalImage forKey:kCIInputImageKey];</span><br><span class="line">    CIImage *result &#x3D; [colorCube valueForKey:kCIOutputImageKey];</span><br><span class="line">    </span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">struct CubeMap createCubeMap(float minHueAngle, float maxHueAngle) &#123;</span><br><span class="line">    const unsigned int size &#x3D; 64;</span><br><span class="line">    struct CubeMap map;</span><br><span class="line">    map.length &#x3D; size * size * size * sizeof (float) * 4;</span><br><span class="line">    map.dimension &#x3D; size;</span><br><span class="line">    float *cubeData &#x3D; (float *)malloc (map.length);</span><br><span class="line">    float rgb[3], hsv[3], *c &#x3D; cubeData;</span><br><span class="line">    </span><br><span class="line">    for (int z &#x3D; 0; z &lt; size; z++)&#123;</span><br><span class="line">        rgb[2] &#x3D; ((double)z)&#x2F;(size-1); &#x2F;&#x2F; Blue value</span><br><span class="line">        for (int y &#x3D; 0; y &lt; size; y++)&#123;</span><br><span class="line">            rgb[1] &#x3D; ((double)y)&#x2F;(size-1); &#x2F;&#x2F; Green value</span><br><span class="line">            for (int x &#x3D; 0; x &lt; size; x ++)&#123;</span><br><span class="line">                rgb[0] &#x3D; ((double)x)&#x2F;(size-1); &#x2F;&#x2F; Red value</span><br><span class="line">                rgbToHSV(rgb,hsv);</span><br><span class="line">                &#x2F;&#x2F; Use the hue value to determine which to make transparent</span><br><span class="line">                &#x2F;&#x2F; The minimum and maximum hue angle depends on</span><br><span class="line">                &#x2F;&#x2F; the color you want to remove</span><br><span class="line">                float alpha &#x3D; (hsv[0] &gt; minHueAngle &amp;&amp; hsv[0] &lt; maxHueAngle) ? 0.0f: 1.0f;</span><br><span class="line">                &#x2F;&#x2F; Calculate premultiplied alpha values for the cube</span><br><span class="line">                c[0] &#x3D; rgb[0] * alpha;</span><br><span class="line">                c[1] &#x3D; rgb[1] * alpha;</span><br><span class="line">                c[2] &#x3D; rgb[2] * alpha;</span><br><span class="line">                c[3] &#x3D; alpha;</span><br><span class="line">                c +&#x3D; 4; &#x2F;&#x2F; advance our pointer into memory for the next color value</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    map.data &#x3D; cubeData;</span><br><span class="line">    return map;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>rgbToHSV</code>在官方文档中并没有提及，笔者在下文中提到的大佬的博客中找到了相关转换处理。<strong>感谢</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">void rgbToHSV(float *rgb, float *hsv) &#123;</span><br><span class="line">    float min, max, delta;</span><br><span class="line">    float r &#x3D; rgb[0], g &#x3D; rgb[1], b &#x3D; rgb[2];</span><br><span class="line">    float *h &#x3D; hsv, *s &#x3D; hsv + 1, *v &#x3D; hsv + 2;</span><br><span class="line">    </span><br><span class="line">    min &#x3D; fmin(fmin(r, g), b );</span><br><span class="line">    max &#x3D; fmax(fmax(r, g), b );</span><br><span class="line">    *v &#x3D; max;</span><br><span class="line">    delta &#x3D; max - min;</span><br><span class="line">    if( max !&#x3D; 0 )</span><br><span class="line">        *s &#x3D; delta &#x2F; max;</span><br><span class="line">    else &#123;</span><br><span class="line">        *s &#x3D; 0;</span><br><span class="line">        *h &#x3D; -1;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    if( r &#x3D;&#x3D; max )</span><br><span class="line">        *h &#x3D; ( g - b ) &#x2F; delta;</span><br><span class="line">    else if( g &#x3D;&#x3D; max )</span><br><span class="line">        *h &#x3D; 2 + ( b - r ) &#x2F; delta;</span><br><span class="line">    else</span><br><span class="line">        *h &#x3D; 4 + ( r - g ) &#x2F; delta;</span><br><span class="line">    *h *&#x3D; 60;</span><br><span class="line">    if( *h &lt; 0 )</span><br><span class="line">        *h +&#x3D; 360;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来我们试一下，去除绿色背景的效果如何<br><img src="https://upload-images.jianshu.io/upload_images/1742463-102b639c4903fc34.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/533/format/webp" alt=""></p>
+<p>我们可以通过使用<a href="http://www.color-blindness.com/color-name-hue/" target="_blank" rel="noopener">HSV工具</a>,确定绿色<code>HUE</code>值的大概范围为<strong>50-170</strong></p>
+<p>调用一下方法试一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[SPImageChromaFilterManager sharedManager] removeColorWithMinHueAngle:50 maxHueAngle:170 image:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@&quot;nb&quot; ofType:@&quot;jpeg&quot;]]]</span><br></pre></td></tr></table></figure>
+<p>效果</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1742463-6f5f22936b3f476d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/584/format/webp" alt=""></p>
+<p>效果还可以的样子。</p>
+<p>如果认真观察HSV模型的同学也许会发现，我们通过指定色调角度（Hue）的方式，对于指定灰白黑显得无能为力。我们不得不去用饱和度（Saturation）和明度（Value）去共同判断，感兴趣的同学可以在代码中<em>判断Alpha</em><code>float alpha = (hsv[0] &gt; minHueAngle &amp;&amp; hsv[0] &lt; maxHueAngle) ? 0.0f: 1.0f;</code>那里试一下效果。（至于代码中为啥RGB和HSV这么转换，请百度他们的转换，因为鶸笔者也不懂。哎，鶸不聊生）</p>
+<p>对于<strong>Core Image</strong>感兴趣的同学，请移步大佬的系列文章</p>
+<blockquote>
+<p><a href="http://blog.csdn.net/zhangao0086/article/details/39012231" target="_blank" rel="noopener">iOS8 Core Image In Swift：自动改善图像以及内置滤镜的使用</a><br><a href="http://blog.csdn.net/zhangao0086/article/details/39120331" target="_blank" rel="noopener">iOS8 Core Image In Swift：更复杂的滤镜</a><br><a href="http://blog.csdn.net/zhangao0086/article/details/39253707" target="_blank" rel="noopener">iOS8 Core Image In Swift：人脸检测以及马赛克</a><br><a href="http://blog.csdn.net/zhangao0086/article/details/39433519" target="_blank" rel="noopener">iOS8 Core Image In Swift：视频实时滤镜</a></p>
+</blockquote>
+<h2 id="Core-Graphics-Quarz-2D"><a href="#Core-Graphics-Quarz-2D" class="headerlink" title="Core Graphics/Quarz 2D"></a>Core Graphics/Quarz 2D</h2><p>上文中提到的基于<code>OpenGl</code>的<code>Core Image</code>显然功能十分强大，作为视图另一基石的<a href="https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/Introduction/Introduction.html" target="_blank" rel="noopener">Core Graphics</a>同样强大。对他的探究，让鶸笔者更多的了解到图片的相关知识。所以在此处总结，供日后查阅。</p>
+<p>如果对探究不感兴趣的同学，请直接跳到文章最后 <strong>Masking an Image with Color</strong> 部分</p>
+<h3 id="Bitmap"><a href="#Bitmap" class="headerlink" title="Bitmap"></a>Bitmap</h3><p><img src="https://upload-images.jianshu.io/upload_images/1742463-234e9fe782d87822.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/500/format/webp" alt="侵删"><br>在<a href="https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_images/dq_images.html#//apple_ref/doc/uid/TP30001066-CH212-SW3" target="_blank" rel="noopener">Quarz 2D官方文档中，对于BitMap有如下描述</a>：</p>
+<blockquote>
+<p>A bitmap image (or sampled image) is an array of pixels (or samples). Each pixel represents a single point in the image. JPEG, TIFF, and PNG graphics files are examples of bitmap images. </p>
+</blockquote>
+<blockquote>
+<p><code>32-bit and 16-bit pixel formats for CMYK and RGB color spaces in Quartz 2D</code><br><img src="https://upload-images.jianshu.io/upload_images/1742463-b3ec1da17d86370c.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/480/format/webp" alt="32-bit and 16-bit pixel formats for CMYK and RGB color spaces in Quartz 2D"></p>
+</blockquote>
+<p>回到我们的需求，对于去除图片中的指定颜色，如果我们能够读取到每个像素上的<strong>RGBA</strong>信息，分别判断他们的值，如果符合目标范围，我们将他的<strong>Alpha</strong>值改为<strong>0</strong>，然后输出成新的图片，那么我们就实现了类似上文中<strong>cubeMap</strong>的处理方式。</p>
+<p>强大的<code>Quarz 2D</code>为我们提供了实现这种操作的能力，下面请看代码示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)removeColorWithMaxR:(float)maxR minR:(float)minR maxG:(float)maxG minG:(float)minG maxB:(float)maxB minB:(float)minB image:(UIImage *)image&#123;</span><br><span class="line">    &#x2F;&#x2F; 分配内存</span><br><span class="line">    const int imageWidth &#x3D; image.size.width;</span><br><span class="line">    const int imageHeight &#x3D; image.size.height;</span><br><span class="line">    size_t bytesPerRow &#x3D; imageWidth * 4;</span><br><span class="line">    uint32_t* rgbImageBuf &#x3D; (uint32_t*)malloc(bytesPerRow * imageHeight);</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 创建context</span><br><span class="line">    CGColorSpaceRef colorSpace &#x3D; CGColorSpaceCreateDeviceRGB();&#x2F;&#x2F; 色彩范围的容器</span><br><span class="line">    CGContextRef context &#x3D; CGBitmapContextCreate(rgbImageBuf, imageWidth, imageHeight, 8, bytesPerRow, colorSpace,kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipLast);</span><br><span class="line">    CGContextDrawImage(context, CGRectMake(0, 0, imageWidth, imageHeight), image.CGImage);</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 遍历像素</span><br><span class="line">    int pixelNum &#x3D; imageWidth * imageHeight;</span><br><span class="line">    uint32_t* pCurPtr &#x3D; rgbImageBuf;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; pixelNum; i++, pCurPtr++)</span><br><span class="line">    &#123;</span><br><span class="line">        uint8_t* ptr &#x3D; (uint8_t*)pCurPtr;</span><br><span class="line">        if (ptr[3] &gt;&#x3D; minR &amp;&amp; ptr[3] &lt;&#x3D; maxR &amp;&amp;</span><br><span class="line">            ptr[2] &gt;&#x3D; minG &amp;&amp; ptr[2] &lt;&#x3D; maxG &amp;&amp;</span><br><span class="line">            ptr[1] &gt;&#x3D; minB &amp;&amp; ptr[1] &lt;&#x3D; maxB) &#123;</span><br><span class="line">            ptr[0] &#x3D; 0;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            printf(&quot;\n----&gt;ptr0:%d ptr1:%d ptr2:%d ptr3:%d&lt;----\n&quot;,ptr[0],ptr[1],ptr[2],ptr[3]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; 将内存转成image</span><br><span class="line">    CGDataProviderRef dataProvider &#x3D;CGDataProviderCreateWithData(NULL, rgbImageBuf, bytesPerRow * imageHeight, nil);</span><br><span class="line">    CGImageRef imageRef &#x3D; CGImageCreate(imageWidth, imageHeight,8, 32, bytesPerRow, colorSpace,kCGImageAlphaLast |kCGBitmapByteOrder32Little, dataProvider,NULL,true,kCGRenderingIntentDefault);</span><br><span class="line">    CGDataProviderRelease(dataProvider);</span><br><span class="line">    UIImage* resultUIImage &#x3D; [UIImage imageWithCGImage:imageRef];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 释放</span><br><span class="line">    CGImageRelease(imageRef);</span><br><span class="line">    CGContextRelease(context);</span><br><span class="line">    CGColorSpaceRelease(colorSpace);</span><br><span class="line">    return resultUIImage;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>还记得我们在<strong>Core Image</strong>中提到的HSV模式的弊端吗？那么<strong>Quarz 2D</strong>则是直接利用<strong>RGBA</strong>的信息进行处理，很好的规避了对黑白色不友好的问题，我们只需要设置一下RGB的范围即可（因为黑白色在RGB颜色模式中，很好确定），我们可以大致封装一下。如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)removeWhiteColorWithImage:(UIImage *)image&#123;</span><br><span class="line">    return [self removeColorWithMaxR:255 minR:250 maxG:255 minG:240 maxB:255 minB:240 image:image];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)removeBlackColorWithImage:(UIImage *)image&#123;</span><br><span class="line">    return [self removeColorWithMaxR:15 minR:0 maxG:15 minG:0 maxB:15 minB:0 image:image];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看一下我们对于白色背景的处理效果对比</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1742463-d2ae24ffc0bbd821.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp" alt=""></p>
+<p>看起来似乎还不错，但是对于纱质的衣服，就显得很不友好。看一下笔者做的几组图片的测试</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1742463-5ef64c988f44a14c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp" alt=""></p>
+<p>很显然，如果不是白色背景，“衣衫褴褛”的效果非常明显。这个问题，在笔者尝试的三种方法中，无一幸免，如果哪位大佬知道好的处理方法，而且能告诉鶸，将不胜感激。（先放俩膝盖在这儿）</p>
+<p>除了上述问题外，这种对比每个像素的方法，读取出来的数值会同作图时出现误差。但是这种误差肉眼基本不可见。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1742463-2d5b440542eb2e1e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp" alt=""><br>如下图中，我们作图时，设置的<strong>RGB</strong>值分别为100/240/220 但是通过CG上述处理时，读取出来的值则为92/241/220。对比图中的“新的”“当前”，基本看不出色差。这点小问题各位知道就好，对实际去色效果影响并不大<br><img src="https://upload-images.jianshu.io/upload_images/1742463-b885efb39fed068b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp" alt=""></p>
+<h3 id="Masking-an-Image-with-Color"><a href="#Masking-an-Image-with-Color" class="headerlink" title="Masking an Image with Color"></a>Masking an Image with Color</h3><p>笔者尝试过理解并使用上一种方法后，在重读文档时发现了这个方法，简直就像是发现了<strong>Father Apple</strong>的恩赐。直接上代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)removeColorWithMaxR:(float)maxR minR:(float)minR maxG:(float)maxG minG:(float)minG maxB:(float)maxB minB:(float)minB image:(UIImage *)image&#123;</span><br><span class="line"></span><br><span class="line">    const CGFloat myMaskingColors[6] &#x3D; &#123;minR, maxR,  minG, maxG, minB, maxB&#125;;</span><br><span class="line">    CGImageRef ref &#x3D; CGImageCreateWithMaskingColors(image.CGImage, myMaskingColors);</span><br><span class="line">    return [UIImage imageWithCGImage:ref];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://developer.apple.com/library/content/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_images/dq_images.html#//apple_ref/doc/uid/TP30001066-CH212-CJBHCADE" target="_blank" rel="noopener">官方文档点这儿</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>HSV颜色模式相对于RGB模式而言，更利于我们抠除图片中的彩色，而RGB则正好相反。笔者因为项目中，只需要去除白色背景，所以最终采用了最后一种方式。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/11/%E7%A8%8B%E5%BA%8F%E7%8C%BF%E7%9A%84%E7%A7%8B%E8%86%98/" rel="next" title="程序猿的秋膘">
+                <i class="fa fa-chevron-left"></i> 程序猿的秋膘
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/21/%E9%81%97%E6%86%BE%E4%B8%8E%E5%B8%8C%E6%9C%9B/" rel="prev" title="遗憾与希望">
+                遗憾与希望 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Tr2e</p>
+              <p class="site-description motion-element" itemprop="description">Principle & Order</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-Image"><span class="nav-number">1.</span> <span class="nav-text">Core Image</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-Graphics-Quarz-2D"><span class="nav-number">2.</span> <span class="nav-text">Core Graphics&#x2F;Quarz 2D</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Bitmap"><span class="nav-number">2.1.</span> <span class="nav-text">Bitmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Masking-an-Image-with-Color"><span class="nav-number">2.2.</span> <span class="nav-text">Masking an Image with Color</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tr2e</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

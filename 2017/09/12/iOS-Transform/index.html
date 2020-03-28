@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言在写Custom Layout的demo时，用到了CATransform3D的m34参数，不务正业的想探究下这个矩阵到底为什么能影响到图形的透视旋转等等变换，所以通过本篇文章总结一下收获，供以后参考 目录  简单实现三维立方体 CATransform3D&amp;CGAffineTransform使用介绍 原理探究及理解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS-从三维立方体到理解CATransform3D&amp;CGAffineTransform&amp;m34">
+<meta property="og:url" content="http://yoursite.com/2017/09/12/iOS-Transform/index.html">
+<meta property="og:site_name" content="Tr2e&#39;s Blog">
+<meta property="og:description" content="前言在写Custom Layout的demo时，用到了CATransform3D的m34参数，不务正业的想探究下这个矩阵到底为什么能影响到图形的透视旋转等等变换，所以通过本篇文章总结一下收获，供以后参考 目录  简单实现三维立方体 CATransform3D&amp;CGAffineTransform使用介绍 原理探究及理解">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-0abd0a0a94a4bb44.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-ccdc9679c4ce990e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-a1d4d4184fa3d142.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-09ec25987cf3b994.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-98c7c91b8e8ae1e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-3dc4eb7d73f2ee5b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-aa57b592c9b92045.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-ddc8eb566766ac37.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-42c978969d209aee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-7c0c7c6b64e8669d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-ba2244a0184a6c76.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-dfcd3d13be62fd56.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-6880cd38730e4a1a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-b86a67f833e71728.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-4b441ac9077478c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-8f9c889124a1f522.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2017-09-12T09:41:15.000Z">
+<meta property="article:modified_time" content="2017-09-24T10:16:06.000Z">
+<meta property="article:author" content="Tr2e">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1742463-0abd0a0a94a4bb44.gif?imageMogr2/auto-orient/strip">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/12/iOS-Transform/"/>
+
+
+
+
+
+  <title>iOS-从三维立方体到理解CATransform3D&CGAffineTransform&m34 | Tr2e's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tr2e's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/12/iOS-Transform/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tr2e">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tr2e's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS-从三维立方体到理解CATransform3D&CGAffineTransform&m34</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-12T17:41:15+08:00">
+                2017-09-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在写Custom Layout的demo时，用到了CATransform3D的<strong>m34</strong>参数，不务正业的想探究下这个矩阵到底为什么能影响到图形的透视旋转等等变换，所以通过本篇文章总结一下收获，供以后参考</p>
+<p><strong>目录</strong></p>
+<ul>
+<li>简单实现三维立方体</li>
+<li>CATransform3D&amp;CGAffineTransform使用介绍</li>
+<li>原理探究及理解</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="简单实现三维立方体"><a href="#简单实现三维立方体" class="headerlink" title="简单实现三维立方体"></a>简单实现三维立方体</h3><p><img src="http://upload-images.jianshu.io/upload_images/1742463-0abd0a0a94a4bb44.gif?imageMogr2/auto-orient/strip" alt="Cube.gif"></p>
+<p>实现这个蛮简单的，只需要合理的调整旋转角度和平移，再加上一个定时器，完美（显然这个效果没什么卵用，但是笔者这只鶸来说，刚蹦出来的时候还是蛮开心的）</p>
+<p><strong>实现步骤</strong> : 1.定义一个Basic View -&gt; 2.调整并添加立方体的六个面 3.定时器调整Basic View的layer旋转<br><strong>特别注意</strong>：旋转时，我们需要同时作用于6个子layer，所以请留意<code>self.animateCube.layer.sublayerTransform = transform</code>中使用的是<strong><code>sublayerTransform</code></strong>而非<strong><code>transform</code></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">CGRect targetBounds &#x3D; (CGRect)&#123;CGPointZero,CGSizeMake(200, 200)&#125;;</span><br><span class="line">self.animateCube &#x3D; [[UIView alloc] initWithFrame:targetBounds];</span><br><span class="line">_animateCube.center &#x3D; self.view.center;</span><br><span class="line">[self.view addSubview:self.animateCube];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">UIView *test &#x3D; [[UIView alloc] initWithFrame:targetBounds];&#x2F;&#x2F; front</span><br><span class="line">test.backgroundColor &#x3D; [[UIColor blueColor] colorWithAlphaComponent:0.25];</span><br><span class="line">test.layer.transform &#x3D; CATransform3DTranslate(test.layer.transform, 0, 0, 100);</span><br><span class="line"></span><br><span class="line">UIView *test1 &#x3D; [[UIView alloc] initWithFrame:targetBounds];&#x2F;&#x2F; back</span><br><span class="line">test1.backgroundColor &#x3D; [[UIColor blackColor] colorWithAlphaComponent:0.5];</span><br><span class="line">test1.layer.transform &#x3D; CATransform3DTranslate(test1.layer.transform, 0, 0, -100);</span><br><span class="line"></span><br><span class="line">UIView *test2 &#x3D; [[UIView alloc] initWithFrame:targetBounds];&#x2F;&#x2F; left</span><br><span class="line">test2.backgroundColor &#x3D; [[UIColor yellowColor] colorWithAlphaComponent:0.5];</span><br><span class="line">test2.layer.transform &#x3D; CATransform3DTranslate(test2.layer.transform, -100, 0, 0);</span><br><span class="line">test2.layer.transform &#x3D; CATransform3DRotate(test2.layer.transform, M_PI_2, 0, 1, 0);</span><br><span class="line"></span><br><span class="line">UIView *test3 &#x3D; [[UIView alloc] initWithFrame:targetBounds];&#x2F;&#x2F; right</span><br><span class="line">test3.backgroundColor &#x3D; [[UIColor purpleColor] colorWithAlphaComponent:0.5];</span><br><span class="line">test3.layer.transform &#x3D; CATransform3DTranslate(test3.layer.transform, 100, 0, 0);</span><br><span class="line">test3.layer.transform &#x3D; CATransform3DRotate(test3.layer.transform, M_PI_2, 0, 1, 0);</span><br><span class="line"></span><br><span class="line">UIView *test4 &#x3D; [[UIView alloc] initWithFrame:targetBounds];&#x2F;&#x2F; head</span><br><span class="line">test4.backgroundColor &#x3D; [[UIColor orangeColor] colorWithAlphaComponent:0.5];</span><br><span class="line">test4.layer.transform &#x3D; CATransform3DTranslate(test4.layer.transform, 0, 100, 0);</span><br><span class="line">test4.layer.transform &#x3D; CATransform3DRotate(test4.layer.transform, M_PI_2, 1, 0, 0);</span><br><span class="line"></span><br><span class="line">UIView *test5 &#x3D; [[UIView alloc] initWithFrame:targetBounds];&#x2F;&#x2F; foot</span><br><span class="line">test5.backgroundColor &#x3D; [[UIColor greenColor] colorWithAlphaComponent:0.5];</span><br><span class="line">test5.layer.transform &#x3D; CATransform3DTranslate(test5.layer.transform, 0, -100, 0);</span><br><span class="line">test5.layer.transform &#x3D; CATransform3DRotate(test5.layer.transform, M_PI_2, -1, 0, 0);</span><br><span class="line"></span><br><span class="line">[self.animateCube addSubview:test];</span><br><span class="line">[self.animateCube addSubview:test1];</span><br><span class="line">[self.animateCube addSubview:test2];</span><br><span class="line">[self.animateCube addSubview:test3];</span><br><span class="line">[self.animateCube addSubview:test4];</span><br><span class="line">[self.animateCube addSubview:test5];</span><br><span class="line"></span><br><span class="line">self.animateCube.transform &#x3D; CGAffineTransformMakeScale(0.5, 0.5);&#x2F;&#x2F;CGAffineTransform</span><br><span class="line"></span><br><span class="line">__block CATransform3D transform &#x3D; CATransform3DIdentity;</span><br><span class="line"></span><br><span class="line">NSLog(@&quot;%@&quot;,[NSString logForCATransform3D:transform]);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; Label</span><br><span class="line">UILabel *label &#x3D; [[UILabel alloc] init];</span><br><span class="line">label.frame &#x3D; CGRectOffset(self.animateCube.frame, 0, - 100);</span><br><span class="line">label.text &#x3D; @&quot;AnimatedCube&quot;;</span><br><span class="line">[label sizeToFit];</span><br><span class="line">[self.view addSubview:label];</span><br><span class="line"></span><br><span class="line">transform.m34 &#x3D; 1.0&#x2F;-500;</span><br><span class="line"></span><br><span class="line">float angle &#x3D; M_PI &#x2F; 360;</span><br><span class="line">self.animateCube.layer.sublayerTransform &#x3D; transform;</span><br><span class="line">NSTimer *timer &#x3D; [NSTimer timerWithTimeInterval:1.0&#x2F;60 repeats:YES block:^(NSTimer * _Nonnull timer) &#123;</span><br><span class="line">    transform &#x3D; CATransform3DRotate(transform, angle, 1, 1, 0.5);</span><br><span class="line">    self.animateCube.layer.sublayerTransform &#x3D; transform;&#x2F;&#x2F;</span><br><span class="line">&#125;];</span><br><span class="line">[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];</span><br></pre></td></tr></table></figure>
+<h3 id="CATransform3D-amp-CGAffineTransform使用介绍"><a href="#CATransform3D-amp-CGAffineTransform使用介绍" class="headerlink" title="CATransform3D&amp;CGAffineTransform使用介绍"></a>CATransform3D&amp;CGAffineTransform使用介绍</h3><h4 id="CGAffineTransform"><a href="#CGAffineTransform" class="headerlink" title="CGAffineTransform"></a>CGAffineTransform</h4><p><img src="http://upload-images.jianshu.io/upload_images/1742463-ccdc9679c4ce990e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="CGAffineTransform.png"></p>
+<blockquote>
+<p><a href="https://developer.apple.com/documentation/coregraphics/cgaffinetransform?language=objc" target="_blank" rel="noopener">CGAffineTransform</a><br>An affine transformation matrix for use in drawing 2D graphics<br>用于绘制2D图形的仿射变换矩阵</p>
+</blockquote>
+<p>以上为官方文档定义，那么什么是仿射变换，看看这里数学咖们的解释就能大概理解了→<a href="https://www.zhihu.com/question/20666664" target="_blank" rel="noopener">如何通俗地讲解「仿射变换」这个概念？</a></p>
+<ol>
+<li><strong><code>CGAffineTransformMake</code></strong>返回直接控制每一个参数的仿射变换矩阵<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CGAffineTransform CGAffineTransformMake(CGFloat a, CGFloat b, CGFloat c, CGFloat d, CGFloat tx, CGFloat ty);</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>CGAffineTransformScale</code></strong>返回通过缩放现有仿射变换构造的仿射变换矩阵，<code>sx</code>/<code>sy</code>即为<code>x方向</code>和<code>y方向</code>的缩放比例<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CGAffineTransform CGAffineTransformScale(CGAffineTransform t, CGFloat sx, CGFloat sy);</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>CGAffineTransformRotate</code></strong>返回通过旋转现有仿射变换构造的仿射变换矩阵，<code>angle</code>为旋转弧度<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CGAffineTransform CGAffineTransformRotate(CGAffineTransform t, CGFloat angle);</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>CGAffineTransformInvert</code></strong>返回通过反转现有仿射变换构造的仿射变换矩阵。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CGAffineTransform CGAffineTransformInvert(CGAffineTransform t);</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>CGAffineTransformTranslate</code></strong>返回实现平移的仿射变换矩阵。<code>tx</code>/<code>ty</code>为偏移量<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CGAffineTransform CGAffineTransformTranslate(CGAffineTransform t, CGFloat tx, CGFloat ty);</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>CGAffineTransformConcat</code></strong>返回通过组合两个现有仿射变换构造的仿射变换矩阵。<strong><em>本质就是两个矩阵的乘法，上述平移、旋转、缩放的操作，如配图所示，都是可以通过点的齐次坐标与仿射变换矩阵的乘积获得，原理笔者会在第三部分解释</em></strong><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CGAffineTransform CGAffineTransformConcat(CGAffineTransform t1, CGAffineTransform t2);</span><br></pre></td></tr></table></figure></li>
+<li>几个特殊的仿射变换矩阵</li>
+</ol>
+<p><strong><code>CGAffineTransformMakeScale</code></strong>/<strong><code>CGAffineTransformMakeRotation</code></strong>/<strong><code>CGAffineTransformMakeTranslation</code></strong> 都是在<strong>原视图初始坐标</strong>的基础上变化，所以并不会累加效果，相比上述Api它少了基础仿射矩阵参数<code>CGAffineTransform t</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; scale</span><br><span class="line">CGAffineTransform CGAffineTransformMakeScale(CGFloat sx, CGFloat sy);</span><br><span class="line">&#x2F;&#x2F; rotaion</span><br><span class="line">CGAffineTransform CGAffineTransformMakeRotation(CGFloat angle);</span><br><span class="line">&#x2F;&#x2F; translation</span><br><span class="line">CGAffineTransform CGAffineTransformMakeTranslation(CGFloat tx, CGFloat ty);</span><br></pre></td></tr></table></figure>
+<ol start="8">
+<li><code>CGAffineTransformIdentity</code>即<strong>单位矩阵</strong>如下图所示，他并不会对图形造成任何影响，通常用来恢复初始状态</li>
+</ol>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-a1d4d4184fa3d142.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="CGAffineTransformIdentity.png"></p>
+<p><strong>我们要想将文字视图翻转该怎么做呢？</strong><br><img src="http://upload-images.jianshu.io/upload_images/1742463-09ec25987cf3b994.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="2D翻转"><br>很简单，只需要将<code>CGAffineTransformMakeScale</code>中的参数设置为<strong>-1</strong>即可。是不是很有趣</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">label.transform &#x3D; CGAffineTransformMakeScale(-1, -1);</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="CATransform3D"><a href="#CATransform3D" class="headerlink" title="CATransform3D"></a>CATransform3D</h4><p><img src="http://upload-images.jianshu.io/upload_images/1742463-98c7c91b8e8ae1e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="CATransform3D.png"></p>
+<blockquote>
+<p><a href="https://developer.apple.com/documentation/quartzcore/transforms?language=objc" target="_blank" rel="noopener">CATransform3D</a><br>Defines the standard transform matrix used throughout Core Animation.<br>定义核心动画中使用的标准变换矩阵</p>
+</blockquote>
+<p><code>CATransform</code>同样定义为结构体，代表了三维图形4x4的变换矩阵。网上有几篇文章，对每个参数功能都进行了标注，但是这样<strong><em>并不十分严谨</em></strong>。因为左上3x3的矩阵区域，各个参数需要相互作用才能达到理想的准确状态，并不单纯的是某个值负责某种准确的三维图形变换。笔者将在本文的第三部分<strong>原理探究及理解</strong>中具体解释，感(hen)兴(wu)趣(liao)的同学可以往下看看。</p>
+<p>因为只是从2D变换变成3D变换，而且4x4矩阵本身就是3x3矩阵的拓展，原理是一样的，所以有很多相似相通的地方。</p>
+<ol>
+<li><strong><code>CATransform3DScale</code></strong>返回通过缩放现有变换构造的变换矩阵，<code>sx</code>/<code>sy</code>/<code>sz</code>即为<code>x方向</code>、<code>y方向</code>和<code>z方向</code>的缩放比例<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CATransform3D CATransform3DScale (CATransform3D t, CGFloat sx,</span><br><span class="line">    CGFloat sy, CGFloat sz)</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>CATransform3DRotate</code></strong>返回通过旋转现有变换构造的变换矩阵，<code>angle</code>代表弧度，<code>x</code>,<code>y</code>,<code>z</code>代表各个轴上旋转的弧度倍数<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CATransform3D CATransform3DRotate (CATransform3D t, CGFloat angle,</span><br><span class="line">    CGFloat x, CGFloat y, CGFloat z)</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>CATransform3DInvert</code></strong>返回反转后的变换矩阵<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CATransform3D CATransform3DInvert (CATransform3D t)</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>CATransform3DTranslate</code></strong>返回实现<code>x</code>/<code>y</code>/<code>z</code>轴上平移相应距离的变换矩阵<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CATransform3D CATransform3DTranslate (CATransform3D t, CGFloat tx,</span><br><span class="line">    CGFloat ty, CGFloat tz)</span><br></pre></td></tr></table></figure></li>
+<li><strong><code>CATransform3DConcat</code></strong>返回同时作用两种变换矩阵的矩阵<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CATransform3D CATransform3DConcat (CATransform3D a, CATransform3D b)</span><br></pre></td></tr></table></figure></li>
+<li>几个特殊的变换矩阵</li>
+</ol>
+<p><strong><code>CATransform3DMakeScale</code></strong>/<strong><code>CATransform3DMakeRotation</code></strong>/<strong><code>CATransform3DMakeTranslation</code></strong>同样是作用于原始视图的变换矩阵</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* Returns a transform that translates by &#39;(tx, ty, tz)&#39;:</span><br><span class="line"> * t&#39; &#x3D;  [1 0 0 0; 0 1 0 0; 0 0 1 0; tx ty tz 1]. *&#x2F;</span><br><span class="line"></span><br><span class="line">CATransform3D CATransform3DMakeTranslation (CGFloat tx,</span><br><span class="line">    CGFloat ty, CGFloat tz)</span><br><span class="line"></span><br><span class="line">&#x2F;* Returns a transform that scales by &#96;(sx, sy, sz)&#39;:</span><br><span class="line"> * t&#39; &#x3D; [sx 0 0 0; 0 sy 0 0; 0 0 sz 0; 0 0 0 1]. *&#x2F;</span><br><span class="line"></span><br><span class="line">CATransform3D CATransform3DMakeScale (CGFloat sx, CGFloat sy,</span><br><span class="line">    CGFloat sz)</span><br><span class="line"></span><br><span class="line">&#x2F;* Returns a transform that rotates by &#39;angle&#39; radians about the vector</span><br><span class="line"> * &#39;(x, y, z)&#39;. If the vector has length zero the identity transform is</span><br><span class="line"> * returned. *&#x2F;</span><br><span class="line"></span><br><span class="line">CATransform3D CATransform3DMakeRotation (CGFloat angle, CGFloat x,</span><br><span class="line">    CGFloat y, CGFloat z)</span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li><strong><code>CATransform3DIdentity</code></strong><code>[1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 1]</code>，人畜无害矩阵，通常用于恢复初始状态</li>
+</ol>
+<h3 id="原理解释"><a href="#原理解释" class="headerlink" title="原理解释"></a>原理解释</h3><h4 id="CGAffineTransform-1"><a href="#CGAffineTransform-1" class="headerlink" title="CGAffineTransform"></a>CGAffineTransform</h4><p><strong>以下是苹果官方文档对于CGAffineTransform二维变换矩阵对图形影响的注解</strong></p>
+<blockquote>
+<p><a href="https://developer.apple.com/documentation/coregraphics/cgaffinetransform?language=objc" target="_blank" rel="noopener">CGAffineTransform官方文档注解</a><br>An affine transformation matrix is used to rotate, scale, translate, or skew the objects you draw in a graphics context. The CGAffineTransform<br> type provides functions for creating, concatenating, and applying affine transformations.<br>Affine transforms are represented by a 3 by 3 matrix:<br><img src="http://upload-images.jianshu.io/upload_images/1742463-3dc4eb7d73f2ee5b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="A 3 by 3 matrix."><br>Because the third column is always (0,0,1), the CGAffineTransform<br> data structure contains values for only the first two columns.<br>Conceptually, an affine transform multiplies a row vector representing each point (x,y) in your drawing by this matrix, producing a vector that represents the corresponding point (x’,y’):<br><img src="http://upload-images.jianshu.io/upload_images/1742463-aa57b592c9b92045.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="A row vector multiplying a 3 by 3 matrix."><br>Given the 3 by 3 matrix, the following equations are used to transform a point (x, y) in one coordinate system into a resultant point (x’,y’) in another coordinate system.<br><img src="http://upload-images.jianshu.io/upload_images/1742463-ddc8eb566766ac37.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Transformation equations."></p>
+</blockquote>
+<p>看到这里，<a href="https://baike.baidu.com/item/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/800?fr=aladdin" target="_blank" rel="noopener">线代大神</a>一定会嘴角上扬了，所以如果以下内容有任何理解或书写错误，请您务必留言给笔者鶸渣评论勘误打脸，千万不要高抬贵手。</p>
+<p>二维的变换都可以看作是坐标的<a href="https://baike.baidu.com/item/%E9%BD%90%E6%AC%A1%E5%9D%90%E6%A0%87/511284?fr=aladdin" target="_blank" rel="noopener">齐次坐标</a>同[a b 0; c d 0; tx ty 1]的<a href="http://www.ruanyifeng.com/blog/2015/09/matrix-multiplication.html" target="_blank" rel="noopener">乘法运算</a></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-42c978969d209aee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="矩阵乘法图示-阮一峰博客"></p>
+<p><strong>矩阵的乘法规则</strong>：第m行与第n行交叉位置的值，等于第一个矩阵第m行与第二个矩阵第n列对应位置的乘积之和。依据这个规则，再看下图，是不是感觉豁然开朗<br><img src="http://upload-images.jianshu.io/upload_images/1742463-7c0c7c6b64e8669d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>知道了原理后，我们继续探究<code>translate</code>/<code>scale</code>/<code>rotate</code>到底“背地里”干了些什么</p>
+<p>上文中我们提到了，单独对结构体中<strong>某个的参数</strong>（Translate平移的参数当然不会出错，问题集中在对于<strong>线性变化区域</strong>的标注，即<strong>CGAffineTransform左上2x2区域</strong>、<strong>CATransform3D左上3x3区域</strong>）进行功能注释是<strong>不够严谨</strong>的。</p>
+<p>为了证明这一观点，笔者绘制了<code>CGAffineTransformRotate</code>仿射矩阵的推导过程图（这一结论在<strong>CATransform3DRotate矩阵</strong>中，同样适用，证明<strong>具体参数标注的不严谨</strong>）<br><img src="http://upload-images.jianshu.io/upload_images/1742463-ba2244a0184a6c76.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="CGAffineTransformRotate的仿射矩阵推导"></p>
+<ul>
+<li><strong>相关推导用到的转换公式</strong><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sin(A+B) &#x3D; sinAcosB + cosAsinB </span><br><span class="line">sin(A-B) &#x3D; sinAcosB - cosAsinB</span><br><span class="line">cos(A+B) &#x3D; cosAcosB - sinAsinB </span><br><span class="line">cos(A-B) &#x3D; cosAcosB + sinAsinB</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>下面给出相对简单的<code>CGAffineTransformTranslate</code>和<code>CGAffineTransformScale</code>的矩阵的简单推导</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-dfcd3d13be62fd56.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="CGAffineTransformTranslate"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-6880cd38730e4a1a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="CGAffineTransformScale"></p>
+<p>细心的同学可能会发现，系统Api修改的都是矩阵的前两列参数。那么调整第三列，会有什么样的效果？</p>
+<p>第三列参数，直接作用到<a href="https://baike.baidu.com/item/%E9%BD%90%E6%AC%A1%E5%9D%90%E6%A0%87/511284?fr=aladdin" target="_blank" rel="noopener">齐次坐标</a>的n+1维的参数上，它同普通坐标的转换关系以我们一直讨论的二维为例，如下图。为保证<code>x = x&#39;,y = y&#39;</code>,所以默认转换后，齐次坐标的<code>d = 1</code>，如果第三列前两个参数均为0，那么修改<strong>右下位置的参数</strong>，可以直接控制图形的缩放。前两个参数则是随着图形中点的x、y值的变化改变对于齐次坐标中<code>d</code>值得影响。<br><img src="http://upload-images.jianshu.io/upload_images/1742463-b86a67f833e71728.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>不过苹果并没有给我们提供这三个参数，而是选择在二维变换时把这一列去掉了-。- 可能觉得意义不大吧。但是，在<strong>CATransform3D</strong>中，这一列得到了保留，我们熟悉的<strong>m34</strong>，正是受<strong>z轴</strong>影响的透视关键参数，相信看到这里的你，应该已经能够理解为什么改变<strong>m34</strong>能够影响<strong>屏幕坐标</strong>中的透视关系了。</p>
+<h4 id="CATransform3D-1"><a href="#CATransform3D-1" class="headerlink" title="CATransform3D"></a>CATransform3D</h4><p>3D矩阵变换，其实就是2D矩阵变换的拓展，相应的3x3矩阵变成<strong>CATransform3D</strong>代表的4x4矩阵</p>
+<p>经过对于<strong>CGAffineTransform</strong>的学习，这里我们就不再推导常用的3D Api对应的变换了，直接贴上结果图<br><img src="http://upload-images.jianshu.io/upload_images/1742463-4b441ac9077478c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="相关矩阵"></p>
+<p><strong>变换矩阵根据功能划分为四个区域，这里不做T1、T3区域的单独标注，观点在上文中已经提出，不再赘述</strong><br><img src="http://upload-images.jianshu.io/upload_images/1742463-8f9c889124a1f522.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="变换矩阵功能区分"></p>
+<ul>
+<li><p><strong>投影变换</strong></p>
+<blockquote>
+<p>目前大部分电子设备的图形显示，都是只能用二维图形表示三维物体，因此三维物体就要靠投影来降低位数得到二维平面图形，3D到2D转换的过程，称为投影变换</p>
+</blockquote>
+</li>
+<li><p><strong>m34为什么能改变透视关系</strong>：</p>
+</li>
+<li><p><em>m34*</em>影响到了T4区域的<strong>s值</strong>，<strong>s值</strong>会对投影的图形在<strong>z轴</strong>方向产生<strong>线性</strong>影响，为什么通常会用<strong>1/d</strong>的<strong>负值</strong>，因为用户特殊的观察视角，决定了感官上近大远小的特性，同时<strong>iOS中的坐标系，是左手坐标系，远离我们的方向，是z轴的负方向，所以越深入屏幕，图像中点的齐次坐标中的d就越大，屏幕上的投影就越小</strong></p>
+</li>
+<li><p><strong>旋转正方向的确定</strong>：左手坐标系适用于左手定律（反之亦然），握住指定轴，拇指指向该轴正方向，四指指向方向即为正方向</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/30/iOS-UICollectionView%E5%BF%AB%E9%80%9F%E6%9E%84%E9%80%A0-%E6%8B%96%E6%8B%BD%E9%87%8D%E6%8E%92-%E8%BD%AE%E6%92%AD%E5%AE%9E%E7%8E%B0%E4%BB%8B%E7%BB%8D/" rel="next" title="iOS-UICollectionView快速构造/拖拽重排/轮播实现介绍">
+                <i class="fa fa-chevron-left"></i> iOS-UICollectionView快速构造/拖拽重排/轮播实现介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/21/iOS-Self-Sizing-WaterFlowLayout/" rel="prev" title="iOS-Autolayout自动计算itemSize的UICollectionViewLayout瀑布流布局">
+                iOS-Autolayout自动计算itemSize的UICollectionViewLayout瀑布流布局 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Tr2e</p>
+              <p class="site-description motion-element" itemprop="description">Principle & Order</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单实现三维立方体"><span class="nav-number">2.</span> <span class="nav-text">简单实现三维立方体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CATransform3D-amp-CGAffineTransform使用介绍"><span class="nav-number">3.</span> <span class="nav-text">CATransform3D&amp;CGAffineTransform使用介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CGAffineTransform"><span class="nav-number">3.1.</span> <span class="nav-text">CGAffineTransform</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CATransform3D"><span class="nav-number">3.2.</span> <span class="nav-text">CATransform3D</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理解释"><span class="nav-number">4.</span> <span class="nav-text">原理解释</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CGAffineTransform-1"><span class="nav-number">4.1.</span> <span class="nav-text">CGAffineTransform</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CATransform3D-1"><span class="nav-number">4.2.</span> <span class="nav-text">CATransform3D</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tr2e</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

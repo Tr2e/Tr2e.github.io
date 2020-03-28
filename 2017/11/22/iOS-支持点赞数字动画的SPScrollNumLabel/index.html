@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简单实现支持点赞数字动画的SPScrollNumLabel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS-支持点赞数字动画的SPScrollNumLabel">
+<meta property="og:url" content="http://yoursite.com/2017/11/22/iOS-%E6%94%AF%E6%8C%81%E7%82%B9%E8%B5%9E%E6%95%B0%E5%AD%97%E5%8A%A8%E7%94%BB%E7%9A%84SPScrollNumLabel/index.html">
+<meta property="og:site_name" content="Tr2e&#39;s Blog">
+<meta property="og:description" content="简单实现支持点赞数字动画的SPScrollNumLabel">
+<meta property="og:image" content="https://github.com/Tr2e/SPScrollNumLabel/raw/master/Picture/timelineDemo.gif">
+<meta property="og:image" content="https://github.com/Tr2e/SPScrollNumLabel/raw/master/Picture/Demo.gif">
+<meta property="og:image" content="https://github.com/Tr2e/SPScrollNumLabel/raw/master/Picture/text.gif">
+<meta property="og:image" content="https://github.com/Tr2e/SPScrollNumLabel/raw/master/Picture/Snip20171122_1.png">
+<meta property="og:image" content="https://github.com/Tr2e/SPScrollNumLabel/raw/master/Picture/Snip20171122_3.png">
+<meta property="article:published_time" content="2017-11-22T05:44:08.000Z">
+<meta property="article:modified_time" content="2017-11-24T09:46:45.563Z">
+<meta property="article:author" content="Tr2e">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/Tr2e/SPScrollNumLabel/raw/master/Picture/timelineDemo.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/22/iOS-支持点赞数字动画的SPScrollNumLabel/"/>
+
+
+
+
+
+  <title>iOS-支持点赞数字动画的SPScrollNumLabel | Tr2e's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tr2e's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/22/iOS-%E6%94%AF%E6%8C%81%E7%82%B9%E8%B5%9E%E6%95%B0%E5%AD%97%E5%8A%A8%E7%94%BB%E7%9A%84SPScrollNumLabel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tr2e">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tr2e's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS-支持点赞数字动画的SPScrollNumLabel</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-22T13:44:08+08:00">
+                2017-11-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>简单实现支持点赞数字动画的SPScrollNumLabel</p>
+<a id="more"></a>
+
+<p><a href="https://github.com/Tr2e/SPScrollNumLabel" target="_blank" rel="noopener">Github:SPScrollNumLabel</a><br><strong>如果你觉得帮助到你了，希望给鶸一个Star，谢谢</strong><br><a href="http://www.jianshu.com/u/737f895deaec" target="_blank" rel="noopener">简书</a><br><strong>如果你发现任何问题，请一定要给我拍砖，谢谢</strong></p>
+<p><strong>项目效果</strong><br><img src="https://github.com/Tr2e/SPScrollNumLabel/raw/master/Picture/timelineDemo.gif" alt="项目应用效果"></p>
+<p><strong>Ver 0.0.1</strong><br><img src="https://github.com/Tr2e/SPScrollNumLabel/raw/master/Picture/Demo.gif" alt="Demo效果"></p>
+<p><strong>Ver 0.0.2</strong><br><img src="https://github.com/Tr2e/SPScrollNumLabel/raw/master/Picture/text.gif" alt="Text效果"></p>
+<h2 id="Api"><a href="#Api" class="headerlink" title="Api"></a>Api</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, assign) IBInspectable NSInteger targetNumber;&#x2F;&#x2F; default is 0</span><br><span class="line">@property (nonatomic, assign) IBInspectable CGFloat animateDuration;&#x2F;&#x2F; default is 0.25</span><br><span class="line">@property (nonatomic, assign) IBInspectable BOOL isCommonLabel;&#x2F;&#x2F; default is NO</span><br><span class="line">@property (nonatomic, assign) BOOL centerPointPriority;&#x2F;&#x2F; default is NO</span><br><span class="line">- (void)increaseNumber:(NSInteger)increasedNum;</span><br><span class="line">- (void)decreaseNumber:(NSInteger)decreasedNum;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置目标数字</li>
+<li>设置数字滚动的动画时间</li>
+<li>设置为普通的<code>UILabel</code>使用</li>
+<li>设置是否为<code>center</code>属性优先布局，针对只设置<code>foo.center</code>的情况，详情见Demo</li>
+<li>数字增加方法</li>
+<li>数字减少方法</li>
+</ul>
+<h2 id="设置"><a href="#设置" class="headerlink" title="设置"></a>设置</h2><ol>
+<li><strong>对文字及字体颜色等常见参数的设置，直接通过UILabel的参数设置即可.</strong></li>
+<li><strong>输入数字支持targetNum及text两种属性输入</strong></li>
+<li><strong>targetNumber及text的输入，都请放在字体属性设置完成后</strong></li>
+</ol>
+<p><em>注意点：如果输入的文字为中文，请不要设置Label的backgroundColor属性，否则无法正常显示</em></p>
+<h3 id="纯代码"><a href="#纯代码" class="headerlink" title="纯代码"></a>纯代码</h3><ol>
+<li>设置frame时,<strong>如果size属性的宽不能适应展示宽度，都会自动调整,如果size属性的高度不能容纳展示高度，会自动调整，能容纳则不做任何处理</strong></li>
+<li><code>targetNumber</code>的赋值，请务必放在配置参数的<strong>最后</strong></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">CGRect screenBounds &#x3D; [UIScreen mainScreen].bounds;</span><br><span class="line">SPScrollNumLabel *num &#x3D; [[SPScrollNumLabel alloc] initWithFrame:(CGRect)&#123;CGPointMake(screenBounds.size.width&#x2F;2 - 50, 100),CGSizeMake(2, 100)&#125;];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 设置frame时</span><br><span class="line">    &#x2F;&#x2F; 如果size属性的宽不能适应展示宽度，都会自动调整</span><br><span class="line">    &#x2F;&#x2F; 如果size属性的高度不能容纳展示高度，会自动调整，能容纳则不做任何处理</span><br><span class="line">    &#x2F;&#x2F; num.frame &#x3D; (CGRect)&#123;CGPointMake(screenBounds.size.width&#x2F;2 - 50, 100),CGSizeMake(2, 100)&#125;;</span><br><span class="line">    </span><br><span class="line">&#x2F;&#x2F; 字体属性，直接赋值</span><br><span class="line">num.textColor &#x3D; [[UIColor whiteColor] colorWithAlphaComponent:0.5];</span><br><span class="line">num.font &#x3D; [UIFont systemFontOfSize:40 weight:UIFontWeightBold];</span><br><span class="line">num.backgroundColor &#x3D; [[UIColor purpleColor] colorWithAlphaComponent:0.4];</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#x2F;&#x2F; 如果采用center赋值 需要设置是否中心点优先</span><br><span class="line">SPScrollNumLabel *centerLabel &#x3D; [[SPScrollNumLabel alloc] init];</span><br><span class="line">centerLabel.center &#x3D; CGPointMake(screenBounds.size.width&#x2F;2, 250);</span><br><span class="line">centerLabel.centerPointPriority &#x3D; YES;</span><br><span class="line">centerLabel.textColor &#x3D; [[UIColor whiteColor] colorWithAlphaComponent:0.5];</span><br><span class="line">centerLabel.font &#x3D; [UIFont systemFontOfSize:35 weight:UIFontWeightThin];</span><br><span class="line">centerLabel.backgroundColor &#x3D; [[UIColor blueColor] colorWithAlphaComponent:0.4];</span><br><span class="line">&#x2F;&#x2F; 属性配置完成后，赋值 默认为0</span><br><span class="line">centerLabel.text &#x3D; @&quot;998&quot;;</span><br><span class="line">    </span><br><span class="line">&#x2F;&#x2F; 如果想当做普通的UILabel用 比如特殊值&quot;1千&quot;等 打开isCommonLabel 直接按照UILabel的使用即可</span><br><span class="line">SPScrollNumLabel *commonLabel &#x3D; [[SPScrollNumLabel alloc] init];</span><br><span class="line">commonLabel.isCommonLabel &#x3D; YES;</span><br><span class="line">commonLabel.textColor &#x3D; [[UIColor whiteColor] colorWithAlphaComponent:0.5];</span><br><span class="line">commonLabel.font &#x3D; [UIFont systemFontOfSize:35 weight:UIFontWeightThin];</span><br><span class="line">commonLabel.backgroundColor &#x3D; [[UIColor blueColor] colorWithAlphaComponent:0.4];</span><br><span class="line">commonLabel.text &#x3D; @&quot;我可以当普通label用哦&quot;;</span><br><span class="line">[commonLabel sizeToFit];</span><br><span class="line">commonLabel.center &#x3D; CGPointMake(screenBounds.size.width&#x2F;2, commonLabel.frame.size.height&#x2F;2+34);</span><br></pre></td></tr></table></figure>
+
+<h3 id="xib"><a href="#xib" class="headerlink" title="xib"></a>xib</h3><p>xib支持直接设置，你可以将必要的参数在这里直接设置：<strong>颜色</strong>、<strong>字体</strong>、<strong>动画时间</strong>、<strong>是否是个普通Label</strong>、<strong>动画翻转时间</strong><br><img src="https://github.com/Tr2e/SPScrollNumLabel/raw/master/Picture/Snip20171122_1.png" alt="demo 1"><br><img src="https://github.com/Tr2e/SPScrollNumLabel/raw/master/Picture/Snip20171122_3.png" alt="demo 2"></p>
+<h2 id="如何应用"><a href="#如何应用" class="headerlink" title="如何应用"></a>如何应用</h2><p>使用<strong>pod</strong>或者直接拖拽相应文件夹到你的工程下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &#39;SPScrollNumLabel&#39; ,&#39;~&gt; 0.0.2&#39;</span><br></pre></td></tr></table></figure>
+
+<p><strong>20171124 Ver.0.0.2</strong>:支持<code>label.text</code>的直接赋值</p>
+<p><strong>20171123 Ver.0.0.1</strong></p>
+<hr>
+<p><strong>Enjoy It</strong></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/16/iOS-property/" rel="next" title="iOS-认识@property">
+                <i class="fa fa-chevron-left"></i> iOS-认识@property
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/11/%E7%A8%8B%E5%BA%8F%E7%8C%BF%E7%9A%84%E7%A7%8B%E8%86%98/" rel="prev" title="程序猿的秋膘">
+                程序猿的秋膘 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Tr2e</p>
+              <p class="site-description motion-element" itemprop="description">Principle & Order</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Api"><span class="nav-number">1.</span> <span class="nav-text">Api</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置"><span class="nav-number">2.</span> <span class="nav-text">设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#纯代码"><span class="nav-number">2.1.</span> <span class="nav-text">纯代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xib"><span class="nav-number">2.2.</span> <span class="nav-text">xib</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何应用"><span class="nav-number">3.</span> <span class="nav-text">如何应用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tr2e</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

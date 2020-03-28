@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="目录  UICollectionView的定义 UICollectionView快速构建GridView网格视图 UICollectionView拖拽重排处理(iOS8.x-&#x2F;iOS9.x+) UICollectionView实现简单轮播">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS-UICollectionView快速构造&#x2F;拖拽重排&#x2F;轮播实现介绍">
+<meta property="og:url" content="http://yoursite.com/2017/06/30/iOS-UICollectionView%E5%BF%AB%E9%80%9F%E6%9E%84%E9%80%A0-%E6%8B%96%E6%8B%BD%E9%87%8D%E6%8E%92-%E8%BD%AE%E6%92%AD%E5%AE%9E%E7%8E%B0%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="Tr2e&#39;s Blog">
+<meta property="og:description" content="目录  UICollectionView的定义 UICollectionView快速构建GridView网格视图 UICollectionView拖拽重排处理(iOS8.x-&#x2F;iOS9.x+) UICollectionView实现简单轮播">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-41b6241b1e1e0c2a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-903b7f281675f816.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-9f04dd2b2da96685.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-ff33314059a0185b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-4601a1c424019561.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-af5ce687d7b451ff.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-ff5b1610c46daa67.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-c85b0fdeb9160592.gif?imageMogr2/auto-orient/strip">
+<meta property="article:published_time" content="2017-06-30T06:57:03.000Z">
+<meta property="article:modified_time" content="2017-07-02T06:22:27.000Z">
+<meta property="article:author" content="Tr2e">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1742463-41b6241b1e1e0c2a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/30/iOS-UICollectionView快速构造-拖拽重排-轮播实现介绍/"/>
+
+
+
+
+
+  <title>iOS-UICollectionView快速构造/拖拽重排/轮播实现介绍 | Tr2e's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tr2e's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/30/iOS-UICollectionView%E5%BF%AB%E9%80%9F%E6%9E%84%E9%80%A0-%E6%8B%96%E6%8B%BD%E9%87%8D%E6%8E%92-%E8%BD%AE%E6%92%AD%E5%AE%9E%E7%8E%B0%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tr2e">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tr2e's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS-UICollectionView快速构造/拖拽重排/轮播实现介绍</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-30T14:57:03+08:00">
+                2017-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>目录</strong></p>
+<ul>
+<li><code>UICollectionView</code>的定义</li>
+<li><code>UICollectionView</code>快速构建GridView网格视图</li>
+<li><code>UICollectionView</code>拖拽重排处理(iOS8.x-/iOS9.x+)</li>
+<li><code>UICollectionView</code>实现简单轮播</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="UICollectionView的定义"><a href="#UICollectionView的定义" class="headerlink" title="UICollectionView的定义"></a>UICollectionView的定义</h2><p><code>UICollectionView</code>同<code>UITableView</code>一样，是iOS中最常用到数据展示视图。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-41b6241b1e1e0c2a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<ul>
+<li><code>UICollectionView</code>显示内容时:<ul>
+<li>通过<code>dataSource</code>获取<code>cell</code></li>
+<li>通过<code>UICollectionViewLayout</code>获取<code>layout attributes</code>布局属性</li>
+<li>通过对应的<code>layout attributes</code>对<code>cell</code>进行调整，完成布局</li>
+</ul>
+</li>
+<li><code>UICollectionView</code>交互则是通过丰富的<code>delegate</code>方法实现</li>
+</ul>
+<h3 id="UICollectionView视图"><a href="#UICollectionView视图" class="headerlink" title="UICollectionView视图"></a>UICollectionView视图</h3><p>一个标准的<code>UICollectionView</code>视图包括以下三个部分<br><strong></p>
+<ul>
+<li><code>UICollectionViewCell</code>视图展示单元</li>
+<li><code>SupplementaryView</code>追加视图，类似我们熟悉的<code>UITableView</code>中的<code>HeaderView</code>、<code>FooterVIew</code></li>
+<li><code>DecorationView</code>装饰视图</strong>
+
+</li>
+</ul>
+<p>1.<code>UICollectionView</code>依然采用<code>Cell</code>重用的方式减小内存开支，所以需要我们<strong>注册并标记</strong>，同样，注册分为<code>Class</code>及<code>nib</code>两类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; register cell</span><br><span class="line">    if (_cellClassName) &#123;</span><br><span class="line">        [_collectionView registerClass:NSClassFromString(_cellClassName) forCellWithReuseIdentifier:ReuseIdentifier];</span><br><span class="line">    &#125;</span><br><span class="line">    if (_xibName) &#123;&#x2F;&#x2F; xib</span><br><span class="line">        [_collectionView registerNib:[UINib nibWithNibName:_xibName bundle:nil] forCellWithReuseIdentifier:ReuseIdentifier];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>2.<strong>Father Apple</strong>同样将重用机制带给了<code>SupplementaryView</code>，注册方法同<code>Cell</code>类似</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; UIKIT_EXTERN NSString *const UICollectionElementKindSectionHeader NS_AVAILABLE_IOS(6_0);</span><br><span class="line">&#x2F;&#x2F; UIKIT_EXTERN NSString *const UICollectionElementKindSectionFooter NS_AVAILABLE_IOS(6_0);</span><br><span class="line">- (void)registerClass:(nullable Class)viewClass forSupplementaryViewOfKind:(NSString *)elementKind withReuseIdentifier:(NSString *)identifier;</span><br><span class="line">- (void)registerNib:(nullable UINib *)nib forSupplementaryViewOfKind:(NSString *)kind withReuseIdentifier:(NSString *)identifier;</span><br></pre></td></tr></table></figure>
+<p>对于它尺寸的配置，同样交由<code>Layout</code>处理，如果使用的是<code>UICollectionViewFlowLayout</code>，可以直接通过<code>headerReferenceSize</code>或<code>footerReferenceSize</code>赋值<br>3.<strong><code>DecorationView</code>装饰视图</strong>，是我们在自定义<code>Custom Layout</code>时使用</p>
+<h3 id="UICollectionViewDataSource及UICollectionViewDelegate"><a href="#UICollectionViewDataSource及UICollectionViewDelegate" class="headerlink" title="UICollectionViewDataSource及UICollectionViewDelegate"></a>UICollectionViewDataSource及UICollectionViewDelegate</h3><p>这个部分使用频率极高想必大家都非常熟悉，所以笔者列出方法，不再赘述。</p>
+<p><strong>UICollectionViewDataSource</strong>（<strong>* 需要着重关注下iOS9后出现的两个新数据源方法，在下文中介绍拖拽重排时会用到他们 *</strong>）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@required</span><br><span class="line"></span><br><span class="line">- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:</span><br><span class="line">- (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath;</span><br><span class="line"></span><br><span class="line">@optional</span><br><span class="line"></span><br><span class="line">- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; The view that is returned must be retrieved from a call to -dequeueReusableSupplementaryViewOfKind:withReuseIdentifier:forIndexPath:</span><br><span class="line">- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath;</span><br><span class="line"></span><br><span class="line">- (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath NS_AVAILABLE_IOS(9_0);</span><br><span class="line">- (void)collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath*)destinationIndexPath NS_AVAILABLE_IOS(9_0);</span><br></pre></td></tr></table></figure>
+<p><strong>UICollectionViewDelegate</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath;</span><br><span class="line">- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath;</span><br><span class="line">- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath NS_AVAILABLE_IOS(8_0);</span><br><span class="line">- (void)collectionView:(UICollectionView *)collectionView willDisplaySupplementaryView:(UICollectionReusableView *)view forElementKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath NS_AVAILABLE_IOS(8_0);</span><br><span class="line">- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath;</span><br><span class="line">- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath;</span><br><span class="line"></span><br><span class="line">- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath;</span><br><span class="line">- (void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath;</span><br><span class="line">- (void)collectionView:(UICollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath;</span><br><span class="line">- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath;</span><br><span class="line">- (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath;</span><br></pre></td></tr></table></figure>
+<p>官方注释解释了交互后调用的顺序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; (when the touch begins)</span><br><span class="line">&#x2F;&#x2F; 1. -collectionView:shouldHighlightItemAtIndexPath:</span><br><span class="line">&#x2F;&#x2F; 2. -collectionView:didHighlightItemAtIndexPath:</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; (when the touch lifts)</span><br><span class="line">&#x2F;&#x2F; 3. -collectionView:shouldSelectItemAtIndexPath: or -collectionView:shouldDeselectItemAtIndexPath:</span><br><span class="line">&#x2F;&#x2F; 4. -collectionView:didSelectItemAtIndexPath: or -collectionView:didDeselectItemAtIndexPath:</span><br><span class="line">&#x2F;&#x2F; 5. -collectionView:didUnhighlightItemAtIndexPath:</span><br></pre></td></tr></table></figure>
+<p>使用<code>代理</code>的方式处理数据及交互，好处是显而易见的，代码功能分工非常明确，但是也造成了一定程度上的代码书写的繁琐。所以本文会在<strong>快速构建</strong>部分，介绍如何使用<code>Block</code>实现链式传参书写</p>
+<h3 id="UICollectionViewLayout布局"><a href="#UICollectionViewLayout布局" class="headerlink" title="UICollectionViewLayout布局"></a>UICollectionViewLayout布局</h3><p>不同于<code>UITableView</code>的简单布局样式，<code>UICollectionView</code>提供了更加强大的布局能力，将布局样式任务分离成单独一个类管理，就是我们<strong>初始化时必不可少<code>UICollectionViewLayout</code></strong></p>
+<p><code>Custom Layout</code>通过<code>UICollectionViewLayoutAttributes</code>，配置不同位置Cell的诸多属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic) CGRect frame;</span><br><span class="line">@property (nonatomic) CGPoint center;</span><br><span class="line">@property (nonatomic) CGSize size;</span><br><span class="line">@property (nonatomic) CATransform3D transform3D;</span><br><span class="line">@property (nonatomic) CGRect bounds NS_AVAILABLE_IOS(7_0);</span><br><span class="line">@property (nonatomic) CGAffineTransform transform NS_AVAILABLE_IOS(7_0);</span><br><span class="line">@property (nonatomic) CGFloat alpha;</span><br><span class="line">@property (nonatomic) NSInteger zIndex; &#x2F;&#x2F; default is 0</span><br></pre></td></tr></table></figure>
+<p>同样也可以通过Layout提供诸多<code>行为接口</code>动态修改Cell的布局属性</p>
+<p>贴心的<strong>Father Apple</strong>为了让我们具备快速构建网格视图的能力，封装了大家都非常熟悉的线性布局<code>UICollectionViewFlowLayout</code>，同样不做赘述</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic) CGFloat minimumLineSpacing;</span><br><span class="line">@property (nonatomic) CGFloat minimumInteritemSpacing;</span><br><span class="line">@property (nonatomic) CGSize itemSize;</span><br><span class="line">@property (nonatomic) CGSize estimatedItemSize NS_AVAILABLE_IOS(8_0); &#x2F;&#x2F; defaults to CGSizeZero - setting a non-zero size enables cells that self-size via -preferredLayoutAttributesFittingAttributes:</span><br><span class="line">@property (nonatomic) UICollectionViewScrollDirection scrollDirection; &#x2F;&#x2F; default is UICollectionViewScrollDirectionVertical</span><br><span class="line">@property (nonatomic) CGSize headerReferenceSize;</span><br><span class="line">@property (nonatomic) CGSize footerReferenceSize;</span><br><span class="line">@property (nonatomic) UIEdgeInsets sectionInset;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 悬浮Header、Footer官方支持</span><br><span class="line">&#x2F;&#x2F; Set these properties to YES to get headers that pin to the top of the screen and footers that pin to the bottom while scrolling (similar to UITableView).</span><br><span class="line">@property (nonatomic) BOOL sectionHeadersPinToVisibleBounds NS_AVAILABLE_IOS(9_0);</span><br><span class="line">@property (nonatomic) BOOL sectionFootersPinToVisibleBounds NS_AVAILABLE_IOS(9_0);</span><br></pre></td></tr></table></figure>
+
+<p>本文中不展开讨论如何定义<code>Custom Layout</code>实现诸如悬浮<code>Header</code>、瀑布流、堆叠卡片等效果，鶸笔者会在近期写一篇文章详细介绍布局配置及有趣的<code>TransitionLayout</code>，感兴趣的同学可以关注一下<br><img src="http://upload-images.jianshu.io/upload_images/1742463-903b7f281675f816.gif?imageMogr2/auto-orient/strip" alt="有趣的UICollectionViewTransitionLayout"></p>
+<h2 id="UICollectionView快速构建GridView网格视图"><a href="#UICollectionView快速构建GridView网格视图" class="headerlink" title="UICollectionView快速构建GridView网格视图"></a>UICollectionView快速构建GridView网格视图</h2><p>日常工作中，实现一个简单的网格布局<code>CollectionView</code>的步骤大致分成以下几步：</p>
+<ul>
+<li>配置<code>UICollectionViewFlowLayout</code>：滑动方向、itemSize、内边距、最小行间距、最小列间距</li>
+<li>配置<code>UICollectionView</code>：数据源、代理、注册Cell、背景颜色</li>
+</ul>
+<p>完成这些，代码已经写了一大堆了，如果App网格视图部分很多的话，一遍遍的写，很烦-。- 所以封装一个简单易用的<code>UICollectionView</code>显得非常有必要，相信各位大佬也都做过了。</p>
+<p>这里笔者介绍一下自己封装的CollectionView</p>
+<ul>
+<li>基于UIView（考虑到使用storyboard或xib快速构建时，添加UIView占位的情况）</li>
+<li>使用<code>UICollectionViewFlowLayout</code> 满足最常见的开发需求</li>
+<li>提供点击交互方法，提供<code>Block</code>及<code>Delegate</code>两种方式</li>
+<li>提供<strong>普通传参</strong>及<strong>链式传参</strong>两种方式</li>
+<li>支持常见轮播</li>
+<li>支持拖拽重排</li>
+</ul>
+<p>普通构建方式示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 代码创建</span><br><span class="line">    SPEasyCollectionView *easyView &#x3D; [[SPEasyCollectionView alloc] initWithFrame:CGRectMake(0, 20, [UIScreen mainScreen].bounds.size.width, 200)];</span><br><span class="line">    easyView.delegate &#x3D; self;</span><br><span class="line">    easyView.itemSize &#x3D; CGSizeMake([UIScreen mainScreen].bounds.size.width, 200);</span><br><span class="line">    easyView.scrollDirection &#x3D; SPEasyScrollDirectionHorizontal;</span><br><span class="line">    easyView.xibName &#x3D; @&quot;EasyCell&quot;;</span><br><span class="line">    easyView.datas &#x3D; @[@&quot;1&quot;,@&quot;2&quot;,@&quot;3&quot;,@&quot;4&quot;];</span><br><span class="line">    [self.view addSubview:easyView];</span><br></pre></td></tr></table></figure>
+<p>链式传参</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; chain calls</span><br><span class="line">    _storyboardTest.sp_cellClassName(^NSString *&#123;</span><br><span class="line">        return @&quot;TestCell&quot;;</span><br><span class="line">    &#125;).sp_itemsize(^CGSize&#123;</span><br><span class="line">        return CGSizeMake(100, 100);</span><br><span class="line">    &#125;).sp_minLineSpace(^NSInteger&#123;</span><br><span class="line">        return 20;</span><br><span class="line">    &#125;).sp_minInterItemSpace(^NSInteger&#123;</span><br><span class="line">        return 10;</span><br><span class="line">    &#125;).sp_scollDirection(^SPEasyScrollDirection&#123;</span><br><span class="line">        return SPEasyScrollDirectionVertical;</span><br><span class="line">    &#125;).sp_inset(^UIEdgeInsets&#123;</span><br><span class="line">        return UIEdgeInsetsMake(20, 20, 20, 20);</span><br><span class="line">    &#125;).sp_backgroundColor(^UIColor *&#123;</span><br><span class="line">        return [UIColor colorWithRed:173&#x2F;255.0 green:216&#x2F;255.0 blue:230&#x2F;255.0 alpha:1];</span><br><span class="line">    &#125;);&#x2F;&#x2F;LightBLue 			#ADD8E6	173,216,230</span><br></pre></td></tr></table></figure>
+<p>这里分享一下链式的处理，希望对感兴趣的同学有所启发。其实很简单，就是<strong>Block传值</strong></p>
+<p><strong>定义</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; chain calls</span><br><span class="line">typedef SPEasyCollectionView *(^SPEasyCollectionViewItemSize)(CGSize(^)(void));</span><br></pre></td></tr></table></figure>
+<p><strong>属性示例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; chain calls</span><br><span class="line">@property (nonatomic, readonly) SPEasyCollectionViewItemSize sp_itemsize;</span><br></pre></td></tr></table></figure>
+<p><strong>属性处理示例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (SPEasyCollectionViewItemSize)sp_itemsize&#123;</span><br><span class="line">    return ^SPEasyCollectionView *(CGSize(^itemSize)())&#123;</span><br><span class="line">        self.itemSize &#x3D; itemSize();</span><br><span class="line">        return self;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="UICollectionView拖拽重排处理-iOS8-x-iOS9-x"><a href="#UICollectionView拖拽重排处理-iOS8-x-iOS9-x" class="headerlink" title="UICollectionView拖拽重排处理(iOS8.x-/iOS9.x+)"></a>UICollectionView拖拽重排处理(iOS8.x-/iOS9.x+)</h2><p><img src="http://upload-images.jianshu.io/upload_images/1742463-9f04dd2b2da96685.gif?imageMogr2/auto-orient/strip" alt="Strike/Freedom/Destiny有没有胶友"></p>
+<p>拖拽重排功能的实现，在iOS9之前，需要开发者自己去实现动画、边缘检测以及数据源更新，比较繁琐。iOS9之后，官方替我们处理了相对比较复杂的前几步，只需要开发者按照正确的原则在<strong>重排完成时</strong>更新数据源即可。</p>
+<p>拖拽重排的触发，一般都是通过长按手势触发。无论是哪种系统环境下，都需要<code>LongpressGestureRecognizer</code>的协助，所以我们事先将它准备好</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 添加长按手势</span><br><span class="line">- (void)addLongPressGestureRecognizer&#123;</span><br><span class="line">    </span><br><span class="line">    UILongPressGestureRecognizer *longPress &#x3D; [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];</span><br><span class="line">    longPress.minimumPressDuration &#x3D; self.activeEditingModeTimeInterval?_activeEditingModeTimeInterval:2.0f;</span><br><span class="line">    [self addGestureRecognizer:longPress];</span><br><span class="line">    self.longGestureRecognizer &#x3D; longPress;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>说明一下手势处理的几种状态</p>
+<table>
+<thead>
+<tr>
+<th>GestureRecognizerState</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>UIGestureRecognizerStateBegan</td>
+<td>手势开始</td>
+</tr>
+<tr>
+<td>UIGestureRecognizerStateChanged</td>
+<td>手势变化</td>
+</tr>
+<tr>
+<td>UIGestureRecognizerStateEnded</td>
+<td>手势结束</td>
+</tr>
+<tr>
+<td>UIGestureRecognizerStateCancelled</td>
+<td>手势取消</td>
+</tr>
+<tr>
+<td>UIGestureRecognizerStateFailed</td>
+<td>手势失败</td>
+</tr>
+<tr>
+<td>UIGestureRecognizerStatePossible</td>
+<td>默认状态，暂未识别</td>
+</tr>
+<tr>
+<td>对手势的不同状态分别进行处理</td>
+<td></td>
+</tr>
+<tr>
+<td><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">- (void)handleEditingMode:(UILongPressGestureRecognizer *)recognizer&#123;</span><br><span class="line">    </span><br><span class="line">    switch (recognizer.state) &#123;</span><br><span class="line">        case UIGestureRecognizerStateBegan: &#123;</span><br><span class="line">            [self handleEditingMoveWhenGestureBegan:recognizer];</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        case UIGestureRecognizerStateChanged: &#123;</span><br><span class="line">            [self handleEditingMoveWhenGestureChanged:recognizer];</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        case UIGestureRecognizerStateEnded: &#123;</span><br><span class="line">            [self handleEditingMoveWhenGestureEnded:recognizer];</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        default: &#123;</span><br><span class="line">            [self handleEditingMoveWhenGestureCanceledOrFailed:recognizer];</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="iOS8-x-拖拽重排处理"><a href="#iOS8-x-拖拽重排处理" class="headerlink" title="iOS8.x-拖拽重排处理"></a>iOS8.x-拖拽重排处理</h3><p>iOS8.x及以前的系统，对拖拽重排并没有官方的支持。</p>
+<p>动手之前，我们先来理清实现思路</p>
+<ol>
+<li><strong><em>长按Cell触发编辑模式</em></strong></li>
+<li><strong><em>手势开始时</em></strong>：对当前<code>active cell</code>进行截图并添加<code>snapView</code>在cell的位置 隐藏触发Cell，需要记录当前手势触发点距离<code>active cell</code>的中心点偏移量<code>center offset</code></li>
+<li><strong><em>手势移动时</em></strong>：根据当前触摸点的位置及<code>center offset</code>更新<code>snapView</code>位置</li>
+<li><strong><em>手势移动时</em></strong>：判断<code>snapView</code>同<code>visibleCells</code>的初<code>active cell</code>外所有cell的中心点距离，当交叉位置超过cell面积的1/4时，利用系统提供的<code>- (void)moveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)newIndexPath;</code>进行交换，该接口在调用时，有默认<a href="http://www.jianshu.com/p/1a02bbcb1e24" target="_blank" rel="noopener">动画</a>，时间0.25s</li>
+<li><strong><em>手势移动时</em></strong>：需要添加<strong>边缘检测功能</strong>，如果当前<code>snapView</code>边缘靠近<code>CollectionView</code>的边缘一定距离时，需要开始滚动视图，与边缘交叉距离变化时，需要根据比例进行加速或减速。同时第4点中用的<a href="(http://www.jianshu.com/p/1a02bbcb1e24)">动画效果</a>，也应该相应的改变速度</li>
+<li><strong><em>手势结束时</em></strong>：通过系统api交换Cell时有动画效果，而且<strong>它仅仅只是个动画效果</strong>，所以我们需要在手势结束时，对<strong>数据源进行更新</strong>，这就要求我们记录交互开始时<code>indexPath</code>信息并确定当前结束时的位置信息。同时，需要将<code>snapView</code>移除，将<code>activeCell</code>的显示并取消选中状态</li>
+</ol>
+<p>为了帮助实现<strong>边缘检测功能</strong>,笔者绘制了下图，标注<code>UICollectionView</code>整体布局相关的几个重要参数，复习一下<code>UICollectionView</code>的<strong><code>ContentSize</code>/<code>frame.size/bounds.size</code>/<code>edgeInset</code></strong>之间的关系。因为我们需要借助这几个参数，确定<strong>拖拽方向</strong>及<strong>contentOffset变化范围</strong><br><img src="http://upload-images.jianshu.io/upload_images/1742463-ff33314059a0185b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>我们按照上文中准备好的的手势处理方法，逐步介绍</p>
+<ul>
+<li><strong>handleEditingMoveWhenGestureBegan</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (void)handleEditingMoveWhenGestureBegan:(UILongPressGestureRecognizer *)recognizer&#123;</span><br><span class="line"></span><br><span class="line">    CGPoint pressPoint &#x3D; [recognizer locationInView:self.collectionView];</span><br><span class="line">    NSIndexPath *selectIndexPath &#x3D; [self.collectionView indexPathForItemAtPoint:pressPoint];</span><br><span class="line">    SPBaseCell *cell &#x3D; (SPBaseCell *)[_collectionView cellForItemAtIndexPath:selectIndexPath];</span><br><span class="line">    self.activeIndexPath &#x3D; selectIndexPath;</span><br><span class="line">    self.sourceIndexPath &#x3D; selectIndexPath;</span><br><span class="line">    self.activeCell &#x3D; cell;</span><br><span class="line">    cell.selected &#x3D; YES;</span><br><span class="line">    </span><br><span class="line">    self.centerOffset &#x3D; CGPointMake(pressPoint.x - cell.center.x, pressPoint.y - cell.center.y);</span><br><span class="line">    </span><br><span class="line">    self.snapViewForActiveCell &#x3D; [cell snapshotViewAfterScreenUpdates:YES];</span><br><span class="line">    self.snapViewForActiveCell.frame &#x3D; cell.frame;</span><br><span class="line">    cell.hidden &#x3D; YES;</span><br><span class="line">    [self.collectionView addSubview:self.snapViewForActiveCell];</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>handleEditingMoveWhenGestureChanged</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (void)handleEditingMoveWhenGestureChanged:(UILongPressGestureRecognizer *)recognizer&#123;</span><br><span class="line"></span><br><span class="line">    CGPoint pressPoint &#x3D; [recognizer locationInView:self.collectionView];</span><br><span class="line"></span><br><span class="line">    _snapViewForActiveCell.center &#x3D; CGPointMake(pressPoint.x - _centerOffset.x, pressPoint.y-_centerOffset.y);</span><br><span class="line">    [self handleExchangeOperation];&#x2F;&#x2F; 交换操作</span><br><span class="line">    [self detectEdge];&#x2F;&#x2F; 边缘检测</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>handleExchangeOperation</strong>:处理当前snapView与visibleCells的位置关系，如果交叉超过面积的1/4，则将隐藏的activeCell同当前cell进行交换，并更新当前活动位置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">- (void)handleExchangeOperation&#123;</span><br><span class="line"></span><br><span class="line">    for (SPBaseCell *cell in self.collectionView.visibleCells)</span><br><span class="line">    &#123;</span><br><span class="line">        NSIndexPath *currentIndexPath &#x3D; [_collectionView indexPathForCell:cell];</span><br><span class="line">        if ([_collectionView indexPathForCell:cell] &#x3D;&#x3D; self.activeIndexPath) continue;</span><br><span class="line">        </span><br><span class="line">        CGFloat space_x &#x3D; fabs(_snapViewForActiveCell.center.x - cell.center.x);</span><br><span class="line">        CGFloat space_y &#x3D; fabs(_snapViewForActiveCell.center.y - cell.center.y);</span><br><span class="line">        &#x2F;&#x2F; CGFloat space &#x3D; sqrtf(powf(space_x, 2) + powf(space_y, 2));</span><br><span class="line">        CGFloat size_x &#x3D; cell.bounds.size.width;</span><br><span class="line">        CGFloat size_y &#x3D; cell.bounds.size.height;</span><br><span class="line">        </span><br><span class="line">        if (currentIndexPath.item &gt; self.activeIndexPath.item)</span><br><span class="line">        &#123;</span><br><span class="line">            [self.activeCells addObject:cell];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        if (space_x &lt;  size_x&#x2F;2.0 &amp;&amp; space_y &lt; size_y&#x2F;2.0)</span><br><span class="line">        &#123;</span><br><span class="line">            [self handleCellExchangeWithSourceIndexPath:self.activeIndexPath destinationIndexPath:currentIndexPath];</span><br><span class="line">            self.activeIndexPath &#x3D; currentIndexPath;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>handleCellExchangeWithSourceIndexPath: destinationIndexPath:</strong>对cell进行交换处理，对跨列或者跨行的交换，需要考虑cell的交换方向，我们定义moveForward变量，作为向上(-1)/下(1)移动、向左(-1)/右(1)移动的标记，moveDirection == -1时，cell反向动画，越靠前的cell越早移动，反之moveDirection == 1时，越靠后的cell越早移动。代码中出现的<code>changeRatio</code>，是我们在<strong>边缘检测</strong>中得到的比例值，用来加速<a href="http://www.jianshu.com/p/1a02bbcb1e24" target="_blank" rel="noopener">动画</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">- (void)handleCellExchangeWithSourceIndexPath:(NSIndexPath *)sourceIndexPath destinationIndexPath:(NSIndexPath *)destinationIndexPath&#123;</span><br><span class="line"></span><br><span class="line">    NSInteger activeRange &#x3D; destinationIndexPath.item - sourceIndexPath.item;</span><br><span class="line">    BOOL moveForward &#x3D; activeRange &gt; 0;</span><br><span class="line">    NSInteger originIndex &#x3D; 0;</span><br><span class="line">    NSInteger targetIndex &#x3D; 0;</span><br><span class="line">    </span><br><span class="line">    for (NSInteger i &#x3D; 1; i &lt;&#x3D; labs(activeRange); i ++) &#123;</span><br><span class="line">        </span><br><span class="line">        NSInteger moveDirection &#x3D; moveForward?1:-1;</span><br><span class="line">        originIndex &#x3D; sourceIndexPath.item + i*moveDirection;</span><br><span class="line">        targetIndex &#x3D; originIndex  - 1*moveDirection;</span><br><span class="line"></span><br><span class="line">        if (!_isEqualOrGreaterThan9_0) &#123;</span><br><span class="line">            CGFloat time &#x3D; 0.25 - 0.11*fabs(self.changeRatio);</span><br><span class="line">            NSLog(@&quot;time:%f&quot;,time);</span><br><span class="line">            [UIView beginAnimations:nil context:nil];</span><br><span class="line">            [UIView setAnimationDuration:time];</span><br><span class="line">            [_collectionView moveItemAtIndexPath:[NSIndexPath indexPathForItem:originIndex inSection:sourceIndexPath.section] toIndexPath:[NSIndexPath indexPathForItem:targetIndex inSection:sourceIndexPath.section]];</span><br><span class="line">            [UIView commitAnimations];</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>detectEdge</strong>：边缘检测。定义枚举类型<code>SPDragDirection</code>记录拖拽方向，我们设置边缘检测的范围是，当snapView的边距距离最近的CollectionView显示范围边距距离小于10时，启动<code>CADisplayLink</code>，按屏幕刷新率调整CollectionView的<strong><em>contentOffset</em></strong>，当手势离开这个范围时，需要将变化系数<code>ChangeRatio</code>清零并销毁<code>CADisplayLink</code>，减少不必要的性能开支。同时需要更新当前snapView的位置，因为这次位置的变化并不是<strong><em>LongPressGesture</em></strong>引起的，所以当手指不移动时，并不会触发手势的<code>Changed</code>状态，我们需要在修改contentOffset的位置根据视图滚动的方向去判断修改<code>snapView.center</code>。<strong>这里需要注意的一点细节，在下面的代码中，我们对<code>baseOffset</code>使用了向下取整的操作，因为浮点型数据精度的问题，很容易出现<code>1.000001^365</code>这种误差增大问题。笔者在实际操作时，出现了逐渐偏移现象，所以这里特别指出，希望各位同学以后处理类似问题时注意</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger,SPDragDirection) &#123;</span><br><span class="line">    SPDragDirectionRight,</span><br><span class="line">    SPDragDirectionLeft,</span><br><span class="line">    SPDragDirectionUp,</span><br><span class="line">    SPDragDirectionDown</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">static CGFloat edgeRange &#x3D; 10;</span><br><span class="line">static CGFloat velocityRatio &#x3D; 5;</span><br><span class="line">- (void)detectEdge&#123;</span><br><span class="line">    </span><br><span class="line">    CGFloat baseOffset &#x3D; 2;</span><br><span class="line"></span><br><span class="line">    CGPoint snapView_minPoint &#x3D; self.snapViewForActiveCell.frame.origin;</span><br><span class="line">    CGFloat snapView_max_x &#x3D; CGRectGetMaxX(_snapViewForActiveCell.frame);</span><br><span class="line">    CGFloat snapView_max_y &#x3D; CGRectGetMaxY(_snapViewForActiveCell.frame);</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; left</span><br><span class="line">    if (snapView_minPoint.x - self.collectionView.contentOffset.x &lt; edgeRange &amp;&amp;</span><br><span class="line">        self.collectionView.contentOffset.x &gt; 0)&#123;</span><br><span class="line"></span><br><span class="line">        CGFloat intersection_x &#x3D; edgeRange - (snapView_minPoint.x - self.collectionView.contentOffset.x);</span><br><span class="line">        intersection_x &#x3D; intersection_x &lt; 2*edgeRange?2*edgeRange:intersection_x;</span><br><span class="line">        self.changeRatio &#x3D; intersection_x&#x2F;(2*edgeRange);</span><br><span class="line">        baseOffset &#x3D; baseOffset * -1 -  _changeRatio* baseOffset *velocityRatio;</span><br><span class="line">        self.edgeIntersectionOffset &#x3D; floorf(baseOffset);</span><br><span class="line">        self.dragDirection &#x3D; SPDragDirectionLeft;</span><br><span class="line">        [self setupCADisplayLink];</span><br><span class="line">        NSLog(@&quot;Drag left - vertical offset:%f&quot;,self.edgeIntersectionOffset);</span><br><span class="line">        NSLog(@&quot;CollectionView offset_X:%f&quot;,self.collectionView.contentOffset.x);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; up</span><br><span class="line">    else if (snapView_minPoint.y - self.collectionView.contentOffset.y &lt; edgeRange &amp;&amp;</span><br><span class="line">             self.collectionView.contentOffset.y &gt; 0)&#123;</span><br><span class="line">        </span><br><span class="line">        CGFloat intersection_y &#x3D; edgeRange - (snapView_minPoint.y - self.collectionView.contentOffset.y);</span><br><span class="line">        intersection_y &#x3D; intersection_y &gt; 2*edgeRange?2*edgeRange:intersection_y;</span><br><span class="line">        self.changeRatio &#x3D; intersection_y&#x2F;(2*edgeRange);</span><br><span class="line">        baseOffset &#x3D; baseOffset * -1 -  _changeRatio* baseOffset *velocityRatio;</span><br><span class="line">        self.edgeIntersectionOffset &#x3D; floorf(baseOffset);</span><br><span class="line">        self.dragDirection &#x3D; SPDragDirectionUp;</span><br><span class="line">        [self setupCADisplayLink];</span><br><span class="line">        NSLog(@&quot;Drag up - vertical offset:%f&quot;,self.edgeIntersectionOffset);</span><br><span class="line">        NSLog(@&quot;CollectionView offset_Y:%f&quot;,self.collectionView.contentOffset.y);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; right</span><br><span class="line">    else if (snapView_max_x + edgeRange &gt; self.collectionView.contentOffset.x + self.collectionView.bounds.size.width &amp;&amp; self.collectionView.contentOffset.x + self.collectionView.bounds.size.width &lt; self.collectionView.contentSize.width)&#123;</span><br><span class="line">        </span><br><span class="line">        CGFloat intersection_x &#x3D; edgeRange - (self.collectionView.contentOffset.x + self.collectionView.bounds.size.width - snapView_max_x);</span><br><span class="line">        intersection_x &#x3D; intersection_x &gt; 2*edgeRange ? 2*edgeRange:intersection_x;</span><br><span class="line">        self.changeRatio &#x3D; intersection_x&#x2F;(2*edgeRange);</span><br><span class="line">        baseOffset &#x3D; baseOffset + _changeRatio * baseOffset * velocityRatio;</span><br><span class="line">        self.edgeIntersectionOffset &#x3D; floorf(baseOffset);</span><br><span class="line">        self.dragDirection &#x3D; SPDragDirectionRight;</span><br><span class="line">        [self setupCADisplayLink];</span><br><span class="line">        NSLog(@&quot;Drag right - vertical offset:%f&quot;,self.edgeIntersectionOffset);</span><br><span class="line">        NSLog(@&quot;CollectionView offset_X:%f&quot;,self.collectionView.contentOffset.x);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; down</span><br><span class="line">    else if (snapView_max_y + edgeRange &gt; self.collectionView.contentOffset.y + self.collectionView.bounds.size.height &amp;&amp; self.collectionView.contentOffset.y + self.collectionView.bounds.size.height &lt; self.collectionView.contentSize.height)&#123;</span><br><span class="line">        </span><br><span class="line">        CGFloat intersection_y &#x3D; edgeRange - (self.collectionView.contentOffset.y + self.collectionView.bounds.size.height - snapView_max_y);</span><br><span class="line">        intersection_y &#x3D; intersection_y &gt; 2*edgeRange ? 2*edgeRange:intersection_y;</span><br><span class="line">        self.changeRatio &#x3D; intersection_y&#x2F;(2*edgeRange);</span><br><span class="line">        baseOffset &#x3D; baseOffset +  _changeRatio* baseOffset * velocityRatio;</span><br><span class="line">        self.edgeIntersectionOffset &#x3D; floorf(baseOffset);</span><br><span class="line">        self.dragDirection &#x3D; SPDragDirectionDown;</span><br><span class="line">        [self setupCADisplayLink];</span><br><span class="line">        NSLog(@&quot;Drag down - vertical offset:%f&quot;,self.edgeIntersectionOffset);</span><br><span class="line">        NSLog(@&quot;CollectionView offset_Y:%f&quot;,self.collectionView.contentOffset.y);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; default</span><br><span class="line">    else&#123;</span><br><span class="line">        </span><br><span class="line">        self.changeRatio &#x3D; 0;</span><br><span class="line">        </span><br><span class="line">        if (self.displayLink)</span><br><span class="line">        &#123;</span><br><span class="line">            [self invalidateCADisplayLink];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>CADisplayLink</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (void)setupCADisplayLink&#123;</span><br><span class="line"></span><br><span class="line">    if (self.displayLink) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    CADisplayLink *displayLink &#x3D; [CADisplayLink displayLinkWithTarget:self selector:@selector(handleEdgeIntersection)];</span><br><span class="line">    [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];</span><br><span class="line">    self.displayLink &#x3D; displayLink;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)invalidateCADisplayLink&#123;</span><br><span class="line">    </span><br><span class="line">    [self.displayLink setPaused:YES];</span><br><span class="line">    [self.displayLink invalidate];</span><br><span class="line">    self.displayLink &#x3D; nil;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>更新<code>contentOffset</code>及<code>snapView.center</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">- (void)handleEdgeIntersection&#123;</span><br><span class="line">    </span><br><span class="line">    [self handleExchangeOperation];</span><br><span class="line"></span><br><span class="line">    switch (_scrollDirection) &#123;</span><br><span class="line">        case SPEasyScrollDirectionHorizontal:</span><br><span class="line">        &#123;</span><br><span class="line">            if (self.collectionView.contentOffset.x + self.inset.left &lt; 0 &amp;&amp;</span><br><span class="line">                self.dragDirection &#x3D;&#x3D; SPDragDirectionLeft)&#123;</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">            if (self.collectionView.contentOffset.x &gt;</span><br><span class="line">                self.collectionView.contentSize.width - (self.collectionView.bounds.size.width - self.inset.left) &amp;&amp;</span><br><span class="line">                self.dragDirection &#x3D;&#x3D; SPDragDirectionRight)&#123;</span><br><span class="line">                    return;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            [self.collectionView setContentOffset:CGPointMake(_collectionView.contentOffset.x + self.edgeIntersectionOffset, _collectionView.contentOffset.y) animated:NO];</span><br><span class="line">            self.snapViewForActiveCell.center &#x3D; CGPointMake(_snapViewForActiveCell.center.x + self.edgeIntersectionOffset, _snapViewForActiveCell.center.y);</span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">        case SPEasyScrollDirectionVertical:</span><br><span class="line">        &#123;</span><br><span class="line">            </span><br><span class="line">            if (self.collectionView.contentOffset.y + self.inset.top&lt; 0 &amp;&amp;</span><br><span class="line">                self.dragDirection &#x3D;&#x3D; SPDragDirectionUp) &#123;</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">            if (self.collectionView.contentOffset.y &gt;</span><br><span class="line">                self.collectionView.contentSize.height - (self.collectionView.bounds.size.height - self.inset.top) &amp;&amp;</span><br><span class="line">                self.dragDirection &#x3D;&#x3D; SPDragDirectionDown) &#123;</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            [self.collectionView setContentOffset:CGPointMake(_collectionView.contentOffset.x, _collectionView.contentOffset.y +  self.edgeIntersectionOffset) animated:NO];</span><br><span class="line">            self.snapViewForActiveCell.center &#x3D; CGPointMake(_snapViewForActiveCell.center.x, _snapViewForActiveCell.center.y + self.edgeIntersectionOffset);</span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>handleEditingMoveWhenGestureEnded</strong><br>手势结束时，我们应该使用动画，将snapView的Center调整到已经交换到位的<code>activeCell</code>位置上，动画结束时，移除截图并将<code>activeCell</code>显示出来，销毁计时器、重置参数<br>（呼<del>终于大功告成了</del> 还没有啊喂，同学，这里得敲黑板了哈~前面可是提到了要注意<strong>动画仅仅是动画，不更新数据源的</strong>）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (void)handleEditingMoveWhenGestureEnded:(UILongPressGestureRecognizer *)recognizer&#123;</span><br><span class="line">    </span><br><span class="line">        [self.snapViewForActiveCell removeFromSuperview];</span><br><span class="line">        self.activeCell.selected &#x3D; NO;</span><br><span class="line">        self.activeCell.hidden &#x3D; NO;</span><br><span class="line">        </span><br><span class="line">        [self handleDatasourceExchangeWithSourceIndexPath:self.sourceIndexPath destinationIndexPath:self.activeIndexPath];</span><br><span class="line">        [self invalidateCADisplayLink];</span><br><span class="line">        self.edgeIntersectionOffset &#x3D; 0;</span><br><span class="line">        self.changeRatio &#x3D; 0;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为数据源并不需要实时更新，所以我们只需要最初位置以及最后的位置即可，交换方法复制了上面的exchangeCell方法，其实不用<code>moveForward</code>参数了，全都是因为<strong><em>懒</em></strong>……</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">- (void)handleDatasourceExchangeWithSourceIndexPath:(NSIndexPath *)sourceIndexPath destinationIndexPath:(NSIndexPath *)destinationIndexPath&#123;</span><br><span class="line">    </span><br><span class="line">    NSMutableArray *tempArr &#x3D; [self.datas mutableCopy];</span><br><span class="line">    </span><br><span class="line">    NSInteger activeRange &#x3D; destinationIndexPath.item - sourceIndexPath.item;</span><br><span class="line">    BOOL moveForward &#x3D; activeRange &gt; 0;</span><br><span class="line">    NSInteger originIndex &#x3D; 0;</span><br><span class="line">    NSInteger targetIndex &#x3D; 0;</span><br><span class="line">    </span><br><span class="line">    for (NSInteger i &#x3D; 1; i &lt;&#x3D; labs(activeRange); i ++) &#123;</span><br><span class="line">        </span><br><span class="line">        NSInteger moveDirection &#x3D; moveForward?1:-1;</span><br><span class="line">        originIndex &#x3D; sourceIndexPath.item + i*moveDirection;</span><br><span class="line">        targetIndex &#x3D; originIndex  - 1*moveDirection;</span><br><span class="line">        </span><br><span class="line">        [tempArr exchangeObjectAtIndex:originIndex withObjectAtIndex:targetIndex];</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    self.datas &#x3D; [tempArr copy];</span><br><span class="line">    NSLog(@&quot;##### %@ #####&quot;,self.datas);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>handleEditingMoveWhenGestureCanceledOrFailed</strong><br>失败或者取消手势时，我们直接让snapView回去就好了嘛~必要步骤，销毁定时器，重置参数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (void)handleEditingMoveWhenGestureCanceledOrFailed:(UILongPressGestureRecognizer *)recognizer&#123;</span><br><span class="line"></span><br><span class="line">     [UIView animateWithDuration:0.25f animations:^&#123;</span><br><span class="line">            self.snapViewForActiveCell.center &#x3D; self.activeCell.center;</span><br><span class="line">        &#125; completion:^(BOOL finished) &#123;</span><br><span class="line">            [self.snapViewForActiveCell removeFromSuperview];</span><br><span class="line">            self.activeCell.selected &#x3D; NO;</span><br><span class="line">            self.activeCell.hidden &#x3D; NO;</span><br><span class="line">        &#125;];</span><br><span class="line">        </span><br><span class="line">        [self invalidateCADisplayLink];</span><br><span class="line">        self.edgeIntersectionOffset &#x3D; 0;</span><br><span class="line">        self.changeRatio &#x3D; 0;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此，我们实现了单Section拖拽重排的UICollectionView，看一下效果，是不是感觉还蛮好</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-4601a1c424019561.gif?imageMogr2/auto-orient/strip" alt="iOS8.x-_demo.gif"></p>
+<h3 id="iOS9-x-拖拽重排处理"><a href="#iOS9-x-拖拽重排处理" class="headerlink" title="iOS9.x+拖拽重排处理"></a>iOS9.x+拖拽重排处理</h3><p><strong>Father Apple</strong>在iOS9以后，为我们处理了上文中提到的<strong>手势处理</strong>、<strong>边缘检测</strong>等复杂计算，我们只需要在合适的位置，告诉系统位置信息即可。当然，这里苹果替我们做的动画，依然<strong>仅仅是动画</strong>。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-af5ce687d7b451ff.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p><strong>上报位置</strong> 处理步骤如下：</p>
+<ul>
+<li><p><strong>handleEditingMoveWhenGestureBegan</strong>:<br>这里是上报的当前Cell的<code>IndexPath</code>，而且苹果并没有设置类似上文中我们设置的<code>centerOffset</code>，它是将当前触摸点，直接设置成<strong>选中cell</strong>的中心点。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[self.collectionView beginInteractiveMovementForItemAtIndexPath:selectIndexPath];</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>handleEditingMoveWhenGestureChanged</strong>:<br>这里上报的是当前触摸点的<strong>位置</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[self.collectionView updateInteractiveMovementTargetPosition:pressPoint];</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>handleEditingMoveWhenGestureEnded</strong>:<br>简单粗暴，上报结束</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[self.collectionView endInteractiveMovement];</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>handleEditingMoveWhenGestureCanceledOrFailed</strong>:<br>简单粗暴，上报取消，这里我们需要将选中状态清除</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">self.activeCell.selected &#x3D; NO;</span><br><span class="line">[self.collectionView cancelInteractiveMovement];</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>系统新的数据源方法</strong>：<br>处理结束回调，根据交换信息，更新数据源供回调完成后系统自动调用<code>reloadData</code>方法使用</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (void)collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath&#123;</span><br><span class="line">    </span><br><span class="line">    BOOL canChange &#x3D; self.datas.count &gt; sourceIndexPath.item &amp;&amp; self.datas.count &gt; destinationIndexPath.item;</span><br><span class="line">    if (canChange) &#123;</span><br><span class="line">        [self handleDatasourceExchangeWithSourceIndexPath:sourceIndexPath destinationIndexPath:destinationIndexPath];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述手势处理，可以直接合并到上文中的各手势阶段的处理中，只需要对系统版本号做判断后分情况处理即可</p>
+<p>看一下系统的效果：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-ff5b1610c46daa67.gif?imageMogr2/auto-orient/strip" alt="iOS9.0+_demo.gif"></p>
+<h2 id="UICollectionView实现简单轮播"><a href="#UICollectionView实现简单轮播" class="headerlink" title="UICollectionView实现简单轮播"></a>UICollectionView实现简单轮播</h2><p><strong>图片轮播器</strong>，几乎是现在所有App的必要组成部分了。实现轮播器的方式多种多样，这里笔者简单介绍一下，如何通过<code>UICollectionView</code>实现，对更好的理解<code>UICollectionView</code>及<strong>轮播器</strong>也许会有帮助（ 毕竟封装进去了嘛  ( ͡° ͜ʖ ͡° )</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-c85b0fdeb9160592.gif?imageMogr2/auto-orient/strip" alt="cycle_pic.gif"></p>
+<p>思路分析：</p>
+<ul>
+<li>先确定是否需要轮播，决定开启定时器<code>Timer</code>，使用<code>scrollToItemAtIndexPath</code>执行定时滚动</li>
+<li>赋值数据源后，如果需要轮播，创建<code>UIPageControl</code>，并设置collection的cell数为<code>_totalItemCount = _needAutoScroll?datas.count * 500:datas.count;</code></li>
+<li>考虑一下几种特殊情况的处理<ul>
+<li>当滚动到总数最后一张时，应该返回第0张，此时动画效果设置为<strong>NO</strong></li>
+<li>当我们手动滑动拖拽CollectionView时，需要停止定时器，停止拖拽时，再次开启定时器</li>
+<li>通过<code>contentOffset</code>及<code>itemSize</code>判断当前位置，并结合数据源<code>data.count</code>计算取值位置为<code>cell</code>及<code>pageControl</code>当前位置赋值</li>
+</ul>
+</li>
+</ul>
+<p>几处关键代码：</p>
+<ul>
+<li><strong>滚动及位置处理</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - cycle scroll actions</span><br><span class="line">- (void)autoScroll&#123;</span><br><span class="line"></span><br><span class="line">    if (!_totalItemCount) return;</span><br><span class="line">    NSInteger currentIndex &#x3D; [self currentIndex];</span><br><span class="line">    NSInteger nextIndex &#x3D; [self nextIndexWithCurrentIndex:currentIndex];</span><br><span class="line">    [self scroll2Index:nextIndex];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)scroll2Index:(NSInteger)index&#123;</span><br><span class="line"></span><br><span class="line">    [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:index?YES:NO];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSInteger)nextIndexWithCurrentIndex:(NSInteger)index&#123;</span><br><span class="line"></span><br><span class="line">    if (index &#x3D;&#x3D; _totalItemCount - 1) &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        return index + 1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSInteger)currentIndex&#123;</span><br><span class="line">    </span><br><span class="line">    if (_collectionView.frame.size.width &#x3D;&#x3D; 0 || _collectionView.frame.size.height &#x3D;&#x3D; 0) &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    int index &#x3D; 0;</span><br><span class="line">    if (_layout.scrollDirection &#x3D;&#x3D; UICollectionViewScrollDirectionHorizontal) &#123;</span><br><span class="line">        index &#x3D; (_collectionView.contentOffset.x + _layout.itemSize.width * 0.5) &#x2F; _layout.itemSize.width;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        index &#x3D; (_collectionView.contentOffset.y + _layout.itemSize.height * 0.5) &#x2F; _layout.itemSize.height;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return MAX(0, index);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>数据源处理</strong></p>
+</li>
+<li><p>数据</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (void)setDatas:(NSArray *)datas&#123;</span><br><span class="line">    _datas &#x3D; datas;</span><br><span class="line">    </span><br><span class="line">    _totalItemCount &#x3D; _needAutoScroll?datas.count * 500:datas.count;</span><br><span class="line">    if (_needAutoScroll) &#123;</span><br><span class="line">        [self setupPageControl];</span><br><span class="line">    &#125;</span><br><span class="line">    [self.collectionView reloadData];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>数据源</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView&#123;</span><br><span class="line">    return 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section&#123;</span><br><span class="line">    return _totalItemCount;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath&#123;</span><br><span class="line"></span><br><span class="line">    SPBaseCell *cell &#x3D; [collectionView dequeueReusableCellWithReuseIdentifier:ReuseIdentifier forIndexPath:indexPath];</span><br><span class="line">    cell.data &#x3D; self.datas[_needAutoScroll?[self getRealShownIndex:indexPath.item]:indexPath.item];</span><br><span class="line">    </span><br><span class="line">    return cell;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSInteger)getRealShownIndex:(NSInteger)index&#123;</span><br><span class="line"></span><br><span class="line">    return index%_datas.count;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>代理方法，处理交互中NSTimer创建/销毁及PageControl.currentPage数据更新</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">- (void)scrollViewDidScroll:(UIScrollView *)scrollView&#123;</span><br><span class="line">    </span><br><span class="line">    if (!self.datas.count) return;</span><br><span class="line">     _pageControl.currentPage &#x3D; [self getRealShownIndex:[self currentIndex]];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView&#123;</span><br><span class="line">    if (_needAutoScroll) [self invalidateTimer];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate&#123;</span><br><span class="line">    if (_needAutoScroll) [self setupTimer];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)willMoveToSuperview:(UIView *)newSuperview&#123;</span><br><span class="line">    if (!newSuperview) &#123;</span><br><span class="line">        [self invalidateTimer];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>UICollectionView</code>作为最最最重要的视图组件之一，我们不仅需要熟练掌握，同时它<code>dataSource/delegate+layout</code>，分离布局的编程思想，也很值得我们去思考学习。</p>
+<p>笔者简书地址：<a href="http://www.jianshu.com/p/073b18b62255" target="_blank" rel="noopener">iOS-UICollectionView快速构造/拖拽重排/轮播实现介绍</a><br>Github传送门：<a href="https://github.com/Tr2e/SPEasyCollectionView" target="_blank" rel="noopener">SPEasyCollectionView</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/26/iOS-%E6%A0%B8%E5%BF%83%E5%8A%A8%E7%94%BB/" rel="next" title="iOS-动画知识梳理">
+                <i class="fa fa-chevron-left"></i> iOS-动画知识梳理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/12/iOS-Transform/" rel="prev" title="iOS-从三维立方体到理解CATransform3D&CGAffineTransform&m34">
+                iOS-从三维立方体到理解CATransform3D&CGAffineTransform&m34 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Tr2e</p>
+              <p class="site-description motion-element" itemprop="description">Principle & Order</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#UICollectionView的定义"><span class="nav-number">1.</span> <span class="nav-text">UICollectionView的定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UICollectionView视图"><span class="nav-number">1.1.</span> <span class="nav-text">UICollectionView视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UICollectionViewDataSource及UICollectionViewDelegate"><span class="nav-number">1.2.</span> <span class="nav-text">UICollectionViewDataSource及UICollectionViewDelegate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UICollectionViewLayout布局"><span class="nav-number">1.3.</span> <span class="nav-text">UICollectionViewLayout布局</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UICollectionView快速构建GridView网格视图"><span class="nav-number">2.</span> <span class="nav-text">UICollectionView快速构建GridView网格视图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UICollectionView拖拽重排处理-iOS8-x-iOS9-x"><span class="nav-number">3.</span> <span class="nav-text">UICollectionView拖拽重排处理(iOS8.x-&#x2F;iOS9.x+)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS8-x-拖拽重排处理"><span class="nav-number">3.1.</span> <span class="nav-text">iOS8.x-拖拽重排处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS9-x-拖拽重排处理"><span class="nav-number">3.2.</span> <span class="nav-text">iOS9.x+拖拽重排处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UICollectionView实现简单轮播"><span class="nav-number">4.</span> <span class="nav-text">UICollectionView实现简单轮播</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tr2e</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

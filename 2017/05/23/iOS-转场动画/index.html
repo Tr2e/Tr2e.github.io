@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="学习及实践笔记记录iOS中常见Modal、Push转场动画的学习及实践">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS-转场动画">
+<meta property="og:url" content="http://yoursite.com/2017/05/23/iOS-%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/index.html">
+<meta property="og:site_name" content="Tr2e&#39;s Blog">
+<meta property="og:description" content="学习及实践笔记记录iOS中常见Modal、Push转场动画的学习及实践">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-686df56e8009359f.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-d2084692ba438658.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-7e61ef131640c488.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-69256237d021e827.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-0223c8489aa33444.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1742463-3d4708e7ba56863f.gif?imageMogr2/auto-orient/strip">
+<meta property="article:published_time" content="2017-05-23T10:49:44.000Z">
+<meta property="article:modified_time" content="2017-09-18T03:15:23.000Z">
+<meta property="article:author" content="Tr2e">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1742463-686df56e8009359f.gif?imageMogr2/auto-orient/strip">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/23/iOS-转场动画/"/>
+
+
+
+
+
+  <title>iOS-转场动画 | Tr2e's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tr2e's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/23/iOS-%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tr2e">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tr2e's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS-转场动画</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-23T18:49:44+08:00">
+                2017-05-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="学习及实践笔记"><a href="#学习及实践笔记" class="headerlink" title="学习及实践笔记"></a>学习及实践笔记</h3><p>记录iOS中常见Modal、Push转场动画的学习及实践</p>
+<a id="more"></a>
+
+
+<h4 id="相关api的记录及介绍"><a href="#相关api的记录及介绍" class="headerlink" title="相关api的记录及介绍"></a>相关api的记录及介绍</h4><p><strong> <a href="https://onevcat.com/2013/10/vc-transition-in-ios7/" target="_blank" rel="noopener">喵神文章传送门</a> </strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;*这个接口用来提供切换上下文给开发者使用，包含了从哪个VC到哪个VC等各类信息*&#x2F;</span><br><span class="line">@protocol UIViewControllerContextTransitioning</span><br><span class="line"></span><br><span class="line">-(UIView *)containerView; VC切换所发生的view容器，开发者应该将切出的view移除，将切入的view加入到该view容器中。</span><br><span class="line">-(UIViewController *)viewControllerForKey:(NSString *)key; 提供一个key，返回对应的VC。现在的SDK中key的选择只有UITransitionContextFromViewControllerKey和UITransitionContextToViewControllerKey两种，分别表示将要切出和切入的VC。</span><br><span class="line">-(CGRect)initialFrameForViewController:(UIViewController *)vc; 某个VC的初始位置，可以用来做动画的计算。</span><br><span class="line">-(CGRect)finalFrameForViewController:(UIViewController *)vc; 与上面的方法对应，得到切换结束时某个VC应在的frame。</span><br><span class="line">-(void)completeTransition:(BOOL)didComplete; 向这个context报告切换已经完成。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;* 自定义转场动画中使用 *&#x2F;</span><br><span class="line">&#x2F;*这个接口负责切换的具体内容，也即“切换中应该发生什么”。开发者在做自定义切换效果时大部分代码会是用来实现这个接口*&#x2F;</span><br><span class="line">@protocol UIViewControllerAnimatedTransitioning</span><br><span class="line"></span><br><span class="line">-(NSTimeInterval)transitionDuration:(id &lt; UIViewControllerContextTransitioning &gt;)transitionContext; 系统给出一个切换上下文，我们根据上下文环境返回这个切换所需要的花费时间</span><br><span class="line"></span><br><span class="line">-(void)animateTransition:(id &lt; UIViewControllerContextTransitioning &gt;)transitionContext; 在进行切换的时候将调用该方法，我们对于切换时的UIView的设置和动画都在这个方法中完成。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;* ViewController中调用 *&#x2F;</span><br><span class="line">@protocol UIViewControllerTransitioningDelegate</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 动画</span><br><span class="line">-(id&lt; UIViewControllerAnimatedTransitioning &gt;)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source;</span><br><span class="line">-(id&lt; UIViewControllerAnimatedTransitioning &gt;)animationControllerForDismissedController:(UIViewController *)dismissed;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 交互</span><br><span class="line">-(id&lt; UIViewControllerInteractiveTransitioning &gt;)interactionControllerForPresentation:(id &lt; UIViewControllerAnimatedTransitioning &gt;)animator;</span><br><span class="line">-(id&lt; UIViewControllerInteractiveTransitioning &gt;)interactionControllerForDismissal:(id &lt; UIViewControllerAnimatedTransitioning &gt;)animator;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;* UIViewControllerInteractiveTransitioning 提供百分比控制交互切换*&#x2F;</span><br><span class="line"></span><br><span class="line">-(Float)completionSpeed 返回速度  1 - self.percentComplete;</span><br><span class="line"></span><br><span class="line">-(void)updateInteractiveTransition:(CGFloat)percentComplete 更新百分比，一般通过手势识别的长度之类的来计算一个值，然后进行更新。之后的例子里会看到详细的用法</span><br><span class="line">-(void)cancelInteractiveTransition 报告交互取消，返回切换前的状态</span><br><span class="line">–(void)finishInteractiveTransition 报告交互完成，更新到切换后的状态</span><br></pre></td></tr></table></figure>
+<ul>
+<li>注意点<br>locationInView:获取到的是手指点击屏幕实时的坐标点；<br>translationInView：获取到的是手指移动后，在相对坐标中的偏移量</li>
+</ul>
+<hr>
+<h4 id="Modal"><a href="#Modal" class="headerlink" title="Modal"></a>Modal</h4><p><strong>注意：当我们在被modal出的控制器中，向self发送dismissViewController的方法时，这个消息，会被直接转发到显示它的VC中去</strong></p>
+<h5 id="Present"><a href="#Present" class="headerlink" title="Present"></a>Present</h5><p><strong>BouncePresentTransition的具体实现</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">@interface SPBouncePresentTransition : NSObject&lt;UIViewControllerAnimatedTransitioning&gt;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;SPBouncePresentTransition.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation SPBouncePresentTransition</span><br><span class="line"></span><br><span class="line">- (NSTimeInterval)transitionDuration:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext&#123;</span><br><span class="line"></span><br><span class="line">    return 0.8f;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)animateTransition:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext&#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 获取相关ViewController</span><br><span class="line">    UIViewController *toVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];</span><br><span class="line">    &#x2F;&#x2F; UIViewController *fromVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];</span><br><span class="line">    </span><br><span class="line">    CGRect bounds &#x3D; [UIScreen mainScreen].bounds;</span><br><span class="line">    &#x2F;&#x2F; 设置被modal出界面view的frame</span><br><span class="line">    CGRect finalFrame &#x3D; [transitionContext finalFrameForViewController:toVC];</span><br><span class="line">    &#x2F;&#x2F; 设置目标界面frame的offset，即初始位置</span><br><span class="line">    toVC.view.frame &#x3D; CGRectOffset(finalFrame, 0, bounds.size.height);</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 取出containerView，将目标vc的view进行添加</span><br><span class="line">    UIView *containerView &#x3D; [transitionContext containerView];</span><br><span class="line">    [containerView addSubview:toVC.view];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 设置view的frame动画效果</span><br><span class="line">    [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0.0 usingSpringWithDamping:0.6 initialSpringVelocity:0.0 options:UIViewAnimationOptionCurveLinear animations:^&#123;</span><br><span class="line">        toVC.view.frame &#x3D; finalFrame;</span><br><span class="line">    &#125; completion:^(BOOL finished) &#123;</span><br><span class="line">        &#x2F;&#x2F; 提交transion完成</span><br><span class="line">        [transitionContext completeTransition:YES];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p><strong>在viewcontroller中如何使用</strong></p>
+<p>1.遵守<code>UIViewControllerTransitioningDelegate</code>协议<br>2.设置modal的vc的<code>transitioningDelegate</code>属性<br>3.实现代理方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-(id&lt;UIViewControllerAnimatedTransitioning&gt;)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source</span><br></pre></td></tr></table></figure>
+
+<p>具体可参照如下代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - Transition</span><br><span class="line">- (void)testForModalTransition&#123;</span><br><span class="line"></span><br><span class="line">    SPModalViewController *vc &#x3D; [[SPModalViewController alloc] init];</span><br><span class="line">    vc.transitioningDelegate &#x3D; self;&#x2F;&#x2F; 设置代理</span><br><span class="line">    vc.dismissAction &#x3D; ^&#123;</span><br><span class="line">        [self dismissViewControllerAnimated:YES completion:nil];</span><br><span class="line">    &#125;;</span><br><span class="line">    [self presentViewController:vc animated:YES completion:nil];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 代理方法</span><br><span class="line">&#x2F;&#x2F; init</span><br><span class="line">&#x2F;* self.bouncePresent &#x3D; [[SPBouncePresentTransition alloc]init]; *&#x2F;</span><br><span class="line">-(id&lt;UIViewControllerAnimatedTransitioning&gt;)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source&#123;</span><br><span class="line"></span><br><span class="line">    return self.bouncePresent;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-686df56e8009359f.gif?imageMogr2/auto-orient/strip" alt="animateTransition.gif"></p>
+<h5 id="Dismiss"><a href="#Dismiss" class="headerlink" title="Dismiss"></a>Dismiss</h5><p><strong>滑动效果的转场实现</strong><br>需要注意的是，务必同时实现两个代理方法<br>触发顺序，为<code>动画类-&gt;交互类</code>,系统会优先处理<code>animationControllerForDismissedController</code>方法，如果有，则dismiss操作均为自定义dismissTransition（demo中的transitionDuration已经设置为1.5s,效果可如gif动图所示），如果没有设置，那么则为系统的dismiss动画。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 动画类</span><br><span class="line">- (id&lt;UIViewControllerAnimatedTransitioning&gt;)animationControllerForDismissedController:(UIViewController *)dismissed</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 交互类</span><br><span class="line">- (id&lt;UIViewControllerInteractiveTransitioning&gt;)interactionControllerForDismissal:(id&lt;UIViewControllerAnimatedTransitioning&gt;)animator</span><br></pre></td></tr></table></figure>
+<p>具体可参照如下代码</p>
+<p>1.NormalDismiss</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">@interface SPNormalDismissTransition : NSObject&lt;UIViewControllerAnimatedTransitioning&gt;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;SPNormalDismissTransition.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation SPNormalDismissTransition</span><br><span class="line"></span><br><span class="line">- (NSTimeInterval)transitionDuration:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext&#123;</span><br><span class="line"></span><br><span class="line">    return 1.5f;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)animateTransition:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext&#123;</span><br><span class="line"></span><br><span class="line">    UIViewController *fromVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];</span><br><span class="line">    UIViewController *toVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];</span><br><span class="line">    </span><br><span class="line">    CGRect initialFrame &#x3D; [transitionContext initialFrameForViewController:fromVC];</span><br><span class="line">    CGRect finalFrame &#x3D; CGRectOffset(initialFrame, 0, [UIScreen mainScreen].bounds.size.height);</span><br><span class="line">    </span><br><span class="line">    UIView *containerView  &#x3D; [transitionContext containerView];&#x2F;&#x2F; 承载当前活动vc的view的containerView</span><br><span class="line">    [containerView addSubview:toVC.view];</span><br><span class="line">    [containerView sendSubviewToBack:toVC.view];&#x2F;&#x2F; 将视图置于下层</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^&#123;</span><br><span class="line">        fromVC.view.frame &#x3D; finalFrame;</span><br><span class="line">    &#125; completion:^(BOOL finished) &#123;</span><br><span class="line">        [transitionContext completeTransition:![transitionContext transitionWasCancelled]];</span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>2.SwipeTransition</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">@interface SPPercentSwipeTransition : UIPercentDrivenInteractiveTransition</span><br><span class="line"></span><br><span class="line">@property (nonatomic, assign) BOOL interacting;&#x2F;&#x2F; 用来判断是否处理交互</span><br><span class="line">- (void)addSwipeTransition2viewController:(UIViewController *)viewController;&#x2F;&#x2F; 传入要添加panRecognizer的viewController</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;SPPercentSwipeTransition.h&quot;</span><br><span class="line"></span><br><span class="line">@interface SPPercentSwipeTransition()</span><br><span class="line"></span><br><span class="line">@property (nonatomic, weak) UIViewController *presenedController;&#x2F;&#x2F; 当前被modal出的控制器 注意weak的使用，强引用造成无法释放</span><br><span class="line">@property (nonatomic, assign) BOOL canEndTransition;&#x2F;&#x2F; 当超过屏幕高度的1&#x2F;4时，我们认为交互可以结束</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation SPPercentSwipeTransition</span><br><span class="line"></span><br><span class="line">- (void)addSwipeTransition2viewController:(UIViewController *)viewController&#123;</span><br><span class="line"></span><br><span class="line">    self.presenedController &#x3D; viewController;</span><br><span class="line">    [self addRecognizer2View:viewController.view];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)addRecognizer2View:(UIView *)view&#123;</span><br><span class="line"></span><br><span class="line">    UIPanGestureRecognizer *pan &#x3D; [[UIPanGestureRecognizer alloc] init];</span><br><span class="line">    [view addGestureRecognizer:pan];</span><br><span class="line">    [pan addTarget:self action:@selector(handleRecognizer:)];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)handleRecognizer:(UIPanGestureRecognizer *)recognizer&#123;</span><br><span class="line"></span><br><span class="line">    CGRect screenBounds &#x3D; [UIScreen mainScreen].bounds;</span><br><span class="line">    CGPoint point &#x3D; [recognizer translationInView:recognizer.view.superview];&#x2F;&#x2F; translationInView</span><br><span class="line">    switch (recognizer.state) &#123;</span><br><span class="line">        case UIGestureRecognizerStateBegan:</span><br><span class="line">            self.interacting &#x3D; YES;</span><br><span class="line">            [self.presentingController dismissViewControllerAnimated:YES completion:nil];</span><br><span class="line">            break;</span><br><span class="line">        case UIGestureRecognizerStateChanged:</span><br><span class="line">        &#123;</span><br><span class="line">            CGFloat actionPoint &#x3D; point.y&#x2F;(screenBounds.size.height &#x2F;2);&#x2F;&#x2F; 有效距离为屏幕高度的一半</span><br><span class="line">            actionPoint &#x3D; fminf(fmaxf(actionPoint, 0.0), 1.0);</span><br><span class="line">            self.canEndTransition &#x3D; actionPoint &gt; 0.5;&#x2F;&#x2F; 滑动超过屏幕高度的1&#x2F;4则可完成转场</span><br><span class="line">            [self updateInteractiveTransition:actionPoint];</span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">        case UIGestureRecognizerStateEnded:</span><br><span class="line">        case UIGestureRecognizerStateCancelled:</span><br><span class="line">        &#123;</span><br><span class="line">            self.interacting &#x3D; NO;</span><br><span class="line">            if (self.canEndTransition)</span><br><span class="line">            &#123;</span><br><span class="line">                [self finishInteractiveTransition];</span><br><span class="line">            &#125;</span><br><span class="line">            else if (!self.canEndTransition || recognizer.state &#x3D;&#x3D; UIGestureRecognizerStateCancelled)</span><br><span class="line">            &#123;</span><br><span class="line">                [self cancelInteractiveTransition];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (CGFloat)completionSpeed&#123;&#x2F;&#x2F; 返回转场的速度</span><br><span class="line"></span><br><span class="line">    return 1 - self.percentComplete;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-d2084692ba438658.gif?imageMogr2/auto-orient/strip" alt="swipeTransition.gif"></p>
+<h5 id="SemiModal"><a href="#SemiModal" class="headerlink" title="SemiModal"></a>SemiModal</h5><p>实现一个常见的semi半挂式modal，将我们上述的AnimationTransition(present)、NormalDismiss部分稍作处理即可<br>效果如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-7e61ef131640c488.gif?imageMogr2/auto-orient/strip" alt="semiModal.gif"></p>
+<p>首先分析实现思路：<br>1.semi部分，在<code>bouncePresentTransition</code>中的toVC的view进行圆角处理，同时设置它在containerView中的frame为目标样式<br>2.背景部分，将当前fromVC的view进行截图，添加到转场容器<code>containerView</code>中，然后改变它的<code>transform</code>中的scale属性，进行等比例缩放，同时将底层viewController的view进行隐藏处理<br>3.因为上文中，我们已经处理了基于<code>UIPercentDrivenInteractiveTransition</code>的<code>swipeTransition</code>，所以不需要再关心百分比变化<br>4.上文中处理的<code>normalDismiss</code>，只是简单的对视图进行了切换，因为考虑到semi的样式会对底层viewController的view进行隐藏处理，所以我们需要特别注意，在transition完成时，要将目标vc的view显示出来</p>
+<p>思路有了，那么接下来就是实现，具体请看代码：</p>
+<p><strong>截图方法 </strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (UIImage *)getSnapShotFromView:(UIView *)view&#123;</span><br><span class="line">    </span><br><span class="line">    CGRect rect &#x3D; view.bounds;</span><br><span class="line">    UIGraphicsBeginImageContextWithOptions(rect.size, false, 0);</span><br><span class="line">    [view.layer renderInContext:UIGraphicsGetCurrentContext()];</span><br><span class="line">    UIImage *snapShot &#x3D; UIGraphicsGetImageFromCurrentImageContext();</span><br><span class="line">    UIGraphicsEndImageContext();</span><br><span class="line">    </span><br><span class="line">    return snapShot;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>改造的bouncePresent</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">- (void)animateTransition:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext&#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 获取相关ViewController</span><br><span class="line">    UIViewController *toVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];</span><br><span class="line">    UIViewController *fromVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];</span><br><span class="line">    </span><br><span class="line">    CGRect bounds &#x3D; [UIScreen mainScreen].bounds;</span><br><span class="line">    &#x2F;&#x2F; 设置被modal出界面view的frame</span><br><span class="line">&#x2F;&#x2F;    CGRect finalFrame &#x3D; [transitionContext finalFrameForViewController:toVC];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; -- semi效果 --</span><br><span class="line">    CGRect finalFrame &#x3D; CGRectMake(0, bounds.size.height&#x2F;3, bounds.size.width, bounds.size.height);</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 设置目标界面frame的offset，即初始位置</span><br><span class="line">    toVC.view.frame &#x3D; CGRectOffset(finalFrame, 0, bounds.size.height);</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; -- semi效果 --</span><br><span class="line">    toVC.view.layer.cornerRadius &#x3D; 15;</span><br><span class="line">    [toVC.view.layer masksToBounds];</span><br><span class="line">    </span><br><span class="line">    UIImageView *snapView &#x3D; [[UIImageView alloc] initWithImage:[self getSnapShotFromView:fromVC.view]];</span><br><span class="line">    snapView.frame &#x3D; fromVC.view.bounds;</span><br><span class="line">    snapView.tag &#x3D; 404;&#x2F;&#x2F;标记一下</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 将fromvc的view隐藏掉</span><br><span class="line">    fromVC.view.hidden &#x3D; YES;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 取出containerView(视图管理容器)，将目标vc的view进行添加</span><br><span class="line">    UIView *containerView &#x3D; [transitionContext containerView];</span><br><span class="line">    &#x2F;&#x2F; -- semi效果 --</span><br><span class="line">    [containerView addSubview:snapView];</span><br><span class="line">    &#x2F;&#x2F; 注意添加顺序</span><br><span class="line">    [containerView addSubview:toVC.view];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 设置view的frame动画效果</span><br><span class="line">    [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0.0 usingSpringWithDamping:0.6 initialSpringVelocity:0.0 options:UIViewAnimationOptionCurveLinear animations:^&#123;</span><br><span class="line">        </span><br><span class="line">        toVC.view.frame &#x3D; finalFrame;</span><br><span class="line">        snapView.transform &#x3D; CGAffineTransformMakeScale(0.85, 0.85);</span><br><span class="line">    </span><br><span class="line">    &#125; completion:^(BOOL finished) &#123;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F; 提交transion完成</span><br><span class="line">        if ([transitionContext transitionWasCancelled]) &#123;</span><br><span class="line">            [transitionContext completeTransition:NO];</span><br><span class="line">            [snapView removeFromSuperview];</span><br><span class="line">            fromVC.view.hidden &#x3D; NO; &#x2F;&#x2F; 注意隐藏操作</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            [transitionContext completeTransition:YES];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>改造的normalDismiss</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">- (void)animateTransition:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext&#123;</span><br><span class="line"></span><br><span class="line">    UIViewController *fromVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];</span><br><span class="line">    UIViewController *toVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];</span><br><span class="line">    </span><br><span class="line">    CGRect initialFrame &#x3D; [transitionContext initialFrameForViewController:fromVC];</span><br><span class="line">    CGRect finalFrame &#x3D; CGRectOffset(initialFrame, 0, [UIScreen mainScreen].bounds.size.height);</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    UIView *containerView  &#x3D; [transitionContext containerView];&#x2F;&#x2F; 承载当transitionview的containerView</span><br><span class="line">    UIView *snapView &#x3D; nil;&#x2F;&#x2F; 取出截图 tag &#x3D; 404</span><br><span class="line">    for (UIView *sub in containerView.subviews) &#123;</span><br><span class="line">        if (sub.tag &#x3D;&#x3D; 404) &#123;</span><br><span class="line">            snapView &#x3D; sub;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    [containerView addSubview:toVC.view];</span><br><span class="line">    [containerView sendSubviewToBack:toVC.view];&#x2F;&#x2F; 将视图置于下层</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^&#123;</span><br><span class="line">        </span><br><span class="line">        fromVC.view.frame &#x3D; finalFrame;</span><br><span class="line">        snapView.transform &#x3D; CGAffineTransformIdentity;</span><br><span class="line">        </span><br><span class="line">    &#125; completion:^(BOOL finished) &#123;</span><br><span class="line">        </span><br><span class="line">        BOOL transitionComplete &#x3D; ![transitionContext transitionWasCancelled];</span><br><span class="line">        [transitionContext completeTransition:transitionComplete];</span><br><span class="line">        </span><br><span class="line">        if (transitionComplete) &#123;</span><br><span class="line">            toVC.view.hidden &#x3D; NO;</span><br><span class="line">            [snapView removeFromSuperview];</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            toVC.view.hidden &#x3D; YES;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="Push-amp-Pop"><a href="#Push-amp-Pop" class="headerlink" title="Push&amp;Pop"></a>Push&amp;Pop</h4><h5 id="Push"><a href="#Push" class="headerlink" title="Push"></a>Push</h5><p><strong>在viewcontroller中如何使用</strong></p>
+<p>1.遵守<code>UINavigationControllerDelegate</code>协议<br>2.设置<code>viewcontroller.navigationController.delegate</code>的代理<br>3.实现代理方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (id&lt;UIViewControllerAnimatedTransitioning&gt;)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC</span><br></pre></td></tr></table></figure>
+<p>这里需要<strong>特别注意</strong>一点，对于Push和Pop，都会在此方法中返回，需要我们对<code>operation</code>进行类型判断，返回正确类型的自定义transition<br>同时要考虑一种特殊情况，就是自己并非第一层viewController时，从自身pop出去的情况</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if (fromVC &#x3D;&#x3D; self &amp;&amp; operation &#x3D;&#x3D; UINavigationControllerOperationPop)</span><br><span class="line"> &#123;&#x2F;&#x2F; 从自己pop出去</span><br><span class="line">     return nil;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>（我们可以发现，Push同上文中提到的Modal的处理方式一致，只是遵守的协议不同）</p>
+<p>先看效果</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-69256237d021e827.gif?imageMogr2/auto-orient/strip" alt="transPush.gif"></p>
+<p>分析一下思路：<br>1.将点击的Cell中的imageView，传入到转场容器container中，转换其坐标、截图并添加（注意同toVC.view的添加顺序），我们命名为snapView<br>2.获取fromVC中的目标图片位置，设置为snapview的终点frame</p>
+<p>大概看一下我们如何实现，写一下几个比较关键的地方</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 1.fromVC，处理点击CollectionView的点击事件</span><br><span class="line">- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath&#123;</span><br><span class="line"></span><br><span class="line">    PushCell *cell &#x3D; (PushCell *)[collectionView cellForItemAtIndexPath:indexPath];</span><br><span class="line">    self.transImgView &#x3D; cell.transImg;</span><br><span class="line">    </span><br><span class="line">    SPGakkiViewController *gakki &#x3D; [[SPGakkiViewController alloc] init];</span><br><span class="line">    [self.navigationController pushViewController:gakki animated:YES];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 2.transition中的写法</span><br><span class="line">SPGakkiViewController *toVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];</span><br><span class="line">    SPPushViewController *fromVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 获取视图容器</span><br><span class="line">    UIView *containerView &#x3D; [transitionContext containerView];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 获取需要变换的视图</span><br><span class="line">    UIImageView *transImgView &#x3D; fromVC.transImgView;</span><br><span class="line">    UIView *snapView &#x3D; [transImgView snapshotViewAfterScreenUpdates:NO];</span><br><span class="line">    snapView.frame &#x3D; [transImgView convertRect:transImgView.bounds toView:containerView];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 先隐藏视图</span><br><span class="line">    toVC.showContent &#x3D; NO;</span><br><span class="line"></span><br><span class="line">    [containerView addSubview:toVC.view];</span><br><span class="line">    [containerView addSubview:snapView];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 动画部分</span><br><span class="line">    [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:1&#x2F;0.6 options:UIViewAnimationOptionCurveEaseInOut animations:^&#123;</span><br><span class="line">        </span><br><span class="line">        snapView.frame &#x3D; toVC.targetFrame;</span><br><span class="line">        </span><br><span class="line">    &#125; completion:^(BOOL finished) &#123;</span><br><span class="line">        </span><br><span class="line">        snapView.hidden &#x3D; YES;</span><br><span class="line">        toVC.showContent &#x3D; YES;</span><br><span class="line">        [snapView removeFromSuperview];</span><br><span class="line">        [transitionContext completeTransition:![transitionContext transitionWasCancelled]];</span><br><span class="line">        </span><br><span class="line">    &#125;];</span><br></pre></td></tr></table></figure>
+
+<h5 id="Pop"><a href="#Pop" class="headerlink" title="Pop"></a>Pop</h5><p>效果如下</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-0223c8489aa33444.gif?imageMogr2/auto-orient/strip" alt="transPop.gif"></p>
+<p>如果一路写到这里，想必已经明白转场动画的基本使用，所以我们不再赘述，只附效果的实现代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">SPPushViewController *toVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];</span><br><span class="line">     SPGakkiViewController *fromVC &#x3D; [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 获取视图容器</span><br><span class="line">    UIView *containerView &#x3D; [transitionContext containerView];</span><br><span class="line">    [containerView addSubview:toVC.view];</span><br><span class="line">    toVC.view.alpha &#x3D; 0;</span><br><span class="line">   </span><br><span class="line">    &#x2F;&#x2F; 截图</span><br><span class="line">    UIView *snapView &#x3D; [fromVC.imageView snapshotViewAfterScreenUpdates:NO];</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 隐藏</span><br><span class="line">    fromVC.showContent &#x3D; NO;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 目标位置</span><br><span class="line">    CGRect startFrame &#x3D; fromVC.targetFrame;</span><br><span class="line">    CGRect targetFrame &#x3D; [toVC.transImgView convertRect:toVC.transImgView.bounds toView:containerView];</span><br><span class="line">    snapView.frame &#x3D; startFrame;</span><br><span class="line">    [containerView addSubview:snapView];</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 开始动画</span><br><span class="line">    [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:1&#x2F;0.6 options:UIViewAnimationOptionCurveEaseInOut animations:^&#123;</span><br><span class="line">        </span><br><span class="line">        snapView.frame &#x3D; targetFrame;</span><br><span class="line">        snapView.alpha &#x3D; 0;</span><br><span class="line">        toVC.view.alpha &#x3D; 1;</span><br><span class="line">        </span><br><span class="line">    &#125; completion:^(BOOL finished) &#123;</span><br><span class="line">        </span><br><span class="line">        snapView.hidden &#x3D; YES;</span><br><span class="line">        [snapView removeFromSuperview];</span><br><span class="line">        [transitionContext completeTransition:![transitionContext transitionWasCancelled]];</span><br><span class="line">        </span><br><span class="line">    &#125;];</span><br></pre></td></tr></table></figure>
+<p>** 注意!注意!注意! <code>[transitionContext completeTransition:![transitionContext transitionWasCancelled]];</code>务必在动画结束时上报转场结束状态（此处手动鲜血红） **</p>
+<p>** 返回手势 **<br>只需要我们在之前写的<code>percentSwipeTransition</code>中稍加改造即可，我们将它稍加封装，代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;UIKit&#x2F;UIKit.h&gt;</span><br><span class="line"></span><br><span class="line">typedef NS_ENUM(NSInteger,SPTransitionType) &#123;</span><br><span class="line"></span><br><span class="line">    SPTransitionTypePush,</span><br><span class="line">    SPTransitionTypeModal</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">@interface SPPercentSwipeTransition : UIPercentDrivenInteractiveTransition</span><br><span class="line"></span><br><span class="line">@property (nonatomic, assign) BOOL interacting;</span><br><span class="line"></span><br><span class="line">- (void)addSwipeTransition2viewController:(UIViewController *)viewController withType:(SPTransitionType)type;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;SPPercentSwipeTransition.h&quot;</span><br><span class="line"></span><br><span class="line">@interface SPPercentSwipeTransition()</span><br><span class="line"></span><br><span class="line">@property (nonatomic, weak) UIViewController *presentingController;</span><br><span class="line">@property (nonatomic, assign) BOOL canEndTransition;</span><br><span class="line">@property (nonatomic, assign) SPTransitionType currentType;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation SPPercentSwipeTransition</span><br><span class="line"></span><br><span class="line">- (void)addSwipeTransition2viewController:(UIViewController *)viewController withType:(SPTransitionType)type&#123;</span><br><span class="line"></span><br><span class="line">    self.currentType &#x3D; type;</span><br><span class="line">    [self addSwipeTransition2viewController:viewController];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)addSwipeTransition2viewController:(UIViewController *)viewController&#123;</span><br><span class="line"></span><br><span class="line">    self.presentingController &#x3D; viewController;</span><br><span class="line">    [self addRecognizer2View:viewController.view];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)addRecognizer2View:(UIView *)view&#123;</span><br><span class="line"></span><br><span class="line">    UIPanGestureRecognizer *pan &#x3D; [[UIPanGestureRecognizer alloc] init];</span><br><span class="line">    [view addGestureRecognizer:pan];</span><br><span class="line">    [pan addTarget:self action:@selector(handleRecognizer:)];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)handleRecognizer:(UIPanGestureRecognizer *)recognizer&#123;</span><br><span class="line"></span><br><span class="line">    switch (recognizer.state) &#123;</span><br><span class="line">        case UIGestureRecognizerStateBegan:</span><br><span class="line">            self.interacting &#x3D; YES;</span><br><span class="line">            [self moveBackWithTransitionType:_currentType];</span><br><span class="line">            break;</span><br><span class="line">        case UIGestureRecognizerStateChanged:</span><br><span class="line">            [self handleTransitionWithType:_currentType andRecognizer:recognizer];</span><br><span class="line">            break;</span><br><span class="line">        case UIGestureRecognizerStateEnded:</span><br><span class="line">        case UIGestureRecognizerStateCancelled:</span><br><span class="line">        &#123;</span><br><span class="line">            self.interacting &#x3D; NO;</span><br><span class="line">            if (self.canEndTransition)</span><br><span class="line">            &#123;</span><br><span class="line">                [self finishInteractiveTransition];</span><br><span class="line">            &#125;</span><br><span class="line">            else if (!self.canEndTransition || recognizer.state &#x3D;&#x3D; UIGestureRecognizerStateCancelled)</span><br><span class="line">            &#123;</span><br><span class="line">                [self cancelInteractiveTransition];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)moveBackWithTransitionType:(SPTransitionType)type&#123;</span><br><span class="line"></span><br><span class="line">    switch (type) &#123;</span><br><span class="line">        case SPTransitionTypeModal:</span><br><span class="line">            [self.presentingController dismissViewControllerAnimated:YES completion:nil];</span><br><span class="line">            break;</span><br><span class="line">        case SPTransitionTypePush:</span><br><span class="line">            [self.presentingController.navigationController popViewControllerAnimated:YES];</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)handleTransitionWithType:(SPTransitionType)type andRecognizer:(UIPanGestureRecognizer *)recognizer&#123;</span><br><span class="line"></span><br><span class="line">    CGRect screenBounds &#x3D; [UIScreen mainScreen].bounds;</span><br><span class="line">    CGPoint point &#x3D; [recognizer translationInView:recognizer.view.superview];&#x2F;&#x2F; translationInView</span><br><span class="line">    </span><br><span class="line">    switch (type) &#123;</span><br><span class="line">        case SPTransitionTypePush:</span><br><span class="line">        &#123;</span><br><span class="line">            CGFloat percent &#x3D; point.x&#x2F;(screenBounds.size.width &#x2F;2);&#x2F;&#x2F; 有效距离为屏幕宽度的一半</span><br><span class="line">            percent &#x3D; fminf(fmax(percent, 0.0), 1.0);</span><br><span class="line">            self.canEndTransition &#x3D; percent &gt; 0.5;&#x2F;&#x2F; 活动超过屏幕宽度的1&#x2F;4则可完成转场</span><br><span class="line">            [self updateInteractiveTransition:percent];</span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">        case SPTransitionTypeModal:</span><br><span class="line">        &#123;</span><br><span class="line">            CGFloat actionPoint &#x3D; point.y&#x2F;(screenBounds.size.height &#x2F;2);&#x2F;&#x2F; 有效距离为屏幕高度的一半</span><br><span class="line">            actionPoint &#x3D; fminf(fmaxf(actionPoint, 0.0), 1.0);</span><br><span class="line">            self.canEndTransition &#x3D; actionPoint &gt; 0.5;&#x2F;&#x2F; 滑动超过屏幕高度的1&#x2F;4则可完成转场</span><br><span class="line">            [self updateInteractiveTransition:actionPoint];</span><br><span class="line">        &#125;</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (CGFloat)completionSpeed&#123;</span><br><span class="line"></span><br><span class="line">    return 1 - self.percentComplete;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>因为加入了手势处理，所以我们需要将Pop中上报转场完成的地方稍加改动<br>考虑手势取消转场的情况，取消时，将fromVC的内容再次显示即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 开始动画</span><br><span class="line">    [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:1&#x2F;0.6 options:UIViewAnimationOptionCurveEaseInOut animations:^&#123;</span><br><span class="line">        </span><br><span class="line">        snapView.frame &#x3D; targetFrame;</span><br><span class="line">        snapView.alpha &#x3D; 0;</span><br><span class="line">        toVC.view.alpha &#x3D; 1;</span><br><span class="line">        </span><br><span class="line">    &#125; completion:^(BOOL finished) &#123;</span><br><span class="line">        </span><br><span class="line">        BOOL completeTransiton &#x3D; ![transitionContext transitionWasCancelled];</span><br><span class="line">        snapView.hidden &#x3D; YES;</span><br><span class="line">        </span><br><span class="line">        if (!completeTransiton) fromVC.showContent &#x3D; YES;</span><br><span class="line">        </span><br><span class="line">        [snapView removeFromSuperview];</span><br><span class="line">        [transitionContext completeTransition:completeTransiton];</span><br><span class="line">        </span><br><span class="line">    &#125;];</span><br></pre></td></tr></table></figure>
+<p>看一下我们的最终效果</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1742463-3d4708e7ba56863f.gif?imageMogr2/auto-orient/strip" alt="swipeTrans.gif"></p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>** 1.理解ContainerView的作用 **<br>** 2.务必上报transition结束或取消状态 **<br>** 3.区分<code>UIViewControllerTransitioningDelegate</code>、<code>UINavigationControllerDelegate</code>的使用场景 **<br>** 4.转场动画的关键，在于处理fromVC和toVC的view的变化，最终还是回归到UIView动画 **<br>** 5.体会自定义transition时，代理方法带来的简洁高效 **</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/23/TR2E-S-NEW-WORLD/" rel="next" title="TR2E'S NEW WORLD">
+                <i class="fa fa-chevron-left"></i> TR2E'S NEW WORLD
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/26/iOS-%E6%A0%B8%E5%BF%83%E5%8A%A8%E7%94%BB/" rel="prev" title="iOS-动画知识梳理">
+                iOS-动画知识梳理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Tr2e</p>
+              <p class="site-description motion-element" itemprop="description">Principle & Order</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#学习及实践笔记"><span class="nav-number">1.</span> <span class="nav-text">学习及实践笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#相关api的记录及介绍"><span class="nav-number">1.1.</span> <span class="nav-text">相关api的记录及介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Modal"><span class="nav-number">1.2.</span> <span class="nav-text">Modal</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Present"><span class="nav-number">1.2.1.</span> <span class="nav-text">Present</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Dismiss"><span class="nav-number">1.2.2.</span> <span class="nav-text">Dismiss</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SemiModal"><span class="nav-number">1.2.3.</span> <span class="nav-text">SemiModal</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Push-amp-Pop"><span class="nav-number">1.3.</span> <span class="nav-text">Push&amp;Pop</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Push"><span class="nav-number">1.3.1.</span> <span class="nav-text">Push</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Pop"><span class="nav-number">1.3.2.</span> <span class="nav-text">Pop</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tr2e</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
