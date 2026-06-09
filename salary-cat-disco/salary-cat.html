@@ -1,236 +1,127 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>月薪喵 拼豆 Disco</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月薪喵 Disco - 我真的特别爱你</title>
 <style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
   body{
-    margin:0;
-    overflow:hidden;
-    background:#1a1a2e;
+    background:#1a1a2e;min-height:100vh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+    overflow:hidden;user-select:none;-webkit-user-select:none;
   }
-
-  canvas{
-    position:fixed;
-    inset:0;
+  .dance-floor{position:fixed;inset:0;z-index:0;overflow:hidden}
+  .tile{position:absolute;animation:tile-flash 0.5s ease-in-out infinite alternate}
+  @keyframes tile-flash{0%{opacity:0}100%{opacity:.1}}
+  .disco-ball{
+    position:fixed;top:-40px;left:50%;transform:translateX(-50%);
+    width:70px;height:70px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,#fff,#c0c0c0 40%,#808080 70%,#404040);
+    box-shadow:0 0 30px rgba(255,255,255,.3),0 0 60px rgba(200,200,255,.2);
+    z-index:2;animation:disco-rotate 4s linear infinite;
   }
-
-  #overlay{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    color:#fff;
-    background:rgba(0,0,0,.85);
-    z-index:10;
-    cursor:pointer;
-  }
+  @keyframes disco-rotate{from{transform:translateX(-50%) rotate(0deg)}to{transform:translateX(-50%) rotate(360deg)}}
+  .beam-cone{position:fixed;top:0;z-index:1;pointer-events:none;width:180px;height:100vh;
+    background:linear-gradient(to bottom,rgba(255,255,255,.25) 0%,rgba(255,110,180,.15) 15%,rgba(123,104,238,.08) 50%,transparent 100%);
+    clip-path:polygon(50% 0,0% 100%,100% 100%);mix-blend-mode:screen;animation:beam-sway 4s ease-in-out infinite}
+  .beam-cone:nth-child(2){animation-delay:-1.3s;background:linear-gradient(to bottom,rgba(0,212,255,.2) 0%,rgba(255,110,180,.1) 20%,rgba(123,104,238,.06) 50%,transparent 100%)}
+  .beam-cone:nth-child(3){animation-delay:-2.6s;background:linear-gradient(to bottom,rgba(255,180,100,.15) 0%,rgba(255,110,180,.1) 25%,rgba(0,212,255,.05) 50%,transparent 100%)}
+  @keyframes beam-sway{0%,100%{left:20%;opacity:.5;transform:rotate(-8deg)}25%{left:50%;opacity:.9;transform:rotate(0deg)}50%{left:65%;opacity:.6;transform:rotate(6deg)}75%{left:35%;opacity:.7;transform:rotate(-3deg)}}
+  .footlights{position:fixed;bottom:0;left:0;right:0;height:100px;z-index:8;pointer-events:none;display:flex;justify-content:space-around;align-items:flex-end;padding-bottom:8px}
+  .fl{width:24px;height:24px;border-radius:50%;animation:fl-color 1.5s ease-in-out infinite alternate,fl-glow .7s ease-in-out infinite alternate}
+  .fl:nth-child(1){animation-delay:0s}.fl:nth-child(2){animation-delay:.15s}.fl:nth-child(3){animation-delay:.3s}.fl:nth-child(4){animation-delay:.45s}.fl:nth-child(5){animation-delay:.6s}.fl:nth-child(6){animation-delay:.75s}.fl:nth-child(7){animation-delay:.9s}.fl:nth-child(8){animation-delay:1.05s}
+  @keyframes fl-color{0%{background:#ff6eb4;box-shadow:0 0 25px #ff6eb4,0 0 50px rgba(255,110,180,.5)}25%{background:#7b68ee;box-shadow:0 0 25px #7b68ee,0 0 50px rgba(123,104,238,.5)}50%{background:#00d4ff;box-shadow:0 0 25px #00d4ff,0 0 50px rgba(0,212,255,.5)}75%{background:#ffb464;box-shadow:0 0 25px #ffb464,0 0 50px rgba(255,180,100,.5)}100%{background:#ff4081;box-shadow:0 0 25px #ff4081,0 0 50px rgba(255,64,129,.5)}}
+  @keyframes fl-glow{0%{transform:scale(.7)}100%{transform:scale(1.3)}}
+  .haze{position:fixed;bottom:0;left:0;right:0;height:35vh;z-index:6;pointer-events:none;background:radial-gradient(ellipse at 50% 100%,rgba(123,104,238,.08) 0%,transparent 60%);animation:haze-pulse 3s ease-in-out infinite}
+  @keyframes haze-pulse{0%,100%{opacity:.5}50%{opacity:1}}
+  .moving-head{position:fixed;z-index:7;pointer-events:none;width:40px;height:40px;border-radius:50%;animation:mh-circ 5s linear infinite}
+  .moving-head::after{content:'';position:absolute;top:50%;left:50%;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.4) 0%,rgba(255,110,180,.2) 30%,transparent 70%);transform:translate(-50%,-50%);mix-blend-mode:screen}
+  @keyframes mh-circ{0%{top:8%;left:10%}25%{top:12%;left:88%}50%{top:75%;left:82%}75%{top:68%;left:12%}100%{top:8%;left:10%}}
+  .neon-top,.neon-bottom{position:fixed;left:0;right:0;height:2px;z-index:3;pointer-events:none;background:linear-gradient(90deg,#ff6eb4,#7b68ee,#00d4ff,#ffb464,#ff6eb4);background-size:200% 100%;animation:neon-flow 2s linear infinite}
+  .neon-top{top:0}.neon-bottom{bottom:0;animation-direction:reverse}
+  @keyframes neon-flow{from{background-position:0% 50%}to{background-position:200% 50%}}
+  .overlay{position:fixed;inset:0;background:rgba(26,26,46,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;cursor:pointer;transition:opacity .6s ease,visibility .6s ease}
+  .overlay>*{pointer-events:none}
+  .overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+  .overlay .icon{font-size:4rem;animation:float 2.5s ease-in-out infinite;margin-bottom:1.2rem;filter:drop-shadow(0 0 15px rgba(255,110,180,.6))}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  .overlay .start-text{color:#fff;font-size:1.3rem;letter-spacing:.15em;border:2px solid rgba(255,255,255,.4);padding:.7rem 2.5rem;border-radius:50px;transition:all .3s;animation:border-glow 2s ease-in-out infinite}
+  @keyframes border-glow{0%,100%{border-color:rgba(255,110,180,.5);box-shadow:0 0 15px rgba(255,110,180,.2)}50%{border-color:rgba(0,212,255,.5);box-shadow:0 0 15px rgba(0,212,255,.2)}}
+  .main{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;width:100%}
+  .cat-stage{position:relative;display:flex;align-items:center;justify-content:center}
+  .cat-stage img{max-width:min(70vmin,500px);width:100%;height:auto;border-radius:16px;box-shadow:0 0 30px rgba(255,110,180,.25),0 0 60px rgba(123,104,238,.15)}
+  .footer{position:relative;z-index:10;color:#fff;font-size:1.1rem;padding:1.2rem;letter-spacing:.4em;font-weight:bold;text-shadow:0 0 10px rgba(255,110,180,.7),0 0 20px rgba(123,104,238,.5),0 0 40px rgba(0,212,255,.3);animation:text-glow 2s ease-in-out infinite alternate}
+  @keyframes text-glow{from{text-shadow:0 0 8px rgba(255,110,180,.6),0 0 18px rgba(123,104,238,.4)}to{text-shadow:0 0 18px rgba(0,212,255,.7),0 0 35px rgba(255,110,180,.5)}}
+  .particle{position:fixed;pointer-events:none;z-index:15;animation:particle-fly linear forwards}
+  @keyframes particle-fly{0%{opacity:0;transform:translateY(0) scale(0)}30%{opacity:.9;transform:translateY(-40px) scale(1)}100%{opacity:0;transform:translateY(-180px) translateX(var(--drift)) scale(.2)}}
+  @media(max-width:480px){.overlay .start-text{font-size:1rem;padding:.5rem 1.8rem}.footer{font-size:.85rem;letter-spacing:.2em}.disco-ball{width:50px;height:50px;top:-30px}}
 </style>
 </head>
-
 <body>
 
-<canvas id="gl"></canvas>
+<div class="disco-ball"></div>
+<div class="beam-cone"></div><div class="beam-cone"></div><div class="beam-cone"></div>
+<div class="moving-head"></div><div class="moving-head" style="animation-delay:-2.5s"></div>
+<div class="haze"></div>
+<div class="footlights"><div class="fl"></div><div class="fl"></div><div class="fl"></div><div class="fl"></div><div class="fl"></div><div class="fl"></div><div class="fl"></div><div class="fl"></div></div>
+<div class="neon-top"></div><div class="neon-bottom"></div>
+<div class="dance-floor" id="danceFloor"></div>
 
-<div id="overlay" onclick="start()">🪩 点击开始 WebGL Disco</div>
+<div class="overlay" id="overlay" onclick="startDisco()" ontouchstart="startDisco();event.preventDefault()">
+  <div class="icon">🪩</div>
+  <div class="start-text">🎵 点 击 开 始 🎵</div>
+  <div class="hint">月薪喵 Disco</div>
+</div>
 
-<audio id="bgm" src="music.mp3" loop preload="none"></audio>
+<div class="main">
+  <div class="cat-stage">
+    <img id="catGif" src="cat.GIF" style="display:none" alt="月薪喵">
+  </div>
+</div>
+<div class="footer">我 真 的 特 别 爱 你</div>
+<audio id="bgm" src="music.mp3" loop preload="auto"></audio>
 
 <script>
-
-/* =========================
-   1. WebGL 初始化
-========================= */
-const canvas = document.getElementById('gl');
-const gl = canvas.getContext('webgl');
-
-function resize(){
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-  gl.viewport(0,0,canvas.width,canvas.height);
-}
-resize();
-addEventListener('resize', resize);
-
-/* =========================
-   2. Shader（核心拼豆逻辑）
-========================= */
-
-const vertexShaderSource = `
-attribute vec2 a_position;
-varying vec2 v_uv;
-
-void main(){
-  v_uv = (a_position + 1.0) * 0.5;
-  gl_Position = vec4(a_position,0.0,1.0);
-}
-`;
-
-const fragmentShaderSource = `
-precision mediump float;
-
-uniform sampler2D u_tex;
-uniform vec2 u_resolution;
-uniform float u_time;
-
-varying vec2 v_uv;
-
-/* ===== 拼豆参数 ===== */
-const float BEAD = 10.0;
-const float GAP = 2.0;
-
-void main(){
-
-  vec2 uv = v_uv;
-
-  vec2 grid = u_resolution / (BEAD + GAP);
-
-  vec2 cell = floor(uv * grid) / grid;
-
-  vec4 color = texture2D(u_tex, cell);
-
-  float r = BEAD * 0.5;
-
-  vec2 local = fract(uv * grid);
-
-  float d = distance(local, vec2(0.5));
-
-  float mask = smoothstep(0.5, 0.2, d);
-
-  vec3 c = color.rgb;
-
-  gl_FragColor = vec4(c * mask, 1.0);
-}
-`;
-
-/* =========================
-   3. Shader 工具
-========================= */
-
-function createShader(gl,type,source){
-  const s = gl.createShader(type);
-  gl.shaderSource(s,source);
-  gl.compileShader(s);
-  return s;
-}
-
-function createProgram(gl,v,f){
-  const p = gl.createProgram();
-  gl.attachShader(p,v);
-  gl.attachShader(p,f);
-  gl.linkProgram(p);
-  return p;
-}
-
-const vShader = createShader(gl,gl.VERTEX_SHADER,vertexShaderSource);
-const fShader = createShader(gl,gl.FRAGMENT_SHADER,fragmentShaderSource);
-
-const program = createProgram(gl,vShader,fShader);
-
-gl.useProgram(program);
-
-/* =========================
-   4. 全屏 quad
-========================= */
-
-const buffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
-
-gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([
-  -1,-1,
-   1,-1,
-  -1, 1,
-  -1, 1,
-   1,-1,
-   1, 1
-]),gl.STATIC_DRAW);
-
-const posLoc = gl.getAttribLocation(program,'a_position');
-gl.enableVertexAttribArray(posLoc);
-gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
-
-/* =========================
-   5. Texture（视频帧）
-========================= */
-
-const tex = gl.createTexture();
-gl.bindTexture(gl.TEXTURE_2D,tex);
-
-gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
-gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-
-/* =========================
-   6. 帧加载
-========================= */
-
-let meta = null;
-let idx = 0;
-let images = [];
-
-async function loadMeta(){
-  meta = await fetch('frames/frames.json').then(r=>r.json());
-}
-
-/* =========================
-   上传纹理
-========================= */
-
-function updateTexture(img){
-  gl.bindTexture(gl.TEXTURE_2D,tex);
-  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,img);
-}
-
-/* =========================
-   render loop
-========================= */
-
-function render(t){
-
-  requestAnimationFrame(render);
-
-  if(!meta) return;
-
-  const img = images[idx];
-
-  if(img){
-    updateTexture(img);
+// ─── Dance floor ───
+!function(){
+  const f=document.getElementById('danceFloor');
+  const cs=['#ff6eb4','#7b68ee','#00d4ff','#ffb464','#ff4081','#69f0ae'];
+  const s=100,cols=Math.ceil(window.innerWidth/s)+1,rows=Math.ceil(window.innerHeight/s)+1;
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const t=document.createElement('div');t.className='tile';
+    t.style.cssText=`left:${c*s}px;top:${r*s}px;width:${s}px;height:${s}px;background:${cs[(r+c)%cs.length]};animation-delay:${(r+c)*.04}s;animation-duration:${.3+Math.random()*.4}s`;
+    f.appendChild(t);
   }
+}();
 
-  gl.uniform1f(gl.getUniformLocation(program,'u_time'),t*0.001);
-  gl.uniform2f(gl.getUniformLocation(program,'u_resolution'),canvas.width,canvas.height);
-
-  gl.drawArrays(gl.TRIANGLES,0,6);
+// ─── Particles ───
+let ptimer=null;
+function spawnParticles(){
+  if(ptimer)return;
+  const em=['✨','💫','⭐','🌟','💖','🎵','♪','♫','💿','🪩','🎶','💎','🔥','🌈'];
+  ptimer=setInterval(()=>{
+    const el=document.createElement('span');el.className='particle';
+    el.textContent=em[Math.floor(Math.random()*em.length)];
+    el.style.left=(10+Math.random()*80)+'%';el.style.bottom=(5+Math.random()*40)+'%';
+    el.style.fontSize=(12+Math.random()*18)+'px';
+    el.style.animationDuration=(2+Math.random()*3)+'s';
+    el.style.setProperty('--drift',(Math.random()*80-40)+'px');
+    document.body.appendChild(el);setTimeout(()=>el.remove(),5000);
+  },200);
 }
 
-/* =========================
-   start
-========================= */
-
-async function start(){
-  document.getElementById('overlay').style.display='none';
-
-  const bgm = document.getElementById('bgm');
-  bgm.play().catch(()=>{});
-
-  await loadMeta();
-
-  /* 异步加载帧（不阻塞） */
-  meta.forEach((m,i)=>{
-    const img = new Image();
-    img.onload = ()=> images[i]=img;
-    img.src = m.file;
-  });
-
-  requestAnimationFrame(render);
+// ─── Start ───
+function startDisco(){
+  const ov=document.getElementById('overlay');
+  if(ov.classList.contains('hidden'))return;
+  ov.classList.add('hidden');
+  const bgm=document.getElementById('bgm');
+  bgm.volume=.7;bgm.play().catch(()=>{});
+  document.getElementById('catGif').style.display='block';
+  spawnParticles();
 }
-
-requestAnimationFrame(render);
-
 </script>
-
 </body>
 </html>
