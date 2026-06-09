@@ -145,14 +145,15 @@ const ctx=canvas.getContext('2d');
 const BEAD_SIZE=5, BEAD_GAP=1, BEAD_STEP=BEAD_SIZE+BEAD_GAP;
 
 let frameImgs=[], frameDelays=[], frameIdx=0, started=false;
+let beadFrames=[];
 let animId=null, lastTime=0, frameAccum=0;
 
-// Load all frames in parallel, update progress as each completes
+// Load all frames in parallel, then pre-render beads once
 async function loadFrames(){
   const ov=document.getElementById('overlay');
   const pct=ov.querySelector('.start-text');
   ov.querySelector('.icon').textContent='⏳';
-  pct.textContent='加载中 0%';
+  pct.textContent='下载图片 0%';
   ov.style.pointerEvents='none';
 
   const meta=await fetch('frames/frames.json').then(r=>r.json());
@@ -160,22 +161,33 @@ async function loadFrames(){
   frameImgs=new Array(tot);frameDelays=new Array(tot);
   let done=0;
 
+  // Phase 1: download all images in parallel
   const promises=meta.map((m,i)=>new Promise((resolve,reject)=>{
     const img=new Image();
     img.onload=()=>{
       frameImgs[i]=img;frameDelays[i]=m.delay||40;
-      done++;pct.textContent='加载中 '+Math.round(done/tot*100)+'%';
+      done++;pct.textContent='下载图片 '+Math.round(done/tot*100)+'%';
       resolve();
     };
     img.onerror=reject;
     img.src=m.file;
   }));
-
   await Promise.all(promises);
+
+  // Phase 2: pre-render all frames as bead canvases (CPU-heavy, do once)
+  pct.textContent='渲染拼豆 0%';
+  for(let i=0;i<tot;i++){
+    beadFrames.push(renderFrameToBeadCanvas(frameImgs[i]));
+    pct.textContent='渲染拼豆 '+Math.round((i+1)/tot*100)+'%';
+    // Yield to keep UI responsive
+    if(i%4===0)await new Promise(r=>setTimeout(r,0));
+  }
+
   ov.classList.add('hidden');
 }
 
-function renderAndDraw(img){
+// Render one frame into a bead canvas (pre-render phase only)
+function renderSingleFrameToBead(img){
   const tmp=document.createElement('canvas');
   tmp.width=img.width;tmp.height=img.height;
   const tc=tmp.getContext('2d');
@@ -188,8 +200,9 @@ function renderAndDraw(img){
   }
   const cw=maxX-minX+1,ch=maxY-minY+1;
   const outW=cw*BEAD_STEP+BEAD_GAP,outH=ch*BEAD_STEP+BEAD_GAP;
-  canvas.width=outW;canvas.height=outH;
-  const octx=ctx;
+  const oc=document.createElement('canvas');
+  oc.width=outW;oc.height=outH;
+  const octx=oc.getContext('2d');
   octx.fillStyle='#1a1a2e';octx.fillRect(0,0,outW,outH);
   const br=BEAD_SIZE/2;
   for(let by=0;by<ch;by++)for(let bx=0;bx<cw;bx++){
@@ -209,17 +222,23 @@ function renderAndDraw(img){
     octx.beginPath();octx.arc(cx-br*.25,cy-br*.3,br*.22,0,Math.PI*2);
     octx.fillStyle='rgba(255,255,255,.35)';octx.fill();
   }
+  return oc;
 }
+var renderFrameToBeadCanvas = renderSingleFrameToBead;
+
+// On-the-fly version removed - animation uses pre-rendered beadFrames only
 
 function animate(ts){
-  if(!started||!frameImgs.length){animId=requestAnimationFrame(animate);return}
+  if(!started||!beadFrames.length){animId=requestAnimationFrame(animate);return}
   if(!lastTime)lastTime=ts;
   const dt=ts-lastTime;lastTime=ts;frameAccum+=dt;
   const delay=frameDelays[frameIdx]||40;
   if(frameAccum>=delay){
     frameAccum-=delay;
-    renderAndDraw(frameImgs[frameIdx]);
-    frameIdx=(frameIdx+1)%frameImgs.length;
+    const fc=beadFrames[frameIdx];
+    canvas.width=fc.width;canvas.height=fc.height;
+    ctx.drawImage(fc,0,0);
+    frameIdx=(frameIdx+1)%beadFrames.length;
   }
   animId=requestAnimationFrame(animate);
 }
