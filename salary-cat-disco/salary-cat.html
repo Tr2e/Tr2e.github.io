@@ -1,117 +1,70 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>月薪喵 拼豆 Disco</title>
+<title>拼豆 Disco</title>
 
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-
   body{
-    background:#1a1a2e;
-    min-height:100vh;
+    margin:0;
     overflow:hidden;
-    font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+    background:#1a1a2e;
+    font-family:PingFang SC;
   }
 
-  /* canvas 层（替代 DOM tile） */
-  #floorCanvas{
+  #floor{
     position:fixed;
     inset:0;
     z-index:0;
   }
 
-  .disco-ball{
+  #bead{
     position:fixed;
-    top:-40px;
     left:50%;
-    transform:translateX(-50%);
-    width:70px;height:70px;
-    border-radius:50%;
-    background:radial-gradient(circle at 30% 30%,#fff,#999);
-    z-index:2;
-    animation:spin 4s linear infinite;
-  }
-  @keyframes spin{to{transform:translateX(-50%) rotate(360deg)}}
-
-  .main{
-    position:relative;
+    top:50%;
+    transform:translate(-50%,-50%);
     z-index:10;
-    height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-  }
-
-  canvas#beadCanvas{
-    max-width:min(70vmin,500px);
-    width:100%;
+    max-width:80vmin;
   }
 
   .overlay{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.85);
     display:flex;
-    flex-direction:column;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    background:rgba(0,0,0,.85);
+    color:#fff;
     z-index:100;
-    color:#fff;
-  }
-
-  .overlay.hidden{display:none}
-
-  .btn{
-    padding:12px 28px;
-    border:1px solid #fff;
-    border-radius:30px;
     cursor:pointer;
-    margin-top:12px;
   }
 
-  .footer{
-    position:fixed;
-    bottom:20px;
-    width:100%;
-    text-align:center;
-    color:#fff;
-    z-index:10;
-    letter-spacing:6px;
-  }
+  .hidden{display:none}
 </style>
 </head>
 
 <body>
 
-<div class="disco-ball"></div>
+<canvas id="floor"></canvas>
+<canvas id="bead"></canvas>
 
-<canvas id="floorCanvas"></canvas>
-
-<div class="overlay" id="overlay" onclick="start()">
-  <div>🪩 月薪喵 Disco</div>
-  <div class="btn">点击开始</div>
+<div class="overlay" id="ov" onclick="start()">
+  <div>🪩 点击开始</div>
 </div>
-
-<div class="main">
-  <canvas id="beadCanvas"></canvas>
-</div>
-
-<div class="footer">我真的特别爱你</div>
 
 <audio id="bgm" src="music.mp3" loop preload="none"></audio>
 
 <script>
 /* =========================
-   1. Canvas 背景（替代 DOM tile）
+   1. FLOOR（稳定版）
 ========================= */
-const floor = document.getElementById('floorCanvas');
+const floor = document.getElementById('floor');
 const fctx = floor.getContext('2d');
 
-const COLORS = ['#ff6eb4','#7b68ee','#00d4ff','#ffb464','#ff4081','#69f0ae'];
-const TILE = 60;
+const COLORS = ['#ff6eb4','#7b68ee','#00d4ff','#ffb464'];
+const TILE = 80;
 
 function resize(){
   floor.width = innerWidth;
@@ -126,15 +79,15 @@ function drawFloor(t){
 
   fctx.clearRect(0,0,w,h);
 
-  const cols = Math.ceil(w/TILE);
-  const rows = Math.ceil(h/TILE);
+  const cols = w / TILE;
+  const rows = h / TILE;
 
-  const time = t * 0.002;
+  const time = t * 0.001;
 
   for(let y=0;y<rows;y++){
     for(let x=0;x<cols;x++){
       const c = COLORS[(x+y)%COLORS.length];
-      const a = 0.05 + Math.sin(time + x*0.2 + y*0.2)*0.05;
+      const a = 0.04 + Math.sin(time+x*0.3+y*0.3)*0.04;
 
       fctx.globalAlpha = a;
       fctx.fillStyle = c;
@@ -146,19 +99,28 @@ function drawFloor(t){
 }
 
 /* =========================
-   2. 拼豆动画
+   2. 拼豆引擎（升级稳定版）
 ========================= */
-const canvas = document.getElementById('beadCanvas');
+const canvas = document.getElementById('bead');
 const ctx = canvas.getContext('2d');
-
-const BEAD=5, GAP=1, STEP=BEAD+GAP;
 
 let frames = [];
 let idx = 0;
 let started = false;
-let firstReady = false;
 
-/* ---------- 首帧 ---------- */
+/* ===== 参数（核心优化点）===== */
+let BEAD = 9;       // 自动调节
+let GAP = 2;
+let SAMPLE = 2;
+
+/* FPS监测 */
+let fps = 60;
+let lastFpsTime = performance.now();
+let frameCount = 0;
+
+/* =========================
+   首帧加载（秒开）
+========================= */
 async function loadFirst(){
   const meta = await fetch('frames/frames.json').then(r=>r.json());
 
@@ -172,7 +134,9 @@ async function loadFirst(){
   });
 }
 
-/* ---------- 后台加载 ---------- */
+/* =========================
+   后台加载（不阻塞）
+========================= */
 async function loadRest(){
   const meta = await fetch('frames/frames.json').then(r=>r.json());
 
@@ -189,60 +153,71 @@ async function loadRest(){
   }
 }
 
-/* ---------- bead render ---------- */
+/* =========================
+   核心渲染（优化版）
+========================= */
 function render(img){
-  const t = document.createElement('canvas');
-  t.width = img.width;
-  t.height = img.height;
 
-  const c = t.getContext('2d');
-  c.drawImage(img,0,0);
+  // 🔥 降采样（关键优化）
+  const scale = Math.min(1, 500 / Math.max(img.width, img.height));
 
-  const data = c.getImageData(0,0,img.width,img.height).data;
+  const w = (img.width * scale)|0;
+  const h = (img.height * scale)|0;
 
-  let minX=img.width,minY=img.height,maxX=0,maxY=0;
+  const tmp = document.createElement('canvas');
+  tmp.width = w;
+  tmp.height = h;
 
-  for(let y=0;y<img.height;y++){
-    for(let x=0;x<img.width;x++){
-      if(data[(y*img.width+x)*4+3]>128){
-        minX=Math.min(minX,x);
-        maxX=Math.max(maxX,x);
-        minY=Math.min(minY,y);
-        maxY=Math.max(maxY,y);
+  const tctx = tmp.getContext('2d');
+  tctx.drawImage(img,0,0,w,h);
+
+  const data = tctx.getImageData(0,0,w,h).data;
+
+  let minX=w,minY=h,maxX=0,maxY=0;
+
+  for(let y=0;y<h;y+=SAMPLE){
+    for(let x=0;x<w;x+=SAMPLE){
+      const i=(y*w+x)*4;
+      if(data[i+3]>128){
+        if(x<minX)minX=x;
+        if(x>maxX)maxX=x;
+        if(y<minY)minY=y;
+        if(y>maxY)maxY=y;
       }
     }
   }
 
-  const w = maxX-minX+1;
-  const h = maxY-minY+1;
+  const cw=maxX-minX+1;
+  const ch=maxY-minY+1;
 
   const out = document.createElement('canvas');
-  out.width = w*STEP;
-  out.height = h*STEP;
+  out.width = cw*(BEAD+GAP);
+  out.height = ch*(BEAD+GAP);
 
   const o = out.getContext('2d');
 
   const r = BEAD/2;
 
-  for(let y=0;y<h;y++){
-    for(let x=0;x<w;x++){
-      const px=minX+x, py=minY+y;
-      const i=(py*img.width+px)*4;
+  for(let y=0;y<ch;y+=SAMPLE){
+    for(let x=0;x<cw;x+=SAMPLE){
+
+      const px=minX+x;
+      const py=minY+y;
+
+      const i=(py*w+px)*4;
 
       if(data[i+3]<128) continue;
 
       const R=data[i],G=data[i+1],B=data[i+2];
 
-      const cx=x*STEP+GAP+r;
-      const cy=y*STEP+GAP+r;
+      const cx=x*(BEAD+GAP)+r;
+      const cy=y*(BEAD+GAP)+r;
 
-      const g=o.createRadialGradient(cx,cy,r*0.2,cx,cy,r);
-      g.addColorStop(0,`rgba(${R+50},${G+50},${B+50},1)`);
-      g.addColorStop(1,`rgba(${R},${G},${B},1)`);
+      // 🚀 纯色（去掉 gradient）
+      o.fillStyle = `rgb(${R},${G},${B})`;
 
       o.beginPath();
       o.arc(cx,cy,r,0,Math.PI*2);
-      o.fillStyle=g;
       o.fill();
     }
   }
@@ -251,7 +226,7 @@ function render(img){
 }
 
 /* =========================
-   3. 动画 loop
+   动画 loop（双层稳定）
 ========================= */
 let last=0,acc=0;
 
@@ -260,41 +235,58 @@ function loop(t){
 
   drawFloor(t);
 
-  if(!firstReady) return;
+  if(!started || !frames.length) return;
+
+  // FPS监控（自动降级）
+  frameCount++;
+  if(t - lastFpsTime > 1000){
+    fps = frameCount;
+    frameCount = 0;
+    lastFpsTime = t;
+
+    // 🔥 自动降级（关键稳定点）
+    if(fps < 30){
+      BEAD = 11;
+      SAMPLE = 3;
+    } else if(fps > 50){
+      BEAD = 9;
+      SAMPLE = 2;
+    }
+  }
 
   if(!last) last=t;
   acc += t-last;
   last=t;
 
-  if(acc>40){
-    acc=0;
+  if(acc > 50){
+    acc = 0;
 
     const f = frames[idx];
+
     if(f){
       canvas.width = f.width;
       canvas.height = f.height;
       ctx.drawImage(f,0,0);
     }
 
-    idx = (idx+1) % Math.max(1,frames.length);
+    idx = (idx+1)%Math.max(1,frames.length);
   }
 }
 
 /* =========================
-   4. start（秒开关键）
+   启动（秒开关键）
 ========================= */
 async function start(){
   if(started) return;
-  started=true;
+  started = true;
 
-  document.getElementById('overlay').classList.add('hidden');
+  document.getElementById('ov').classList.add('hidden');
 
   const bgm = document.getElementById('bgm');
   bgm.play().catch(()=>{});
 
-  // ⚡ 秒开关键：只等第一帧
+  // ⚡ 秒开
   await loadFirst();
-  firstReady = true;
 
   requestAnimationFrame(loop);
 
@@ -302,7 +294,6 @@ async function start(){
   loadRest();
 }
 
-/* start loop */
 requestAnimationFrame(loop);
 </script>
 
