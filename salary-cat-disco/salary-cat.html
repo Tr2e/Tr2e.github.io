@@ -3,298 +3,233 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>拼豆 Disco</title>
+<title>月薪喵 拼豆 Disco</title>
 
 <style>
   body{
     margin:0;
     overflow:hidden;
     background:#1a1a2e;
-    font-family:PingFang SC;
   }
 
-  #floor{
+  canvas{
     position:fixed;
     inset:0;
-    z-index:0;
   }
 
-  #bead{
-    position:fixed;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    z-index:10;
-    max-width:80vmin;
-  }
-
-  .overlay{
+  #overlay{
     position:fixed;
     inset:0;
     display:flex;
     align-items:center;
     justify-content:center;
     flex-direction:column;
-    background:rgba(0,0,0,.85);
     color:#fff;
-    z-index:100;
+    background:rgba(0,0,0,.85);
+    z-index:10;
     cursor:pointer;
   }
-
-  .hidden{display:none}
 </style>
 </head>
 
 <body>
 
-<canvas id="floor"></canvas>
-<canvas id="bead"></canvas>
+<canvas id="gl"></canvas>
 
-<div class="overlay" id="ov" onclick="start()">
-  <div>🪩 点击开始</div>
-</div>
+<div id="overlay" onclick="start()">🪩 点击开始 WebGL Disco</div>
 
 <audio id="bgm" src="music.mp3" loop preload="none"></audio>
 
 <script>
-/* =========================
-   1. FLOOR（稳定版）
-========================= */
-const floor = document.getElementById('floor');
-const fctx = floor.getContext('2d');
 
-const COLORS = ['#ff6eb4','#7b68ee','#00d4ff','#ffb464'];
-const TILE = 80;
+/* =========================
+   1. WebGL 初始化
+========================= */
+const canvas = document.getElementById('gl');
+const gl = canvas.getContext('webgl');
 
 function resize(){
-  floor.width = innerWidth;
-  floor.height = innerHeight;
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+  gl.viewport(0,0,canvas.width,canvas.height);
 }
 resize();
 addEventListener('resize', resize);
 
-function drawFloor(t){
-  const w = floor.width;
-  const h = floor.height;
+/* =========================
+   2. Shader（核心拼豆逻辑）
+========================= */
 
-  fctx.clearRect(0,0,w,h);
+const vertexShaderSource = `
+attribute vec2 a_position;
+varying vec2 v_uv;
 
-  const cols = w / TILE;
-  const rows = h / TILE;
-
-  const time = t * 0.001;
-
-  for(let y=0;y<rows;y++){
-    for(let x=0;x<cols;x++){
-      const c = COLORS[(x+y)%COLORS.length];
-      const a = 0.04 + Math.sin(time+x*0.3+y*0.3)*0.04;
-
-      fctx.globalAlpha = a;
-      fctx.fillStyle = c;
-      fctx.fillRect(x*TILE,y*TILE,TILE,TILE);
-    }
-  }
-
-  fctx.globalAlpha = 1;
+void main(){
+  v_uv = (a_position + 1.0) * 0.5;
+  gl_Position = vec4(a_position,0.0,1.0);
 }
+`;
+
+const fragmentShaderSource = `
+precision mediump float;
+
+uniform sampler2D u_tex;
+uniform vec2 u_resolution;
+uniform float u_time;
+
+varying vec2 v_uv;
+
+/* ===== 拼豆参数 ===== */
+const float BEAD = 10.0;
+const float GAP = 2.0;
+
+void main(){
+
+  vec2 uv = v_uv;
+
+  vec2 grid = u_resolution / (BEAD + GAP);
+
+  vec2 cell = floor(uv * grid) / grid;
+
+  vec4 color = texture2D(u_tex, cell);
+
+  float r = BEAD * 0.5;
+
+  vec2 local = fract(uv * grid);
+
+  float d = distance(local, vec2(0.5));
+
+  float mask = smoothstep(0.5, 0.2, d);
+
+  vec3 c = color.rgb;
+
+  gl_FragColor = vec4(c * mask, 1.0);
+}
+`;
 
 /* =========================
-   2. 拼豆引擎（升级稳定版）
+   3. Shader 工具
 ========================= */
-const canvas = document.getElementById('bead');
-const ctx = canvas.getContext('2d');
 
-let frames = [];
+function createShader(gl,type,source){
+  const s = gl.createShader(type);
+  gl.shaderSource(s,source);
+  gl.compileShader(s);
+  return s;
+}
+
+function createProgram(gl,v,f){
+  const p = gl.createProgram();
+  gl.attachShader(p,v);
+  gl.attachShader(p,f);
+  gl.linkProgram(p);
+  return p;
+}
+
+const vShader = createShader(gl,gl.VERTEX_SHADER,vertexShaderSource);
+const fShader = createShader(gl,gl.FRAGMENT_SHADER,fragmentShaderSource);
+
+const program = createProgram(gl,vShader,fShader);
+
+gl.useProgram(program);
+
+/* =========================
+   4. 全屏 quad
+========================= */
+
+const buffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([
+  -1,-1,
+   1,-1,
+  -1, 1,
+  -1, 1,
+   1,-1,
+   1, 1
+]),gl.STATIC_DRAW);
+
+const posLoc = gl.getAttribLocation(program,'a_position');
+gl.enableVertexAttribArray(posLoc);
+gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
+
+/* =========================
+   5. Texture（视频帧）
+========================= */
+
+const tex = gl.createTexture();
+gl.bindTexture(gl.TEXTURE_2D,tex);
+
+gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+
+/* =========================
+   6. 帧加载
+========================= */
+
+let meta = null;
 let idx = 0;
-let started = false;
+let images = [];
 
-/* ===== 参数（核心优化点）===== */
-let BEAD = 9;       // 自动调节
-let GAP = 2;
-let SAMPLE = 2;
-
-/* FPS监测 */
-let fps = 60;
-let lastFpsTime = performance.now();
-let frameCount = 0;
-
-/* =========================
-   首帧加载（秒开）
-========================= */
-async function loadFirst(){
-  const meta = await fetch('frames/frames.json').then(r=>r.json());
-
-  return new Promise(res=>{
-    const img = new Image();
-    img.onload = ()=>{
-      frames[0] = render(img);
-      res();
-    };
-    img.src = meta[0].file;
-  });
+async function loadMeta(){
+  meta = await fetch('frames/frames.json').then(r=>r.json());
 }
 
 /* =========================
-   后台加载（不阻塞）
+   上传纹理
 ========================= */
-async function loadRest(){
-  const meta = await fetch('frames/frames.json').then(r=>r.json());
 
-  for(let i=1;i<meta.length;i++){
-    const img = new Image();
-    img.onload = ()=>{
-      requestIdleCallback(()=>{
-        frames[i] = render(img);
-      });
-    };
-    img.src = meta[i].file;
-
-    await new Promise(r=>setTimeout(r,10));
-  }
+function updateTexture(img){
+  gl.bindTexture(gl.TEXTURE_2D,tex);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,img);
 }
 
 /* =========================
-   核心渲染（优化版）
+   render loop
 ========================= */
-function render(img){
 
-  // 🔥 降采样（关键优化）
-  const scale = Math.min(1, 500 / Math.max(img.width, img.height));
+function render(t){
 
-  const w = (img.width * scale)|0;
-  const h = (img.height * scale)|0;
+  requestAnimationFrame(render);
 
-  const tmp = document.createElement('canvas');
-  tmp.width = w;
-  tmp.height = h;
+  if(!meta) return;
 
-  const tctx = tmp.getContext('2d');
-  tctx.drawImage(img,0,0,w,h);
+  const img = images[idx];
 
-  const data = tctx.getImageData(0,0,w,h).data;
-
-  let minX=w,minY=h,maxX=0,maxY=0;
-
-  for(let y=0;y<h;y+=SAMPLE){
-    for(let x=0;x<w;x+=SAMPLE){
-      const i=(y*w+x)*4;
-      if(data[i+3]>128){
-        if(x<minX)minX=x;
-        if(x>maxX)maxX=x;
-        if(y<minY)minY=y;
-        if(y>maxY)maxY=y;
-      }
-    }
+  if(img){
+    updateTexture(img);
   }
 
-  const cw=maxX-minX+1;
-  const ch=maxY-minY+1;
+  gl.uniform1f(gl.getUniformLocation(program,'u_time'),t*0.001);
+  gl.uniform2f(gl.getUniformLocation(program,'u_resolution'),canvas.width,canvas.height);
 
-  const out = document.createElement('canvas');
-  out.width = cw*(BEAD+GAP);
-  out.height = ch*(BEAD+GAP);
-
-  const o = out.getContext('2d');
-
-  const r = BEAD/2;
-
-  for(let y=0;y<ch;y+=SAMPLE){
-    for(let x=0;x<cw;x+=SAMPLE){
-
-      const px=minX+x;
-      const py=minY+y;
-
-      const i=(py*w+px)*4;
-
-      if(data[i+3]<128) continue;
-
-      const R=data[i],G=data[i+1],B=data[i+2];
-
-      const cx=x*(BEAD+GAP)+r;
-      const cy=y*(BEAD+GAP)+r;
-
-      // 🚀 纯色（去掉 gradient）
-      o.fillStyle = `rgb(${R},${G},${B})`;
-
-      o.beginPath();
-      o.arc(cx,cy,r,0,Math.PI*2);
-      o.fill();
-    }
-  }
-
-  return out;
+  gl.drawArrays(gl.TRIANGLES,0,6);
 }
 
 /* =========================
-   动画 loop（双层稳定）
+   start
 ========================= */
-let last=0,acc=0;
 
-function loop(t){
-  requestAnimationFrame(loop);
-
-  drawFloor(t);
-
-  if(!started || !frames.length) return;
-
-  // FPS监控（自动降级）
-  frameCount++;
-  if(t - lastFpsTime > 1000){
-    fps = frameCount;
-    frameCount = 0;
-    lastFpsTime = t;
-
-    // 🔥 自动降级（关键稳定点）
-    if(fps < 30){
-      BEAD = 11;
-      SAMPLE = 3;
-    } else if(fps > 50){
-      BEAD = 9;
-      SAMPLE = 2;
-    }
-  }
-
-  if(!last) last=t;
-  acc += t-last;
-  last=t;
-
-  if(acc > 50){
-    acc = 0;
-
-    const f = frames[idx];
-
-    if(f){
-      canvas.width = f.width;
-      canvas.height = f.height;
-      ctx.drawImage(f,0,0);
-    }
-
-    idx = (idx+1)%Math.max(1,frames.length);
-  }
-}
-
-/* =========================
-   启动（秒开关键）
-========================= */
 async function start(){
-  if(started) return;
-  started = true;
-
-  document.getElementById('ov').classList.add('hidden');
+  document.getElementById('overlay').style.display='none';
 
   const bgm = document.getElementById('bgm');
   bgm.play().catch(()=>{});
 
-  // ⚡ 秒开
-  await loadFirst();
+  await loadMeta();
 
-  requestAnimationFrame(loop);
+  /* 异步加载帧（不阻塞） */
+  meta.forEach((m,i)=>{
+    const img = new Image();
+    img.onload = ()=> images[i]=img;
+    img.src = m.file;
+  });
 
-  // 后台加载
-  loadRest();
+  requestAnimationFrame(render);
 }
 
-requestAnimationFrame(loop);
+requestAnimationFrame(render);
+
 </script>
 
 </body>
